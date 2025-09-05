@@ -1,5 +1,5 @@
 {
   "framework": "nextjs",
-  "installCommand": "npm install --no-optional",
+  "installCommand": "npm install --omit=optional",
   "buildCommand": "next build"
 }
