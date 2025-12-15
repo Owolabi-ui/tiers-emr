@@ -1,0 +1,52 @@
+@media print {
+  /* Hide navigation and buttons */
+  button,
+  .print\\:hidden {
+    display: none !important;
+  }
+
+  /* Reset page margins */
+  @page {
+    margin: 1cm;
+  }
+
+  /* Ensure content fits on page */
+  body {
+    print-color-adjust: exact;
+    -webkit-print-color-adjust: exact;
+  }
+
+  /* Force white background for better printing */
+  .dark\\:bg-gray-800,
+  .dark\\:bg-neutral-900,
+  .dark\\:bg-neutral-950 {
+    background-color: white !important;
+    color: black !important;
+  }
+
+  /* Ensure text is visible */
+  .dark\\:text-white,
+  .dark\\:text-gray-300,
+  .dark\\:text-gray-400 {
+    color: black !important;
+  }
+
+  /* Keep important colors for status badges */
+  .bg-green-100,
+  .bg-amber-100,
+  .bg-red-100,
+  .bg-blue-100 {
+    print-color-adjust: exact;
+    -webkit-print-color-adjust: exact;
+  }
+
+  /* Break page for long content */
+  .page-break {
+    page-break-before: always;
+  }
+
+  /* Avoid breaks inside elements */
+  .no-break {
+    page-break-inside: avoid;
+  }
+}
