@@ -150,12 +150,12 @@ export interface CompletePrepWorkflowResponse {
   patient_hospital_no?: string;
   
   // Shared HTS sections
-  initial?: any;
-  pre_test?: any;
-  testing?: any;
-  prep_eligibility?: any;
-  post_test?: any;
-  referral?: any;
+  initial?: Record<string, unknown>;
+  pre_test?: Record<string, unknown>;
+  testing?: Record<string, unknown>;
+  prep_eligibility?: Record<string, unknown>;
+  post_test?: Record<string, unknown>;
+  referral?: Record<string, unknown>;
   
   // PREP-specific sections
   prep_commencement: PrepCommencement | null;

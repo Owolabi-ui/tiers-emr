@@ -175,10 +175,10 @@ export interface UpdatePepFollowupRequest {
 
 export interface CompletePepWorkflowResponse {
   initial: HtsInitialResponse | null;
-  pre_test: any | null;
-  testing: any | null;
-  post_test: any | null;
-  referral: any | null;
+  pre_test: Record<string, unknown> | null;
+  testing: Record<string, unknown> | null;
+  post_test: Record<string, unknown> | null;
+  referral: Record<string, unknown> | null;
   pep_information: PepInformation | null;
   commencement: PepCommencement | null;
   followups: PepFollowup[];
