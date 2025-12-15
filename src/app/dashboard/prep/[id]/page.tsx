@@ -44,7 +44,7 @@ export default function PrepDetailPage({ params }: { params: Promise<{ id: strin
       // Fetch PrEP prescriptions for this patient
       if (response.initial?.patient_id) {
         const prescriptionsResponse = await pharmacyApi.listPrescriptions({
-          patient_id: response.initial.patient_id,
+          patient_id: response.initial.patient_id as string,
         });
         // Filter for PrEP prescriptions only
         const prepPrescriptions = prescriptionsResponse.data.filter(p => 
@@ -190,13 +190,13 @@ export default function PrepDetailPage({ params }: { params: Promise<{ id: strin
                   <div>
                     <p className="text-sm text-gray-500 dark:text-gray-400">HTS Client Code</p>
                     <p className="text-base font-medium text-gray-900 dark:text-white mt-1">
-                      {data.initial.client_code || 'N/A'}
+                      {(data.initial.client_code as string) || 'N/A'}
                     </p>
                   </div>
                   <div>
                     <p className="text-sm text-gray-500 dark:text-gray-400">Date of Test</p>
                     <p className="text-base font-medium text-gray-900 dark:text-white mt-1">
-                      {data.initial.date_of_visit ? new Date(data.initial.date_of_visit).toLocaleDateString() : 'N/A'}
+                      {data.initial.date_of_visit ? new Date(data.initial.date_of_visit as string).toLocaleDateString() : 'N/A'}
                     </p>
                   </div>
                 </div>
@@ -555,7 +555,7 @@ export default function PrepDetailPage({ params }: { params: Promise<{ id: strin
           <PrepPrescriptionForm 
             commencementId={commencement.hts_initial_id}
             prepCommencementId={commencement.id}
-            patientId={data.initial.patient_id}
+            patientId={data.initial.patient_id as string}
             prepType={commencement.prep_type_at_start}
             onSuccess={handleFormSuccess}
             onCancel={() => setShowPrescriptionForm(false)}
