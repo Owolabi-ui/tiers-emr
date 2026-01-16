@@ -94,7 +94,7 @@ export default function PatientPsychologyPage() {
           <div>
             <h1 className="text-2xl font-bold text-gray-900 dark:text-white flex items-center gap-3">
               <Brain className="h-7 w-7 text-indigo-600 dark:text-indigo-400" />
-              Psychology Profile
+              Mental Health Profile
             </h1>
             <p className="text-gray-600 dark:text-gray-400 mt-1">
               Mental health assessments and counseling history

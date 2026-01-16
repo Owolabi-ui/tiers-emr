@@ -16,11 +16,15 @@ api.interceptors.request.use(
     // Get token from localStorage (client-side only)
     if (typeof window !== 'undefined') {
       const token = localStorage.getItem('access_token');
+      console.log(`[API] Request to ${config.url}`);
+      console.log('[API] localStorage keys:', Object.keys(localStorage));
+      console.log('[API] Token from localStorage:', token ? token.substring(0, 30) + '...' : 'NULL');
+      
       if (token && config.headers) {
         config.headers.Authorization = `Bearer ${token}`;
-        console.log(`[API] Request to ${config.url} with token:`, token.substring(0, 20) + '...');
+        console.log(`[API] ✓ Token attached to request`);
       } else {
-        console.warn(`[API] Request to ${config.url} WITHOUT token`);
+        console.warn(`[API] ✗ NO TOKEN - Request will fail with 401`);
       }
     }
     return config;
@@ -41,17 +45,20 @@ api.interceptors.response.use(
     
     // Handle 401 - unauthorized (token invalid/expired)
     if (error.response?.status === 401) {
-      console.warn('[API] 401 Unauthorized - Token expired or invalid. Logging out...');
-      if (typeof window !== 'undefined') {
-        localStorage.removeItem('access_token');
-        localStorage.removeItem('user');
-        // Set session expired flag in sessionStorage for login page to detect
-        sessionStorage.setItem('session_expired', 'true');
-        // Only redirect if not already on login page
-        if (!window.location.pathname.includes('/login')) {
-          window.location.href = '/login?session_expired=true';
-        }
-      }
+      console.warn('[API] 401 Unauthorized - Token expired or invalid.');
+      console.warn('[API] TEMPORARILY NOT LOGGING OUT FOR DEBUGGING');
+      
+      // TEMPORARILY DISABLED FOR DEBUGGING
+      // if (typeof window !== 'undefined') {
+      //   localStorage.removeItem('access_token');
+      //   localStorage.removeItem('user');
+      //   // Set session expired flag in sessionStorage for login page to detect
+      //   sessionStorage.setItem('session_expired', 'true');
+      //   // Only redirect if not already on login page
+      //   if (!window.location.pathname.includes('/login')) {
+      //     window.location.href = '/login?session_expired=true';
+      //   }
+      // }
     }
     
     // Other errors are now handled by ApiErrorHandler component with toast notifications
@@ -88,7 +95,9 @@ export interface User {
   full_name: string;
   role: UserRole;
   is_active: boolean;
-  created_at: string;
+  created_at?: string;
+  clinic_id?: string | null;
+  phone?: string | null;
 }
 
 export type UserRole = 'Admin' | 'Doctor' | 'Nurse' | 'Pharmacist' | 'LabTech' | 'Receptionist';

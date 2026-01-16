@@ -115,6 +115,24 @@ export const psychologyIntakeApi = {
     const response = await api.post(`/api/v1/public/psychology/intake/${token}`, data);
     return response.data;
   },
+
+  // Staff: Check if intake form has been submitted (for polling)
+  checkIntakeStatus: async (patientId: string): Promise<{ completed: boolean; intake: PsychologyIntake | null }> => {
+    try {
+      const intake = await psychologyIntakeApi.getByPatient(patientId);
+      // Check if token_used_at is set (form was submitted)
+      const completed = intake?.token_used_at !== null;
+      return { completed, intake: completed ? intake : null };
+    } catch (err) {
+      return { completed: false, intake: null };
+    }
+  },
+
+  // Staff: Get all intake forms for a patient (history)
+  getIntakeHistory: async (patientId: string): Promise<PsychologyIntake[]> => {
+    const response = await api.get(`/api/v1/psychology/intake/patient/${patientId}/history`);
+    return response.data;
+  },
 };
 
 // Helper to get severity label for scores

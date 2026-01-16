@@ -45,12 +45,13 @@ export default function AppointmentsPage() {
   const [loading, setLoading] = useState(true);
   const [loadingPatients, setLoadingPatients] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [statusFilter, setStatusFilter] = useState<AppointmentStatus | ''>('');
+  const [showFilters, setShowFilters] = useState(false);
+  const [viewMode, setViewMode] = useState<'date' | 'all'>('all'); // Changed default to 'all'
   const [selectedDate, setSelectedDate] = useState(() => {
     const today = new Date();
     return today.toISOString().split('T')[0];
   });
-  const [statusFilter, setStatusFilter] = useState<AppointmentStatus | ''>('');
-  const [showFilters, setShowFilters] = useState(false);
 
   // Stats
   const [stats, setStats] = useState({
@@ -65,8 +66,18 @@ export default function AppointmentsPage() {
       setLoading(true);
       setError(null);
 
-      const response = await appointmentsApi.getByDate(selectedDate);
-      let filteredAppointments = response.appointments;
+      let allAppointments: AppointmentResponse[];
+      
+      if (viewMode === 'date') {
+        const response = await appointmentsApi.getByDate(selectedDate);
+        allAppointments = response.appointments;
+      } else {
+        // Fetch all appointments
+        const response = await appointmentsApi.getAll();
+        allAppointments = response.appointments;
+      }
+
+      let filteredAppointments = allAppointments;
 
       // Apply status filter client-side
       if (statusFilter) {
@@ -75,8 +86,13 @@ export default function AppointmentsPage() {
         );
       }
 
-      // Sort by time
+      // Sort by date first, then time
       filteredAppointments.sort((a, b) => {
+        // Sort by date (descending - newest first)
+        const dateCompare = new Date(b.appointment_date).getTime() - new Date(a.appointment_date).getTime();
+        if (dateCompare !== 0) return dateCompare;
+        
+        // Then sort by time
         if (!a.appointment_time && !b.appointment_time) return 0;
         if (!a.appointment_time) return 1;
         if (!b.appointment_time) return -1;
@@ -87,14 +103,14 @@ export default function AppointmentsPage() {
 
       // Calculate stats from all appointments (unfiltered)
       setStats({
-        total: response.appointments.length,
-        scheduled: response.appointments.filter(
+        total: allAppointments.length,
+        scheduled: allAppointments.filter(
           (a) => a.status === 'Scheduled' || a.status === 'Confirmed'
         ).length,
-        checkedIn: response.appointments.filter(
+        checkedIn: allAppointments.filter(
           (a) => a.status === 'Checked-in' || a.status === 'In Progress'
         ).length,
-        completed: response.appointments.filter((a) => a.status === 'Completed').length,
+        completed: allAppointments.filter((a) => a.status === 'Completed').length,
       });
 
       // Fetch patient names
@@ -127,6 +143,10 @@ export default function AppointmentsPage() {
   useEffect(() => {
     fetchAppointments();
   }, [fetchAppointments]);
+
+  useEffect(() => {
+    fetchAppointments();
+  }, [viewMode, selectedDate, statusFilter]);
 
   const handleDateChange = (direction: 'prev' | 'next') => {
     const currentDate = new Date(selectedDate);
@@ -253,50 +273,78 @@ export default function AppointmentsPage() {
         </div>
       </div>
 
-      {/* Date Selector and Filters */}
+      {/* View Mode Toggle and Filters */}
       <div className="rounded-xl border border-black/10 dark:border-white/15 bg-white dark:bg-neutral-900 p-4">
         <div className="flex flex-col sm:flex-row items-start sm:items-center gap-4">
-          {/* Date Navigation */}
-          <div className="flex items-center gap-2">
+          {/* View Mode Toggle */}
+          <div className="flex items-center gap-2 p-1 rounded-lg bg-gray-100 dark:bg-neutral-800">
             <button
-              onClick={() => handleDateChange('prev')}
-              className="p-2 rounded-lg border border-gray-200 dark:border-gray-700 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"
+              onClick={() => setViewMode('all')}
+              className={`px-3 py-2 rounded-md text-sm font-medium transition-colors ${
+                viewMode === 'all'
+                  ? 'bg-[#5b21b6] text-white'
+                  : 'text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-neutral-700'
+              }`}
             >
-              <ChevronLeft className="h-4 w-4" />
+              All Appointments
             </button>
-            <div className="relative">
-              <Calendar className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-400" />
-              <input
-                type="date"
-                value={selectedDate}
-                onChange={(e) => setSelectedDate(e.target.value)}
-                className="h-10 pl-10 pr-4 rounded-lg border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-neutral-800 text-sm text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-[#5b21b6]/50"
-              />
-            </div>
             <button
-              onClick={() => handleDateChange('next')}
-              className="p-2 rounded-lg border border-gray-200 dark:border-gray-700 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"
+              onClick={() => setViewMode('date')}
+              className={`px-3 py-2 rounded-md text-sm font-medium transition-colors ${
+                viewMode === 'date'
+                  ? 'bg-[#5b21b6] text-white'
+                  : 'text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-neutral-700'
+              }`}
             >
-              <ChevronRight className="h-4 w-4" />
+              By Date
             </button>
-            {!isAppointmentToday(selectedDate) && (
-              <button
-                onClick={goToToday}
-                className="px-3 py-2 rounded-lg text-sm font-medium text-[#5b21b6] hover:bg-[#5b21b6]/10 transition-colors"
-              >
-                Today
-              </button>
-            )}
           </div>
 
-          <div className="flex-1 text-center sm:text-left">
-            <span className="text-lg font-semibold text-gray-900 dark:text-white">
-              {getAppointmentDateLabel(selectedDate)}
-            </span>
-            <span className="ml-2 text-sm text-gray-500">
-              {formatAppointmentDate(selectedDate)}
-            </span>
-          </div>
+          {/* Date Navigation - Only show in date view */}
+          {viewMode === 'date' && (
+            <>
+              <div className="flex items-center gap-2">
+                <button
+                  onClick={() => handleDateChange('prev')}
+                  className="p-2 rounded-lg border border-gray-200 dark:border-gray-700 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"
+                >
+                  <ChevronLeft className="h-4 w-4" />
+                </button>
+                <div className="relative">
+                  <Calendar className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-400" />
+                  <input
+                    type="date"
+                    value={selectedDate}
+                    onChange={(e) => setSelectedDate(e.target.value)}
+                    className="h-10 pl-10 pr-4 rounded-lg border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-neutral-800 text-sm text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-[#5b21b6]/50"
+                  />
+                </div>
+                <button
+                  onClick={() => handleDateChange('next')}
+                  className="p-2 rounded-lg border border-gray-200 dark:border-gray-700 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"
+                >
+                  <ChevronRight className="h-4 w-4" />
+                </button>
+                {!isAppointmentToday(selectedDate) && (
+                  <button
+                    onClick={goToToday}
+                    className="px-3 py-2 rounded-lg text-sm font-medium text-[#5b21b6] hover:bg-[#5b21b6]/10 transition-colors"
+                  >
+                    Today
+                  </button>
+                )}
+              </div>
+
+              <div className="flex-1 text-center sm:text-left">
+                <span className="text-lg font-semibold text-gray-900 dark:text-white">
+                  {getAppointmentDateLabel(selectedDate)}
+                </span>
+                <span className="ml-2 text-sm text-gray-500">
+                  {formatAppointmentDate(selectedDate)}
+                </span>
+              </div>
+            </>
+          )}
 
           <div className="flex items-center gap-2">
             <button
@@ -377,6 +425,7 @@ export default function AppointmentsPage() {
         <table className="w-full text-sm">
           <thead>
             <tr className="bg-[#5b21b6] text-white">
+              {viewMode === 'all' && <th className="px-4 py-3 text-left font-medium">Date</th>}
               <th className="px-4 py-3 text-left font-medium">Time</th>
               <th className="px-4 py-3 text-left font-medium">Appt No.</th>
               <th className="px-4 py-3 text-left font-medium">Patient</th>
@@ -390,16 +439,18 @@ export default function AppointmentsPage() {
           <tbody className="bg-white dark:bg-neutral-900">
             {loading ? (
               <tr>
-                <td colSpan={8} className="px-4 py-12 text-center">
+                <td colSpan={viewMode === 'all' ? 9 : 8} className="px-4 py-12 text-center">
                   <Loader2 className="h-8 w-8 animate-spin text-[#5b21b6] mx-auto" />
                   <p className="mt-2 text-sm text-gray-500">Loading appointments...</p>
                 </td>
               </tr>
             ) : appointments.length === 0 ? (
               <tr>
-                <td colSpan={8} className="px-4 py-12 text-center">
+                <td colSpan={viewMode === 'all' ? 9 : 8} className="px-4 py-12 text-center">
                   <CalendarDays className="h-12 w-12 text-gray-300 mx-auto" />
-                  <p className="mt-2 text-sm text-gray-500">No appointments for this date</p>
+                  <p className="mt-2 text-sm text-gray-500">
+                    {viewMode === 'date' ? 'No appointments for this date' : 'No appointments found'}
+                  </p>
                   <Link
                     href="/dashboard/appointments/new"
                     className="mt-4 inline-flex items-center gap-2 text-sm text-[#5b21b6] hover:underline"
@@ -415,6 +466,18 @@ export default function AppointmentsPage() {
                   key={appointment.id}
                   className="border-t border-black/5 dark:border-white/10 hover:bg-purple-50/50 dark:hover:bg-[#5b21b6]/5 transition-colors"
                 >
+                  {viewMode === 'all' && (
+                    <td className="px-4 py-3">
+                      <div className="flex flex-col">
+                        <span className="font-medium text-gray-900 dark:text-white text-sm">
+                          {formatAppointmentDate(appointment.appointment_date)}
+                        </span>
+                        <span className="text-xs text-gray-500">
+                          {getAppointmentDateLabel(appointment.appointment_date)}
+                        </span>
+                      </div>
+                    </td>
+                  )}
                   <td className="px-4 py-3">
                     <span className="font-mono text-sm font-medium text-gray-900 dark:text-white">
                       {formatTime(appointment.appointment_time)}

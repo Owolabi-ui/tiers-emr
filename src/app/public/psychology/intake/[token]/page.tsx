@@ -75,10 +75,6 @@ export default function PublicIntakePage() {
       
       await psychologyIntakeApi.submitPublicForm(token, formData);
       setSuccess(true);
-      
-      setTimeout(() => {
-        router.push('/public/psychology/intake/success');
-      }, 3000);
     } catch (err) {
       setError(getErrorMessage(err));
     } finally {
@@ -146,14 +142,51 @@ export default function PublicIntakePage() {
   if (success) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-green-50 via-white to-emerald-50 p-4">
-        <div className="max-w-md w-full bg-white rounded-lg shadow-xl p-8 text-center">
-          <CheckCircle2 className="h-16 w-16 text-green-500 mx-auto mb-4" />
-          <h1 className="text-2xl font-bold text-gray-900 mb-2">Thank You!</h1>
-          <p className="text-gray-600 mb-6">
-            Your intake form has been submitted successfully. Your psychologist will review this before your first session.
-          </p>
-          <p className="text-sm text-gray-500">
-            You may now close this window.
+        <div className="max-w-2xl w-full bg-white rounded-2xl shadow-xl p-8">
+          <div className="text-center mb-8">
+            <div className="mx-auto w-20 h-20 bg-green-100 rounded-full flex items-center justify-center mb-4">
+              <CheckCircle2 className="h-12 w-12 text-green-600" />
+            </div>
+            <h1 className="text-3xl font-bold text-gray-900 mb-2">
+              Thank You, {patientName}!
+            </h1>
+            <p className="text-lg text-gray-600">
+              Your intake form has been submitted successfully.
+            </p>
+          </div>
+          
+          <div className="bg-indigo-50 rounded-lg p-6 mb-6">
+            <h2 className="font-semibold text-indigo-900 mb-4 text-lg flex items-center gap-2">
+              📋 Before Your First Session:
+            </h2>
+            <ul className="space-y-3 text-indigo-800">
+              <li className="flex items-start gap-3">
+                <span className="font-bold text-xl">•</span>
+                <span>Please arrive <strong>10-15 minutes early</strong> to complete any additional paperwork</span>
+              </li>
+              <li className="flex items-start gap-3">
+                <span className="font-bold text-xl">•</span>
+                <span>If this is a <strong>virtual session</strong>, ensure you have a stable internet connection and a private space</span>
+              </li>
+              <li className="flex items-start gap-3">
+                <span className="font-bold text-xl">•</span>
+                <span>Come prepared with any <strong>questions or concerns</strong> you'd like to discuss</span>
+              </li>
+            </ul>
+          </div>
+          
+          <div className="bg-green-50 rounded-lg p-6 text-center mb-6">
+            <p className="text-green-900 font-semibold mb-2 flex items-center justify-center gap-2">
+              <Heart className="h-5 w-5" />
+              Your psychologist has been notified
+            </p>
+            <p className="text-sm text-green-700">
+              They will review your information before your first session
+            </p>
+          </div>
+          
+          <p className="text-center text-gray-500 text-sm">
+            You can now close this window
           </p>
         </div>
       </div>

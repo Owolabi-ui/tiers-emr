@@ -4,6 +4,7 @@ import { useState } from 'react';
 import { useRouter, useParams } from 'next/navigation';
 import { useForm } from 'react-hook-form';
 import { psychologyApi, CreateSessionRequest, sessionTypeOptions } from '@/lib/psychology';
+import { appointmentsApi, CreateAppointmentRequest } from '@/lib/appointments';
 import { getErrorMessage } from '@/lib/api';
 import {
   ArrowLeft,
@@ -60,8 +61,10 @@ export default function NewSessionPage() {
       session_date: new Date().toISOString().split('T')[0],
       session_type: 'Individual Therapy' as const,
       duration_minutes: 60,
+      modality: 'In-person',
       presenting_concerns: [],
       interventions_used: [],
+      goals_addressed: [],
       session_notes: '',
     },
   });
@@ -71,12 +74,45 @@ export default function NewSessionPage() {
       setLoading(true);
       setError(null);
       
-      await psychologyApi.createSession({
+      // Clean up next_session_scheduled - convert empty string to undefined
+      const nextSessionDate = data.next_session_scheduled && data.next_session_scheduled.trim() !== '' 
+        ? data.next_session_scheduled 
+        : undefined;
+      
+      const sessionData: CreateSessionRequest = {
         ...data,
         patient_id: patientId,
         presenting_concerns: concerns,
         interventions_used: interventions,
-      });
+        goals_addressed: [],
+        next_session_scheduled: nextSessionDate,
+      };
+      
+      const session = await psychologyApi.createSession(sessionData);
+
+      // If next_session_scheduled is provided, create an appointment
+      if (nextSessionDate) {
+        try {
+          await appointmentsApi.create({
+            patient_id: patientId,
+            appointment_type: 'Counseling',
+            appointment_date: nextSessionDate,
+            appointment_time: null,
+            auto_generated: true,
+            source_type: 'counseling_session',
+            source_id: session.id,
+            service_type: 'mental_health',
+            service_record_id: session.id,
+            reason: `Follow-up ${data.session_type}`,
+            notes: 'Automatically scheduled from counseling session',
+          });
+        } catch (appointmentErr) {
+          console.error('Error creating appointment:', appointmentErr);
+          // Don't fail the session creation if appointment fails
+          // but notify the user
+          setError('Session created successfully, but failed to create appointment. Please create it manually.');
+        }
+      }
 
       router.push(`/dashboard/psychology/patients/${patientId}`);
     } catch (err) {
@@ -181,7 +217,7 @@ export default function NewSessionPage() {
               </label>
               <input
                 type="date"
-                {...register('next_session_date')}
+                {...register('next_session_scheduled')}
                 className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-indigo-500 dark:bg-neutral-900 dark:text-white"
               />
             </div>

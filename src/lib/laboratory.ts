@@ -319,8 +319,8 @@ export const laboratoryApi = {
 
   // Get lab orders by patient
   getOrdersByPatient: async (patientId: string): Promise<LabTestOrderWithDetails[]> => {
-    const response = await api.get<{ data: LabTestOrderWithDetails[] }>(`/api/v1/lab/patient/${patientId}/orders`);
-    return response.data.data || [];
+    const response = await api.get<{ patient_id: string; orders: LabTestOrderWithDetails[]; total: number }>(`/api/v1/lab/patient/${patientId}/orders`);
+    return response.data.orders || [];
   },
 
   // Collect sample for order
@@ -526,9 +526,17 @@ export const getCategoryIcon = (category: LabTestCategory): string => {
 /**
  * Get test catalog entry by test code
  */
-export const getTestByCode = async (testCode: string): Promise<LabTestCatalog> => {
-  const response = await api.get(`/api/v1/lab/catalog/${testCode}`);
-  return response.data;
+export const getTestByCode = async (testCode: string): Promise<LabTestCatalog | null> => {
+  try {
+    const response = await api.get(`/api/v1/lab/catalog/${testCode}`);
+    return response.data;
+  } catch (error: any) {
+    if (error.response?.status === 404) {
+      console.warn(`Lab test '${testCode}' not found in catalog`);
+      return null;
+    }
+    throw error;
+  }
 };
 
 /**
@@ -540,6 +548,10 @@ export const createHTSScreeningOrder = async (
   clinicalNotes?: string
 ): Promise<LabTestOrder> => {
   const test = await getTestByCode('HIV_RAPID'); // HIV Rapid Screening Test
+  
+  if (!test) {
+    throw new Error('HIV_RAPID test not found in catalog. Please add it to the lab catalog first.');
+  }
   
   return laboratoryApi.createOrder({
     patient_id: patientId,
@@ -562,6 +574,10 @@ export const createHTSConfirmatoryOrder = async (
 ): Promise<LabTestOrder> => {
   const test = await getTestByCode('HIV_DNA'); // Using HIV DNA PCR for confirmatory
   
+  if (!test) {
+    throw new Error('HIV_DNA test not found in catalog. Please add it to the lab catalog first.');
+  }
+  
   return laboratoryApi.createOrder({
     patient_id: patientId,
     test_id: test.id,
@@ -574,47 +590,81 @@ export const createHTSConfirmatoryOrder = async (
 };
 /**
  * Create additional STI screening tests for HTS (Syphilis, Hep B, Hep C)
+ * Allows selective ordering of individual tests
  */
 export const createHTSAdditionalTests = async (
   patientId: string,
   htsInitialId: string,
-  clinicalNotes?: string
+  clinicalNotes?: string,
+  options?: {
+    includeSyphilis?: boolean;
+    includeHepB?: boolean;
+    includeHepC?: boolean;
+  }
 ): Promise<LabTestOrder[]> => {
-  const syphilisTest = await getTestByCode('VDRL'); // Syphilis screening
-  const hepBTest = await getTestByCode('HBSAG'); // Hepatitis B Surface Antigen
-  const hepCTest = await getTestByCode('HCV-AB'); // Hepatitis C Antibody
+  const { includeSyphilis = true, includeHepB = true, includeHepC = true } = options || {};
   
-  const orders = await Promise.all([
-    laboratoryApi.createOrder({
-      patient_id: patientId,
-      test_id: syphilisTest.id,
-      priority: 'Routine',
-      service_type: 'HTS',
-      service_record_id: htsInitialId,
-      clinical_indication: 'HIV Testing Services - STI Co-infection Screening (Syphilis)',
-      clinical_notes: clinicalNotes,
-    }),
-    laboratoryApi.createOrder({
-      patient_id: patientId,
-      test_id: hepBTest.id,
-      priority: 'Routine',
-      service_type: 'HTS',
-      service_record_id: htsInitialId,
-      clinical_indication: 'HIV Testing Services - Hepatitis B Co-infection Screening',
-      clinical_notes: clinicalNotes,
-    }),
-    laboratoryApi.createOrder({
-      patient_id: patientId,
-      test_id: hepCTest.id,
-      priority: 'Routine',
-      service_type: 'HTS',
-      service_record_id: htsInitialId,
-      clinical_indication: 'HIV Testing Services - Hepatitis C Co-infection Screening',
-      clinical_notes: clinicalNotes,
-    }),
-  ]);
+  const orderPromises: Promise<LabTestOrder>[] = [];
   
-  return orders;
+  // Syphilis test (TPHA)
+  if (includeSyphilis) {
+    const syphilisTest = await getTestByCode('TPHA');
+    if (syphilisTest) {
+      orderPromises.push(
+        laboratoryApi.createOrder({
+          patient_id: patientId,
+          test_id: syphilisTest.id,
+          priority: 'Routine',
+          service_type: 'HTS',
+          service_record_id: htsInitialId,
+          clinical_indication: 'HIV Testing Services - STI Co-infection Screening (Syphilis)',
+          clinical_notes: clinicalNotes,
+        })
+      );
+    }
+  }
+  
+  // Hepatitis B test (HBsAg)
+  if (includeHepB) {
+    const hepBTest = await getTestByCode('HBSAG');
+    if (hepBTest) {
+      orderPromises.push(
+        laboratoryApi.createOrder({
+          patient_id: patientId,
+          test_id: hepBTest.id,
+          priority: 'Routine',
+          service_type: 'HTS',
+          service_record_id: htsInitialId,
+          clinical_indication: 'HIV Testing Services - Hepatitis B Co-infection Screening',
+          clinical_notes: clinicalNotes,
+        })
+      );
+    }
+  }
+  
+  // Hepatitis C test (HCV-AB)
+  if (includeHepC) {
+    const hepCTest = await getTestByCode('HCVAB');
+    if (hepCTest) {
+      orderPromises.push(
+        laboratoryApi.createOrder({
+          patient_id: patientId,
+          test_id: hepCTest.id,
+          priority: 'Routine',
+          service_type: 'HTS',
+          service_record_id: htsInitialId,
+          clinical_indication: 'HIV Testing Services - Hepatitis C Co-infection Screening',
+          clinical_notes: clinicalNotes,
+        })
+      );
+    }
+  }
+  
+  if (orderPromises.length === 0) {
+    throw new Error('No STI tests found in catalog. Please add TPHA, HBSAG, and HCVAB tests to the lab catalog first.');
+  }
+  
+  return Promise.all(orderPromises);
 };
 
 /**
@@ -626,6 +676,10 @@ export const createARTViralLoadOrder = async (
   indication: string = 'ART Monitoring - Routine Viral Load'
 ): Promise<LabTestOrder> => {
   const test = await getTestByCode('HIV_VL'); // HIV Viral Load
+  
+  if (!test) {
+    throw new Error('HIV_VL test not found in catalog. Please add it to the lab catalog first.');
+  }
   
   return laboratoryApi.createOrder({
     patient_id: patientId,
@@ -676,8 +730,11 @@ export const isQualitativeTest = (testCode: string): boolean => {
     'HIV_RAPID',
     'HIV_DNA',
     'HBsAg',
+    'HBSAG',      // Hepatitis B Surface Antigen
     'HCV_AB',
+    'HCVAB',      // Hepatitis C Antibody
     'VDRL',
+    'TPHA',       // Syphilis test
     'RPR',
     'PREGNANCY',
     'MALARIA',
@@ -693,8 +750,17 @@ export const isQualitativeTest = (testCode: string): boolean => {
  * Get options for qualitative test results
  */
 export const getQualitativeOptions = (testCode: string): string[] => {
-  // HIV and most rapid tests
-  if (testCode.includes('HIV') || testCode.includes('HBsAg') || testCode.includes('HCV') || testCode === 'HBSAG') {
+  // HIV and most rapid tests (including STI screening tests)
+  if (
+    testCode.includes('HIV') || 
+    testCode.includes('HBsAg') || 
+    testCode.includes('HCV') || 
+    testCode === 'HBSAG' || 
+    testCode === 'HCVAB' || 
+    testCode === 'TPHA' ||
+    testCode === 'VDRL' ||
+    testCode === 'RPR'
+  ) {
     return ['Reactive', 'Non-reactive', 'Indeterminate'];
   }
   
@@ -739,6 +805,9 @@ export const createPREPBaselineTests = async (
   try {
     // 1. HIV Rapid Test (mandatory - must be negative for PREP eligibility)
     const hivTest = await getTestByCode('HIV_RAPID');
+    if (!hivTest) {
+      throw new Error('HIV_RAPID test not found in catalog');
+    }
     const hivOrder = await laboratoryApi.createOrder({
       patient_id: patientId,
       test_id: hivTest.id,
@@ -751,6 +820,9 @@ export const createPREPBaselineTests = async (
 
     // 2. Creatinine (mandatory - kidney function baseline)
     const creatinineTest = await getTestByCode('CREATININE');
+    if (!creatinineTest) {
+      throw new Error('CREATININE test not found in catalog');
+    }
     const creatinineOrder = await laboratoryApi.createOrder({
       patient_id: patientId,
       test_id: creatinineTest.id,
@@ -763,6 +835,9 @@ export const createPREPBaselineTests = async (
 
     // 3. Hepatitis B Surface Antigen (mandatory)
     const hbsagTest = await getTestByCode('HBSAG');
+    if (!hbsagTest) {
+      throw new Error('HBSAG test not found in catalog');
+    }
     const hbsagOrder = await laboratoryApi.createOrder({
       patient_id: patientId,
       test_id: hbsagTest.id,
@@ -776,6 +851,9 @@ export const createPREPBaselineTests = async (
     // 4. Pregnancy Test (optional - for women of childbearing age)
     if (options.includePregnancyTest) {
       const pregnancyTest = await getTestByCode('PREGNANCY');
+      if (!pregnancyTest) {
+        throw new Error('PREGNANCY test not found in catalog');
+      }
       const pregnancyOrder = await laboratoryApi.createOrder({
         patient_id: patientId,
         test_id: pregnancyTest.id,
@@ -790,6 +868,9 @@ export const createPREPBaselineTests = async (
     // 5. Liver Function Tests (optional - ALT and AST)
     if (options.includeLiverFunction) {
       const altTest = await getTestByCode('ALT');
+      if (!altTest) {
+        throw new Error('ALT test not found in catalog');
+      }
       const altOrder = await laboratoryApi.createOrder({
         patient_id: patientId,
         test_id: altTest.id,
@@ -801,6 +882,9 @@ export const createPREPBaselineTests = async (
       orders.push(altOrder);
 
       const astTest = await getTestByCode('AST');
+      if (!astTest) {
+        throw new Error('AST test not found in catalog');
+      }
       const astOrder = await laboratoryApi.createOrder({
         patient_id: patientId,
         test_id: astTest.id,
@@ -837,6 +921,9 @@ export const createPREPMonitoringTests = async (
   try {
     // 1. HIV Rapid Test (mandatory at every visit)
     const hivTest = await getTestByCode('HIV_RAPID');
+    if (!hivTest) {
+      throw new Error('HIV_RAPID test not found in catalog');
+    }
     const hivOrder = await laboratoryApi.createOrder({
       patient_id: patientId,
       test_id: hivTest.id,
@@ -850,6 +937,9 @@ export const createPREPMonitoringTests = async (
     // 2. Creatinine (conditional - based on schedule)
     if (options.includeCreatinine) {
       const creatinineTest = await getTestByCode('CREATININE');
+      if (!creatinineTest) {
+        throw new Error('CREATININE test not found in catalog');
+      }
       const creatinineOrder = await laboratoryApi.createOrder({
         patient_id: patientId,
         test_id: creatinineTest.id,

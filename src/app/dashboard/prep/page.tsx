@@ -45,14 +45,14 @@ export default function PrepPage() {
     fetchData();
   }, []);
 
-  const filteredRecords = prepRecords.filter((record) => {
+  const filteredRecords = Array.isArray(prepRecords) ? prepRecords.filter((record) => {
     if (!searchTerm) return true;
     const search = searchTerm.toLowerCase();
     return (
       record.patient_name.toLowerCase().includes(search) ||
       record.patient_hospital_no.toLowerCase().includes(search)
     );
-  });
+  }) : [];
 
   const getStatusBadge = (status: string) => {
     const statusLower = status.toLowerCase();

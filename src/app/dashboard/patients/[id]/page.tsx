@@ -32,6 +32,7 @@ import {
   UserPlus,
   Fingerprint,
 } from 'lucide-react';
+import PatientFingerprintCapture from '@/components/PatientFingerprintCapture';
 
 const serviceIcons: Record<ServiceType, React.ElementType> = {
   PREP: Shield,
@@ -57,6 +58,7 @@ export default function PatientDetailPage() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [deleting, setDeleting] = useState(false);
+  const [showFingerprintCapture, setShowFingerprintCapture] = useState(false);
 
   useEffect(() => {
     const fetchPatient = async () => {
@@ -93,6 +95,19 @@ export default function PatientDetailPage() {
     } catch (err) {
       setError(getErrorMessage(err));
       setDeleting(false);
+    }
+  };
+
+  const refreshPatientDetails = async () => {
+    try {
+      const [patientData, detailsData] = await Promise.all([
+        patientsApi.getById(patientId),
+        patientsApi.getDetails(patientId),
+      ]);
+      setPatient(patientData);
+      setDetails(detailsData);
+    } catch (err) {
+      console.error('Failed to refresh patient details:', err);
     }
   };
 
@@ -153,6 +168,13 @@ export default function PatientDetailPage() {
           </div>
         </div>
         <div className="flex items-center gap-2">
+          <button
+            onClick={() => setShowFingerprintCapture(true)}
+            className="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-purple-600 text-white text-sm font-medium hover:bg-purple-700 transition-colors"
+          >
+            <Fingerprint className="h-4 w-4" />
+            Add Fingerprint
+          </button>
           <Link
             href={`/dashboard/patients/${patientId}/edit`}
             className="inline-flex items-center gap-2 px-4 py-2 rounded-lg border border-gray-200 dark:border-gray-700 text-sm font-medium text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"
@@ -355,6 +377,18 @@ export default function PatientDetailPage() {
           </div>
         )}
       </div>
+
+      {/* Fingerprint Capture Modal */}
+      {showFingerprintCapture && (
+        <PatientFingerprintCapture
+          patientId={patientId}
+          onSuccess={() => {
+            setShowFingerprintCapture(false);
+            refreshPatientDetails(); // Refresh to show new fingerprint
+          }}
+          onCancel={() => setShowFingerprintCapture(false)}
+        />
+      )}
     </div>
   );
 }

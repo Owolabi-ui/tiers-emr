@@ -98,6 +98,7 @@ export interface Patient {
   emergency_contact_name: string | null;
   emergency_contact_phone: string | null;
   emergency_contact_relationship: string | null;
+  current_clinic_id: string | null;
   is_active: boolean;
   deleted_at: string | null;
   created_by: string | null;

@@ -20,6 +20,7 @@ import {
   ShieldCheck,
   Shield,
   ArrowLeftRight,
+  Building2,
   X,
 } from 'lucide-react';
 
@@ -86,7 +87,7 @@ const navigation = [
     roles: ['Admin', 'Pharmacist'],
   },
   {
-    name: 'Psychology',
+    name: 'Mental Health',
     href: '/dashboard/psychology',
     icon: Brain,
     roles: ['Admin', 'Doctor', 'Nurse'],
@@ -96,6 +97,12 @@ const navigation = [
     href: '/dashboard/transfers',
     icon: ArrowLeftRight,
     roles: ['Admin', 'Doctor', 'Nurse'],
+  },
+  {
+    name: 'Clinics',
+    href: '/dashboard/clinics',
+    icon: Building2,
+    roles: ['Admin'],
   },
   {
     name: 'Reports',
@@ -112,6 +119,12 @@ const navigation = [
 ];
 
 const adminNavigation = [
+  {
+    name: 'User Management',
+    href: '/dashboard/users',
+    icon: Users,
+    roles: ['Admin'],
+  },
   {
     name: 'Settings',
     href: '/dashboard/settings',
@@ -130,13 +143,13 @@ export default function DashboardSidebar({ mobileOpen = false, onClose, onMobile
   const pathname = usePathname();
   const user = useAuthStore((state) => state.user);
 
-  // Filter navigation by user role
-  const filteredNav = navigation.filter(
-    (item) => user && item.roles.includes(user.role)
-  );
-  const filteredAdminNav = adminNavigation.filter(
-    (item) => user && item.roles.includes(user.role)
-  );
+  // Filter navigation by user role - show all if user not loaded yet
+  const filteredNav = user
+    ? navigation.filter((item) => item.roles.includes(user.role))
+    : navigation;
+  const filteredAdminNav = user
+    ? adminNavigation.filter((item) => item.roles.includes(user.role))
+    : [];
 
   const NavContent = () => (
     <>
@@ -206,8 +219,10 @@ export default function DashboardSidebar({ mobileOpen = false, onClose, onMobile
   return (
     <>
       {/* Desktop sidebar */}
-      <aside className="hidden lg:fixed lg:inset-y-0 lg:flex lg:w-64 lg:flex-col bg-white dark:bg-neutral-900 border-r border-gray-200 dark:border-gray-800">
-        <NavContent />
+      <aside className="hidden lg:block lg:fixed lg:inset-y-0 lg:w-64 bg-white dark:bg-neutral-900 border-r border-gray-200 dark:border-gray-800">
+        <div className="flex flex-col h-full">
+          <NavContent />
+        </div>
       </aside>
 
       {/* Mobile sidebar */}

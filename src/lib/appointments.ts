@@ -301,6 +301,12 @@ export const appointmentsApi = {
     return response.data;
   },
 
+  // Get all appointments
+  getAll: async (): Promise<AppointmentListResponse> => {
+    const response = await api.get<AppointmentListResponse>('/api/v1/appointments');
+    return response.data;
+  },
+
   // Get appointments by date
   getByDate: async (date: string): Promise<AppointmentListResponse> => {
     const response = await api.get<AppointmentListResponse>(`/api/v1/appointments/date/${date}`);

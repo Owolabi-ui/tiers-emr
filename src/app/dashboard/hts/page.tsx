@@ -52,7 +52,7 @@ export default function HtsPage() {
     fetchData();
   }, []);
 
-  const filteredRecords = htsRecords.filter((record) => {
+  const filteredRecords = Array.isArray(htsRecords) ? htsRecords.filter((record) => {
     if (!searchTerm) return true;
     const search = searchTerm.toLowerCase();
     return (
@@ -60,7 +60,7 @@ export default function HtsPage() {
       record.target_group_code.toLowerCase().includes(search) ||
       record.patient_name.toLowerCase().includes(search)
     );
-  });
+  }) : [];
 
   // Helper function to get status badge color
   const getStatusColor = (status: string) => {

@@ -31,7 +31,9 @@ import {
   Shield,
   Heart,
   Brain,
+  Fingerprint,
 } from 'lucide-react';
+import PatientFingerprintIdentification from '@/components/PatientFingerprintIdentification';
 
 // Service badge colors
 const serviceColors: Record<ServiceType, string> = {
@@ -59,6 +61,7 @@ export default function PatientsPage() {
   const [searchTerm, setSearchTerm] = useState('');
   const [sexFilter, setSexFilter] = useState<SexType | ''>('');
   const [showFilters, setShowFilters] = useState(false);
+  const [showFingerprintScan, setShowFingerprintScan] = useState(false);
 
   // Pagination
   const [page, setPage] = useState(1);
@@ -144,13 +147,22 @@ export default function PatientsPage() {
             Manage patient records and demographics
           </p>
         </div>
-        <Link
-          href="/dashboard/patients/new"
-          className="inline-flex items-center gap-2 rounded-lg bg-[#5b21b6] px-4 py-2.5 text-sm font-medium text-white shadow-lg hover:bg-[#4c1d95] transition-all"
-        >
-          <UserPlus className="h-4 w-4" />
-          New Patient
-        </Link>
+        <div className="flex items-center gap-2">
+          <button
+            onClick={() => setShowFingerprintScan(true)}
+            className="inline-flex items-center gap-2 rounded-lg bg-purple-600 px-4 py-2.5 text-sm font-medium text-white shadow-lg hover:bg-purple-700 transition-all"
+          >
+            <Fingerprint className="h-4 w-4" />
+            Quick Check-in
+          </button>
+          <Link
+            href="/dashboard/patients/new"
+            className="inline-flex items-center gap-2 rounded-lg bg-[#5b21b6] px-4 py-2.5 text-sm font-medium text-white shadow-lg hover:bg-[#4c1d95] transition-all"
+          >
+            <UserPlus className="h-4 w-4" />
+            New Patient
+          </Link>
+        </div>
       </div>
 
       {/* Stats Cards */}
@@ -446,6 +458,17 @@ export default function PatientsPage() {
             </button>
           </div>
         </div>
+      )}
+
+      {/* Fingerprint Quick Check-in Modal */}
+      {showFingerprintScan && (
+        <PatientFingerprintIdentification
+          onPatientIdentified={(patientId) => {
+            setShowFingerprintScan(false);
+            router.push(`/dashboard/patients/${patientId}`);
+          }}
+          onCancel={() => setShowFingerprintScan(false)}
+        />
       )}
     </div>
   );

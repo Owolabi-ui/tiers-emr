@@ -117,7 +117,7 @@ export default function PsychologyPage() {
         <div>
           <h1 className="text-3xl font-bold text-gray-900 dark:text-white flex items-center gap-3">
             <Brain className="h-8 w-8 text-indigo-600 dark:text-indigo-400" />
-            Psychology & Mental Health
+            Mental Health
           </h1>
           <p className="text-gray-600 dark:text-gray-400 mt-1">
             Mental health assessments, counseling sessions, and therapy goals
@@ -349,7 +349,7 @@ export default function PsychologyPage() {
             </h3>
             <ol className="list-decimal list-inside space-y-2 text-gray-600 dark:text-gray-400">
               <li>Use the search bar above to find a patient</li>
-              <li>Click on the patient to view their psychology profile</li>
+              <li>Click on the patient to view their mental health profile</li>
               <li>From the patient profile, you can:
                 <ul className="list-disc list-inside ml-6 mt-1">
                   <li>Conduct PHQ-9 depression screening</li>

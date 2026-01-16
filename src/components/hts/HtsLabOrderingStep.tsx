@@ -22,7 +22,10 @@ export default function HtsLabOrderingStep({
   const [loading, setLoading] = useState(true);
   const [creating, setCreating] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const [includeSTITests, setIncludeSTITests] = useState(true); // Option to include STI screening
+  // Individual STI test selections
+  const [includeSyphilis, setIncludeSyphilis] = useState(true);
+  const [includeHepB, setIncludeHepB] = useState(true);
+  const [includeHepC, setIncludeHepC] = useState(true);
 
   useEffect(() => {
     loadOrders();
@@ -47,6 +50,17 @@ export default function HtsLabOrderingStep({
       setCreating(true);
       setError(null);
       
+      // Check if pending orders already exist to prevent duplicates
+      // Allow creating new orders if all existing orders are completed/communicated
+      const hasPendingOrders = orders.some(o => 
+        ['Ordered', 'Sample Collected', 'In Progress'].includes(o.status)
+      );
+      
+      if (hasPendingOrders) {
+        setError('Pending lab orders already exist for this HTS session. Please wait for them to be completed before creating new orders.');
+        return;
+      }
+      
       // Create HIV screening order (always required)
       await createHTSScreeningOrder(
         patientId,
@@ -54,12 +68,18 @@ export default function HtsLabOrderingStep({
         'HIV screening test requested after pre-test counseling'
       );
 
-      // Create additional STI screening tests only if selected
-      if (includeSTITests) {
+      // Create additional STI screening tests based on individual selections
+      const hasAnySTITest = includeSyphilis || includeHepB || includeHepC;
+      if (hasAnySTITest) {
         await createHTSAdditionalTests(
           patientId,
           htsInitialId,
-          'STI co-infection screening as part of HIV testing services'
+          'STI co-infection screening as part of HIV testing services',
+          {
+            includeSyphilis,
+            includeHepB,
+            includeHepC,
+          }
         );
       }
       
@@ -157,24 +177,65 @@ export default function HtsLabOrderingStep({
                 </div>
               </div>
 
-              <div className="flex items-start">
-                <input
-                  type="checkbox"
-                  id="includeSTI"
-                  checked={includeSTITests}
-                  onChange={(e) => setIncludeSTITests(e.target.checked)}
-                  className="h-4 w-4 text-[#5b21b6] border-gray-300 rounded focus:ring-[#5b21b6] mt-1"
-                />
-                <div className="ml-3 flex-1">
-                  <label htmlFor="includeSTI" className="text-sm font-medium text-gray-900 cursor-pointer">
-                    STI Co-infection Screening Panel <span className="text-blue-600">Recommended</span>
-                  </label>
-                  <p className="text-xs text-gray-500 mt-1">
-                    Includes: Syphilis (VDRL), Hepatitis B (HBsAg), Hepatitis C (HCV-AB)
-                  </p>
-                  <p className="text-xs text-gray-600 mt-1 italic">
-                    Recommended for: sexually active clients, multiple partners, history of STIs, injection drug use
-                  </p>
+              <div className="border-t pt-4 mt-2">
+                <p className="text-sm font-semibold text-gray-900 mb-3">STI Co-infection Screening <span className="text-blue-600 font-normal">Recommended</span></p>
+                <p className="text-xs text-gray-600 mb-3 italic">
+                  Recommended for: sexually active clients, multiple partners, history of STIs, injection drug use
+                </p>
+                <div className="space-y-3 ml-2">
+                  <div className="flex items-start">
+                    <input
+                      type="checkbox"
+                      id="includeSyphilis"
+                      checked={includeSyphilis}
+                      onChange={(e) => setIncludeSyphilis(e.target.checked)}
+                      className="h-4 w-4 text-[#5b21b6] border-gray-300 rounded focus:ring-[#5b21b6] mt-1"
+                    />
+                    <div className="ml-3 flex-1">
+                      <label htmlFor="includeSyphilis" className="text-sm font-medium text-gray-700 cursor-pointer">
+                        Syphilis Screening (TPHA)
+                      </label>
+                      <p className="text-xs text-gray-500 mt-0.5">
+                        Treponema pallidum hemagglutination assay
+                      </p>
+                    </div>
+                  </div>
+
+                  <div className="flex items-start">
+                    <input
+                      type="checkbox"
+                      id="includeHepB"
+                      checked={includeHepB}
+                      onChange={(e) => setIncludeHepB(e.target.checked)}
+                      className="h-4 w-4 text-[#5b21b6] border-gray-300 rounded focus:ring-[#5b21b6] mt-1"
+                    />
+                    <div className="ml-3 flex-1">
+                      <label htmlFor="includeHepB" className="text-sm font-medium text-gray-700 cursor-pointer">
+                        Hepatitis B Screening (HBsAg)
+                      </label>
+                      <p className="text-xs text-gray-500 mt-0.5">
+                        Hepatitis B Surface Antigen test
+                      </p>
+                    </div>
+                  </div>
+
+                  <div className="flex items-start">
+                    <input
+                      type="checkbox"
+                      id="includeHepC"
+                      checked={includeHepC}
+                      onChange={(e) => setIncludeHepC(e.target.checked)}
+                      className="h-4 w-4 text-[#5b21b6] border-gray-300 rounded focus:ring-[#5b21b6] mt-1"
+                    />
+                    <div className="ml-3 flex-1">
+                      <label htmlFor="includeHepC" className="text-sm font-medium text-gray-700 cursor-pointer">
+                        Hepatitis C Screening (HCV-AB)
+                      </label>
+                      <p className="text-xs text-gray-500 mt-0.5">
+                        Hepatitis C Antibody test
+                      </p>
+                    </div>
+                  </div>
                 </div>
               </div>
             </div>
@@ -182,7 +243,7 @@ export default function HtsLabOrderingStep({
             <div className="text-center">
               <button
                 onClick={handleCreateOrder}
-                disabled={creating}
+                disabled={creating || hasPendingOrder}
                 className="inline-flex items-center gap-2 px-6 py-3 rounded-lg bg-[#5b21b6] text-white font-medium hover:bg-[#4c1d95] transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
               >
                 {creating ? (
@@ -190,10 +251,15 @@ export default function HtsLabOrderingStep({
                     <Loader2 className="h-5 w-5 animate-spin" />
                     Creating Orders...
                   </>
+                ) : hasPendingOrder ? (
+                  <>
+                    <Clock className="h-5 w-5" />
+                    Pending Orders Exist
+                  </>
                 ) : (
                   <>
                     <TestTube className="h-5 w-5" />
-                    Create Lab Orders ({includeSTITests ? '4 Tests' : '1 Test'})
+                    Create Lab Orders ({1 + (includeSyphilis ? 1 : 0) + (includeHepB ? 1 : 0) + (includeHepC ? 1 : 0)} {1 + (includeSyphilis ? 1 : 0) + (includeHepB ? 1 : 0) + (includeHepC ? 1 : 0) === 1 ? 'Test' : 'Tests'})
                   </>
                 )}
               </button>

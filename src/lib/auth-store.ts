@@ -15,6 +15,7 @@ interface AuthState {
   checkAuth: () => Promise<boolean>;
   clearError: () => void;
   setLoading: (loading: boolean) => void;
+  setUser: (user: User) => void;
 }
 
 export const useAuthStore = create<AuthState>()(
@@ -129,6 +130,22 @@ export const useAuthStore = create<AuthState>()(
       clearError: () => set({ error: null }),
 
       setLoading: (loading: boolean) => set({ isLoading: loading }),
+
+      setUser: (user: User) => {
+        console.log('[Auth Store] Setting user:', user);
+        
+        // Store user in localStorage
+        if (typeof window !== 'undefined') {
+          localStorage.setItem('user', JSON.stringify(user));
+        }
+
+        set({
+          user,
+          isAuthenticated: true,
+          isLoading: false,
+          error: null,
+        });
+      },
     }),
     {
       name: 'auth-storage',

@@ -164,14 +164,26 @@ export interface CreateSessionRequest {
   session_date: string;
   session_type: SessionType;
   duration_minutes: number;
+  modality?: 'In-person' | 'Virtual/Telehealth' | 'Phone';
+  setting?: string;
   presenting_concerns: string[];
   interventions_used: string[];
-  session_notes: string;
-  progress_notes?: string;
-  risk_assessment?: string;
-  safety_plan?: string;
+  goals_addressed?: string[];
   homework_assigned?: string;
-  next_session_date?: string;
+  subjective?: string;
+  objective?: string;
+  assessment?: string;
+  plan?: string;
+  patient_mood?: string;
+  engagement_level?: 'Low' | 'Moderate' | 'High';
+  progress_rating?: number;
+  risk_assessment?: 'Low' | 'Moderate' | 'High' | 'Critical';
+  next_session_scheduled?: string;
+  referrals_made?: string[];
+  session_notes?: string;
+  progress_notes?: string;
+  safety_plan?: string;
+  next_session_date?: string; // deprecated, use next_session_scheduled
 }
 
 export interface CreateGoalRequest {
@@ -247,7 +259,75 @@ export const psychologyApi = {
 
   // Counseling Sessions
   async createSession(data: CreateSessionRequest): Promise<CounselingSession> {
-    const response = await api.post('/api/v1/psychology/sessions', data);
+    // Transform frontend data to match backend expectations
+    // Convert date strings to ISO 8601 datetime format for backend
+    const sessionDate = data.session_date.includes('T') 
+      ? data.session_date 
+      : `${data.session_date}T00:00:00Z`;
+    
+    const nextSessionScheduled = data.next_session_scheduled 
+      ? (data.next_session_scheduled.includes('T') 
+          ? data.next_session_scheduled 
+          : `${data.next_session_scheduled}T00:00:00Z`)
+      : null;
+    
+    // Map frontend session types to backend Rust enum variants (PascalCase)
+    const sessionTypeMap: Record<string, string> = {
+      'Individual Therapy': 'IndividualTherapy',
+      'Couples Counseling': 'CouplesCounseling',
+      'Family Therapy': 'FamilyTherapy',
+      'Group Therapy': 'GroupTherapy',
+      'Substance Abuse Counseling': 'SubstanceAbuseCounseling',
+      'Trauma Counseling': 'TraumaCounseling',
+      'Grief Counseling': 'GriefCounseling',
+      'Crisis Counseling': 'CrisisCounseling',
+      'Psychosocial Support': 'PsychosocialSupport',
+      'Peer Support': 'PeerSupport',
+      'Nutritional Counseling': 'NutritionalCounseling',
+      'Adherence Counseling': 'AdherenceCounseling',
+      'Pre-Test Counseling': 'PreTestCounseling',
+      'Post-Test Counseling': 'PostTestCounseling',
+      'Disclosure Counseling': 'DisclosureCounseling',
+      'Partner Notification': 'PartnerNotification',
+    };
+    
+    const backendSessionType = sessionTypeMap[data.session_type] || data.session_type;
+    
+    // Map frontend modality to backend Rust enum variants (PascalCase)
+    const modalityMap: Record<string, string> = {
+      'In-person': 'InPerson',
+      'Virtual/Telehealth': 'Video',
+      'Phone': 'Phone',
+      'Group': 'Group',
+      'Home': 'Home',
+    };
+    
+    const backendModality = data.modality ? (modalityMap[data.modality] || data.modality) : 'InPerson';
+    
+    const payload = {
+      patient_id: data.patient_id,
+      session_date: sessionDate,
+      session_type: backendSessionType,
+      duration_minutes: data.duration_minutes || null,
+      modality: backendModality,
+      setting: data.setting || null,
+      presenting_concerns: data.presenting_concerns || [],
+      interventions_used: data.interventions_used || [],
+      goals_addressed: data.goals_addressed || [],
+      homework_assigned: data.homework_assigned || null,
+      subjective: data.subjective || data.session_notes || null,
+      objective: data.objective || null,
+      assessment: data.assessment || null,
+      plan: data.plan || data.progress_notes || null,
+      patient_mood: data.patient_mood || null,
+      engagement_level: data.engagement_level || null,
+      progress_rating: data.progress_rating || null,
+      risk_assessment: null, // Risk assessment is a complex struct - would need separate form
+      next_session_scheduled: nextSessionScheduled,
+      referrals_made: data.referrals_made || null,
+    };
+    
+    const response = await api.post('/api/v1/psychology/sessions', payload);
     return response.data;
   },
 
@@ -296,6 +376,39 @@ export const psychologyApi = {
   async getPatientActiveDiagnoses(patientId: string): Promise<MentalHealthDiagnosis[]> {
     const response = await api.get(`/api/v1/psychology/patients/${patientId}/diagnoses/active`);
     return response.data;
+  },
+
+  // Timeline & Trends
+  async getAssessmentTimeline(patientId: string): Promise<AssessmentTimelineItem[]> {
+    const response = await api.get(`/api/v1/psychology/patients/${patientId}/timeline`);
+    return response.data;
+  },
+
+  async getPatientSummary(patientId: string): Promise<PatientPsychologySummary> {
+    const response = await api.get(`/api/v1/psychology/patients/${patientId}/summary`);
+    return response.data;
+  },
+
+  async getPHQ9Trends(patientId: string, startDate?: string, endDate?: string): Promise<AssessmentTrendData[]> {
+    const params = new URLSearchParams();
+    if (startDate) params.append('start_date', startDate);
+    if (endDate) params.append('end_date', endDate);
+    const query = params.toString() ? `?${params.toString()}` : '';
+    const history = await this.getPHQ9History(patientId);
+    return history.map(a => ({
+      date: a.assessment_date,
+      score: a.total_score,
+      severity: a.severity
+    })).sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime());
+  },
+
+  async getGAD7Trends(patientId: string, startDate?: string, endDate?: string): Promise<AssessmentTrendData[]> {
+    const history = await this.getGAD7History(patientId);
+    return history.map(a => ({
+      date: a.assessment_date,
+      score: a.total_score,
+      severity: a.severity
+    })).sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime());
   },
 };
 
@@ -385,6 +498,41 @@ export const diagnosisStatusOptions: DiagnosisStatus[] = [
   'In Remission',
   'Resolved',
 ];
+
+// ============================================
+// TIMELINE & TRENDS
+// ============================================
+
+export interface AssessmentTimelineItem {
+  patient_id: string;
+  assessment_type: 'intake' | 'phq9' | 'gad7' | 'auditc';
+  assessment_subtype: string | null;
+  assessment_id: string;
+  assessment_date: string;
+  session_id: string | null;
+  score: number | null;
+  severity: string | null;
+  submitted_via: string | null;
+  intake_type: string | null;
+  is_active: boolean | null;
+}
+
+export interface PatientPsychologySummary {
+  current_intake_id: string | null;
+  current_intake_date: string | null;
+  total_sessions: number;
+  latest_phq9_score: number | null;
+  latest_phq9_date: string | null;
+  latest_gad7_score: number | null;
+  latest_gad7_date: string | null;
+  has_active_concerns: boolean;
+}
+
+export interface AssessmentTrendData {
+  date: string;
+  score: number;
+  severity: string;
+}
 
 export function getSeverityColor(severity: string): string {
   switch (severity) {

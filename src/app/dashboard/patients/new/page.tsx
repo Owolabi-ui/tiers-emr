@@ -23,7 +23,9 @@ import {
   OccupationType,
   ServiceType,
 } from '@/lib/patients';
+import { clinicsApi, Clinic } from '@/lib/clinics';
 import { getErrorMessage } from '@/lib/api';
+import { useToast } from '@/components/toast-provider';
 import {
   ArrowLeft,
   Save,
@@ -60,6 +62,7 @@ const patientSchema = z.object({
   emergency_contact_name: z.string().optional().nullable(),
   emergency_contact_relationship: z.string().optional().nullable(),
   emergency_contact_phone: z.string().optional().nullable(),
+  current_clinic_id: z.string().min(1, 'Please select a clinic'),
   service_types: z.array(z.string()).optional().nullable(),
 });
 
@@ -67,10 +70,12 @@ type PatientFormData = z.infer<typeof patientSchema>;
 
 export default function NewPatientPage() {
   const router = useRouter();
+  const { showSuccess } = useToast();
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [states, setStates] = useState<NigerianState[]>([]);
   const [lgas, setLgas] = useState<NigerianLga[]>([]);
+  const [clinics, setClinics] = useState<Clinic[]>([]);
   const [selectedServices, setSelectedServices] = useState<ServiceType[]>([]);
 
   const {
@@ -88,17 +93,21 @@ export default function NewPatientPage() {
 
   const selectedStateId = watch('state_id');
 
-  // Load states on mount
+  // Load states and clinics on mount
   useEffect(() => {
-    const loadStates = async () => {
+    const loadData = async () => {
       try {
-        const data = await patientsApi.getStates();
-        setStates(data);
+        const [statesData, clinicsData] = await Promise.all([
+          patientsApi.getStates(),
+          clinicsApi.getAll(),
+        ]);
+        setStates(statesData);
+        setClinics(clinicsData.clinics);
       } catch (err) {
-        console.error('Failed to load states:', err);
+        console.error('Failed to load data:', err);
       }
     };
-    loadStates();
+    loadData();
   }, []);
 
   // Load LGAs when state changes
@@ -151,10 +160,12 @@ export default function NewPatientPage() {
         emergency_contact_name: data.emergency_contact_name || null,
         emergency_contact_relationship: data.emergency_contact_relationship || null,
         emergency_contact_phone: data.emergency_contact_phone || null,
+        current_clinic_id: data.current_clinic_id || null,
         service_types: selectedServices.length > 0 ? selectedServices : null,
       };
 
       const patient = await patientsApi.create(request);
+      showSuccess('Patient registered successfully!');
       router.push(`/dashboard/patients/${patient.id}`);
     } catch (err) {
       setError(getErrorMessage(err));
@@ -290,6 +301,25 @@ export default function NewPatientPage() {
               />
               {errors.date_of_birth && (
                 <p className="mt-1 text-sm text-red-600">{errors.date_of_birth.message}</p>
+              )}
+            </div>
+            <div>
+              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                Registered at Clinic <span className="text-red-500">*</span>
+              </label>
+              <select
+                {...register('current_clinic_id')}
+                className="w-full h-10 rounded-lg border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-neutral-800 px-3 text-sm focus:outline-none focus:ring-2 focus:ring-[#5b21b6]/50"
+              >
+                <option value="">Select clinic</option>
+                {clinics.map((clinic) => (
+                  <option key={clinic.id} value={clinic.id}>
+                    {clinic.name}
+                  </option>
+                ))}
+              </select>
+              {errors.current_clinic_id && (
+                <p className="mt-1 text-sm text-red-600">{errors.current_clinic_id.message}</p>
               )}
             </div>
             <div>

@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { Save, Lock, CheckCircle } from "lucide-react";
 import { HtsPostTestRequest, PREVIOUS_HIV_TEST_STATUSES, ADDITIONAL_TEST_RESULTS } from "@/lib/hts";
-import { getResultsByService } from "@/lib/laboratory";
+import { getResultsByService, getOrdersByService } from "@/lib/laboratory";
 
 interface HtsPostTestFormProps {
   initialData?: Partial<HtsPostTestRequest>;
@@ -36,37 +36,69 @@ export default function HtsPostTestForm({ initialData, onSave, loading, htsIniti
       if (!htsInitialId) return;
 
       try {
-        const results = await getResultsByService("HTS", htsInitialId);
-
-        // Check which tests were actually ordered and have results
-        const testsFound = {
-          syphilis: false,
-          hepatitisB: false,
-          hepatitisC: false,
+        // First, check which tests were ordered
+        const orders = await getOrdersByService("HTS", htsInitialId);
+        
+        console.log('Lab orders:', orders);
+        
+        const orderedTests = {
+          syphilis: orders.some(o => o.test_info.test_code === 'TPHA'),
+          hepatitisB: orders.some(o => o.test_info.test_code === 'HBSAG'),
+          hepatitisC: orders.some(o => o.test_info.test_code === 'HCVAB'),
         };
+        
+        console.log('Ordered tests:', orderedTests);
+        
+        setAvailableTests(orderedTests);
 
-        // Auto-fill Syphilis test result
-        if (results.VDRL) {
-          setValue("syphilis_test_result", results.VDRL.value);
-          testsFound.syphilis = true;
-        }
+        // Check if results are already in the orders themselves
+        let hasResults = false;
+        let hasAnyCompletedTest = false;
 
-        // Auto-fill Hepatitis B test result
-        if (results.HBSAG) {
-          setValue("hepatitis_b_test_result", results.HBSAG.value);
-          testsFound.hepatitisB = true;
-        }
+        // Check each order for completed results
+        orders.forEach(order => {
+          if (order.status === 'Completed' || order.status === 'Reviewed' || order.status === 'Communicated') {
+            // Mark that we have at least one completed test
+            if (order.test_info.test_code === 'TPHA' || order.test_info.test_code === 'HBSAG' || order.test_info.test_code === 'HCVAB') {
+              hasAnyCompletedTest = true;
+            }
+            
+            if (order.test_info.test_code === 'TPHA' && order.result_value) {
+              console.log('Found TPHA result:', order.result_value);
+              // Validate result - only use if it's a valid option
+              const validResults = ['Positive', 'Negative', 'Not done'];
+              if (validResults.includes(order.result_value)) {
+                setValue("syphilis_test_result", order.result_value);
+                hasResults = true;
+              } else {
+                console.warn('Invalid TPHA result from lab:', order.result_value, '- will require manual selection');
+              }
+            }
+            if (order.test_info.test_code === 'HBSAG' && order.result_value) {
+              console.log('Found HBSAG result:', order.result_value);
+              const validResults = ['Positive', 'Negative', 'Not done'];
+              if (validResults.includes(order.result_value)) {
+                setValue("hepatitis_b_test_result", order.result_value);
+                hasResults = true;
+              } else {
+                console.warn('Invalid HBSAG result from lab:', order.result_value, '- will require manual selection');
+              }
+            }
+            if (order.test_info.test_code === 'HCVAB' && order.result_value) {
+              console.log('Found HCVAB result:', order.result_value);
+              const validResults = ['Positive', 'Negative', 'Not done'];
+              if (validResults.includes(order.result_value)) {
+                setValue("hepatitis_c_test_result", order.result_value);
+                hasResults = true;
+              } else {
+                console.warn('Invalid HCVAB result from lab:', order.result_value, '- will require manual selection');
+              }
+            }
+          }
+        });
 
-        // Auto-fill Hepatitis C test result
-        if (results["HCV-AB"]) {
-          setValue("hepatitis_c_test_result", results["HCV-AB"].value);
-          testsFound.hepatitisC = true;
-        }
-
-        setAvailableTests(testsFound);
-
-        // Mark as loaded if we got any results
-        if (testsFound.syphilis || testsFound.hepatitisB || testsFound.hepatitisC) {
+        // Mark as loaded if we got any valid results OR if tests are completed (even with invalid values)
+        if (hasResults || hasAnyCompletedTest) {
           setLabResultsLoaded(true);
         }
       } catch (error) {
@@ -358,19 +390,18 @@ export default function HtsPostTestForm({ initialData, onSave, loading, htsIniti
             {availableTests.syphilis && (
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Syphilis Test (VDRL) <span className="text-red-500">*</span>
+                  Syphilis Test (TPHA) <span className="text-red-500">*</span>
                   {labResultsLoaded && <Lock className="inline h-4 w-4 ml-1 text-green-600" />}
                 </label>
                 <select
                   {...register("syphilis_test_result", { required: availableTests.syphilis ? "Syphilis test result is required" : false })}
-                  disabled={true}
-                  className={`mt-1 block w-full rounded-md shadow-sm sm:text-sm cursor-not-allowed ${
+                  className={`mt-1 block w-full rounded-md shadow-sm sm:text-sm focus:ring-blue-500 focus:border-blue-500 ${
                     labResultsLoaded 
-                      ? "bg-green-50 border-green-300 text-gray-700" 
-                      : "bg-gray-100 border-gray-300 text-gray-500"
+                      ? "bg-green-50 border-green-300 text-gray-900" 
+                      : "bg-white border-gray-300 text-gray-700"
                   }`}
                 >
-                  <option value="">Waiting for lab...</option>
+                  <option value="">{labResultsLoaded ? 'Select result' : 'Waiting for lab...'}</option>
                   {ADDITIONAL_TEST_RESULTS.map((result) => (
                     <option key={result} value={result}>
                       {result}
@@ -380,8 +411,8 @@ export default function HtsPostTestForm({ initialData, onSave, loading, htsIniti
                 {errors.syphilis_test_result && (
                   <p className="mt-1 text-sm text-red-600">{errors.syphilis_test_result.message}</p>
                 )}
-                {!labResultsLoaded && (
-                  <p className="mt-1 text-xs text-gray-500">Result will auto-populate from lab</p>
+                {labResultsLoaded && (
+                  <p className="mt-1 text-xs text-green-600">✓ Result loaded from lab - verify before proceeding</p>
                 )}
               </div>
             )}
@@ -394,14 +425,13 @@ export default function HtsPostTestForm({ initialData, onSave, loading, htsIniti
                 </label>
                 <select
                   {...register("hepatitis_b_test_result", { required: availableTests.hepatitisB ? "Hepatitis B test result is required" : false })}
-                  disabled={true}
-                  className={`mt-1 block w-full rounded-md shadow-sm sm:text-sm cursor-not-allowed ${
+                  className={`mt-1 block w-full rounded-md shadow-sm sm:text-sm focus:ring-blue-500 focus:border-blue-500 ${
                     labResultsLoaded 
-                      ? "bg-green-50 border-green-300 text-gray-700" 
-                      : "bg-gray-100 border-gray-300 text-gray-500"
+                      ? "bg-green-50 border-green-300 text-gray-900" 
+                      : "bg-white border-gray-300 text-gray-700"
                   }`}
                 >
-                  <option value="">Waiting for lab...</option>
+                  <option value="">{labResultsLoaded ? 'Select result' : 'Waiting for lab...'}</option>
                   {ADDITIONAL_TEST_RESULTS.map((result) => (
                     <option key={result} value={result}>
                       {result}
@@ -411,8 +441,8 @@ export default function HtsPostTestForm({ initialData, onSave, loading, htsIniti
                 {errors.hepatitis_b_test_result && (
                   <p className="mt-1 text-sm text-red-600">{errors.hepatitis_b_test_result.message}</p>
                 )}
-                {!labResultsLoaded && (
-                  <p className="mt-1 text-xs text-gray-500">Result will auto-populate from lab</p>
+                {labResultsLoaded && (
+                  <p className="mt-1 text-xs text-green-600">✓ Result loaded from lab - verify before proceeding</p>
                 )}
               </div>
             )}
@@ -425,14 +455,13 @@ export default function HtsPostTestForm({ initialData, onSave, loading, htsIniti
                 </label>
                 <select
                   {...register("hepatitis_c_test_result", { required: availableTests.hepatitisC ? "Hepatitis C test result is required" : false })}
-                  disabled={true}
-                  className={`mt-1 block w-full rounded-md shadow-sm sm:text-sm cursor-not-allowed ${
+                  className={`mt-1 block w-full rounded-md shadow-sm sm:text-sm focus:ring-blue-500 focus:border-blue-500 ${
                     labResultsLoaded 
-                      ? "bg-green-50 border-green-300 text-gray-700" 
-                      : "bg-gray-100 border-gray-300 text-gray-500"
+                      ? "bg-green-50 border-green-300 text-gray-900" 
+                      : "bg-white border-gray-300 text-gray-700"
                   }`}
                 >
-                  <option value="">Waiting for lab...</option>
+                  <option value="">{labResultsLoaded ? 'Select result' : 'Waiting for lab...'}</option>
                   {ADDITIONAL_TEST_RESULTS.map((result) => (
                     <option key={result} value={result}>
                       {result}
@@ -442,8 +471,8 @@ export default function HtsPostTestForm({ initialData, onSave, loading, htsIniti
                 {errors.hepatitis_c_test_result && (
                   <p className="mt-1 text-sm text-red-600">{errors.hepatitis_c_test_result.message}</p>
                 )}
-                {!labResultsLoaded && (
-                  <p className="mt-1 text-xs text-gray-500">Result will auto-populate from lab</p>
+                {labResultsLoaded && (
+                  <p className="mt-1 text-xs text-green-600">✓ Result loaded from lab - verify before proceeding</p>
                 )}
               </div>
             )}

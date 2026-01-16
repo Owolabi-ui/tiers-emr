@@ -8,6 +8,9 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
 import { useAuthStore } from '@/lib/auth-store';
 import { Eye, EyeOff, Loader2, AlertCircle, Shield, Users, FileText, Activity, Info } from 'lucide-react';
+import { PublicClientApplication } from '@azure/msal-browser';
+import { msalConfig, loginRequest } from '@/lib/msalConfig';
+import { microsoftAuthApi } from '@/lib/microsoftAuth';
 
 // Background images for carousel (excluding logo)
 const backgroundImages = [
@@ -52,10 +55,32 @@ const features = [
 function LoginContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
-  const { login, isLoading, error, clearError } = useAuthStore();
+  const { login, isLoading, error, clearError, setUser } = useAuthStore();
   const [showPassword, setShowPassword] = useState(false);
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
   const [sessionExpired, setSessionExpired] = useState(false);
+  const [msalInstance, setMsalInstance] = useState<PublicClientApplication | null>(null);
+  const [microsoftLoading, setMicrosoftLoading] = useState(false);
+
+  // Initialize MSAL
+  useEffect(() => {
+    const initializeMsal = async () => {
+      try {
+        // Check if crypto is available (required for MSAL)
+        if (!window.crypto || !window.crypto.subtle) {
+          console.warn('Crypto API not available. MSAL will be disabled.');
+          return;
+        }
+        const msalApp = new PublicClientApplication(msalConfig);
+        await msalApp.initialize();
+        setMsalInstance(msalApp);
+      } catch (error) {
+        console.error('Failed to initialize MSAL:', error);
+        // Continue without MSAL - user can use email/password instead
+      }
+    };
+    initializeMsal();
+  }, []);
 
   // Check if redirected due to session expiration
   useEffect(() => {
@@ -94,6 +119,74 @@ function LoginContent() {
     const success = await login(data);
     if (success) {
       router.push('/dashboard');
+    }
+  };
+
+  const handleMicrosoftLogin = async () => {
+    if (!msalInstance) {
+      console.error('MSAL not initialized');
+      return;
+    }
+
+    setMicrosoftLoading(true);
+    clearError();
+
+    try {
+      // Trigger popup login
+      const loginResponse = await msalInstance.loginPopup(loginRequest);
+      
+      console.log('[Microsoft Login] Login response:', loginResponse);
+      console.log('[Microsoft Login] Access token:', loginResponse.accessToken.substring(0, 50) + '...');
+      
+      // Get access token
+      const accessToken = loginResponse.accessToken;
+
+      // Send token to backend
+      console.log('[Microsoft Login] Sending token to backend...');
+      const response = await microsoftAuthApi.login(accessToken);
+      
+      console.log('[Microsoft Login] Backend response:', response);
+
+      // Store tokens and user info
+      localStorage.setItem('access_token', response.access_token);
+      localStorage.setItem('refresh_token', response.refresh_token);
+      
+      // Convert to User type and store
+      setUser({
+        id: response.user.id,
+        email: response.user.email,
+        full_name: response.user.full_name,
+        role: response.user.role,
+        is_active: response.user.is_active,
+        clinic_id: response.user.clinic_id,
+        phone: response.user.phone,
+      });
+
+      console.log('[Microsoft Login] Success! Redirecting to dashboard...');
+      // Redirect to dashboard
+      router.push('/dashboard');
+    } catch (error: any) {
+      console.error('[Microsoft Login] Error:', error);
+      console.error('[Microsoft Login] Error details:', {
+        message: error.message,
+        response: error.response?.data,
+        status: error.response?.status,
+      });
+      
+      // Handle specific error cases
+      if (error.errorCode === 'popup_window_error') {
+        alert('Please allow popups for this site to use Microsoft login');
+      } else if (error.errorCode === 'user_cancelled') {
+        // User cancelled login, no need to show error
+      } else if (error.response?.status === 401) {
+        alert('Microsoft authentication failed. The token may be invalid. Please ensure your account is pre-registered by an administrator.');
+      } else if (error.response?.status === 500) {
+        alert('Server error occurred. This may be a temporary database connection issue. Please try again.');
+      } else {
+        alert(error.response?.data?.message || error.message || 'Microsoft login failed. Please try again.');
+      }
+    } finally {
+      setMicrosoftLoading(false);
     }
   };
 
@@ -293,21 +386,37 @@ function LoginContent() {
                   </div>
                 </div>
 
-                {/* Microsoft OAuth button (disabled for now) */}
+                {/* Microsoft OAuth button */}
                 <button
                   type="button"
-                  disabled
+                  onClick={handleMicrosoftLogin}
+                  disabled={microsoftLoading || !msalInstance}
+                  title={!msalInstance ? 'Microsoft sign-in requires HTTPS. Use ngrok or configure HTTPS for network access.' : ''}
                   className="w-full flex items-center justify-center gap-3 rounded-lg border border-gray-300 bg-white px-4 py-3 text-sm font-medium text-gray-700 shadow-sm hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
                 >
-                  <svg className="h-5 w-5" viewBox="0 0 21 21" fill="none">
-                    <path d="M10 0H0v10h10V0z" fill="#F25022" />
-                    <path d="M21 0H11v10h10V0z" fill="#7FBA00" />
-                    <path d="M10 11H0v10h10V11z" fill="#00A4EF" />
-                    <path d="M21 11H11v10h10V11z" fill="#FFB900" />
-                  </svg>
-                  Sign in with Microsoft
-                  <span className="text-xs text-gray-400">(Coming soon)</span>
+                  {microsoftLoading ? (
+                    <Loader2 className="h-5 w-5 animate-spin" />
+                  ) : (
+                    <svg className="h-5 w-5" viewBox="0 0 21 21" fill="none">
+                      <path d="M10 0H0v10h10V0z" fill="#F25022" />
+                      <path d="M21 0H11v10h10V0z" fill="#7FBA00" />
+                      <path d="M10 11H0v10h10V11z" fill="#00A4EF" />
+                      <path d="M21 11H11v10h10V11z" fill="#FFB900" />
+                    </svg>
+                  )}
+                  {microsoftLoading ? 'Signing in...' : 'Sign in with Microsoft'}
                 </button>
+
+                {!msalInstance && (
+                  <div className="mt-3 p-3 bg-amber-50 border border-amber-200 rounded-lg text-xs text-amber-800">
+                    <p className="font-semibold mb-1">ℹ️ Microsoft sign-in disabled</p>
+                    <p>
+                      The app is running on HTTP. Microsoft authentication requires HTTPS. 
+                      Use <code className="bg-amber-100 px-1 rounded">ngrok</code> to create an HTTPS tunnel, 
+                      or configure HTTPS on your network. See HTTPS_SETUP_FOR_NETWORK.md for instructions.
+                    </p>
+                  </div>
+                )}
               </div>
             </div>
 

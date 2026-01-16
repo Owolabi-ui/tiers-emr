@@ -3,7 +3,7 @@
 import { useState, useEffect, use } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
-import { laboratoryApi, LabTestOrderWithDetails } from '@/lib/laboratory';
+import { laboratoryApi, LabTestOrderWithDetails, isQualitativeTest, getQualitativeOptions } from '@/lib/laboratory';
 import { getErrorMessage } from '@/lib/api';
 import { useToast } from '@/components/toast-provider';
 import {
@@ -91,7 +91,13 @@ export default function LabOrderDetailPage({ params }: { params: Promise<{ id: s
     try {
       setProcessing(true);
       const interpretationValue = resultInterpretation || 'Normal';
-      const formattedValue = resultUnit ? `${resultValue.trim()} ${resultUnit}` : resultValue.trim();
+      
+      // For qualitative tests, don't append unit
+      const isQualitative = order && isQualitativeTest(order.test_info.test_code);
+      const formattedValue = isQualitative 
+        ? resultValue.trim() 
+        : (resultUnit ? `${resultValue.trim()} ${resultUnit}` : resultValue.trim());
+      
       await laboratoryApi.enterResult(id, {
         result_value: formattedValue,
         result_interpretation: interpretationValue as any,
@@ -397,13 +403,28 @@ export default function LabOrderDetailPage({ params }: { params: Promise<{ id: s
                   <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
                     Result Value *
                   </label>
-                  <input
-                    type="text"
-                    value={resultValue}
-                    onChange={(e) => setResultValue(e.target.value)}
-                    placeholder="e.g., 450"
-                    className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-neutral-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-[#5b21b6] focus:border-transparent"
-                  />
+                  {isQualitativeTest(order.test_info.test_code) ? (
+                    <select
+                      value={resultValue}
+                      onChange={(e) => setResultValue(e.target.value)}
+                      className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-neutral-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-[#5b21b6] focus:border-transparent"
+                    >
+                      <option value="">Select result...</option>
+                      {getQualitativeOptions(order.test_info.test_code).map((option) => (
+                        <option key={option} value={option}>
+                          {option}
+                        </option>
+                      ))}
+                    </select>
+                  ) : (
+                    <input
+                      type="text"
+                      value={resultValue}
+                      onChange={(e) => setResultValue(e.target.value)}
+                      placeholder="e.g., 450"
+                      className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-neutral-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-[#5b21b6] focus:border-transparent"
+                    />
+                  )}
                 </div>
                 <div>
                   <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
@@ -413,7 +434,8 @@ export default function LabOrderDetailPage({ params }: { params: Promise<{ id: s
                     type="text"
                     value={resultUnit}
                     onChange={(e) => setResultUnit(e.target.value)}
-                    className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-neutral-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-[#5b21b6] focus:border-transparent"
+                    disabled={isQualitativeTest(order.test_info.test_code)}
+                    className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-neutral-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-[#5b21b6] focus:border-transparent disabled:opacity-50 disabled:cursor-not-allowed"
                   />
                 </div>
               </div>
