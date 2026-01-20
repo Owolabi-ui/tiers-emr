@@ -30,19 +30,19 @@ const navigation = [
     name: 'Dashboard',
     href: '/dashboard',
     icon: LayoutDashboard,
-    roles: ['Admin', 'Doctor', 'Nurse', 'Pharmacist', 'LabTech', 'Receptionist'],
+    roles: ['Admin', 'Doctor', 'Nurse', 'Pharmacist', 'LabTech', 'Psychologist'],
   },
   {
     name: 'Patients',
     href: '/dashboard/patients',
     icon: Users,
-    roles: ['Admin', 'Doctor', 'Nurse', 'Receptionist'],
+    roles: ['Admin', 'Doctor', 'Nurse', 'Pharmacist', 'LabTech', 'Psychologist'],
   },
   {
     name: 'Appointments',
     href: '/dashboard/appointments',
     icon: Calendar,
-    roles: ['Admin', 'Doctor', 'Nurse', 'Receptionist'],
+    roles: ['Admin', 'Doctor', 'Nurse', 'Pharmacist', 'LabTech', 'Psychologist'],
   },
   {
     name: 'HTS',
@@ -78,19 +78,19 @@ const navigation = [
     name: 'Pharmacy',
     href: '/dashboard/pharmacy',
     icon: Pill,
-    roles: ['Admin', 'Pharmacist'],
+    roles: ['Admin', 'Doctor', 'Nurse', 'Pharmacist'],
   },
   {
     name: 'Inventory',
     href: '/dashboard/inventory',
     icon: Package,
-    roles: ['Admin', 'Pharmacist'],
+    roles: ['Admin', 'Doctor', 'Nurse', 'Pharmacist'],
   },
   {
     name: 'Mental Health',
     href: '/dashboard/psychology',
     icon: Brain,
-    roles: ['Admin', 'Doctor', 'Nurse'],
+    roles: ['Admin', 'Psychologist'],
   },
   {
     name: 'Transfers',
@@ -102,19 +102,19 @@ const navigation = [
     name: 'Clinics',
     href: '/dashboard/clinics',
     icon: Building2,
-    roles: ['Admin'],
+    roles: ['Admin', 'Doctor', 'Nurse'],
   },
   {
     name: 'Reports',
     href: '/dashboard/reports',
     icon: FileText,
-    roles: ['Admin'],
+    roles: ['Admin', 'Doctor', 'Nurse', 'Pharmacist', 'LabTech', 'Psychologist'],
   },
   {
     name: 'Messages',
     href: '/dashboard/messages',
     icon: MessageSquare,
-    roles: ['Admin', 'Doctor', 'Nurse', 'Pharmacist', 'LabTech', 'Receptionist'],
+    roles: ['Admin', 'Doctor', 'Nurse', 'Pharmacist', 'LabTech', 'Psychologist'],
   },
 ];
 
