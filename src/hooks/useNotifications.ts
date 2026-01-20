@@ -352,7 +352,18 @@ export function useNotifications(options: UseNotificationsOptions = {}) {
   useEffect(() => {
     // Small delay to ensure auth token is available
     const timer = setTimeout(() => {
-      connect();
+      const token = getAuthToken();
+      const apiUrl = process.env.NEXT_PUBLIC_API_BASE_URL || '';
+
+      console.log('[Notifications] Init check - Token:', token ? 'present' : 'missing', 'API URL:', apiUrl || 'not configured');
+
+      if (token && apiUrl) {
+        connect();
+      } else if (!token) {
+        console.log('[Notifications] Skipping WebSocket - no auth token');
+      } else if (!apiUrl) {
+        console.log('[Notifications] Skipping WebSocket - NEXT_PUBLIC_API_BASE_URL not configured');
+      }
     }, 100);
 
     return () => {

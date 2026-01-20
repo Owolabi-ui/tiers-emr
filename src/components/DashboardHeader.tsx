@@ -13,10 +13,8 @@ import { useNotifications } from '@/hooks/useNotifications';
 import {
   Menu,
   Bell,
-  Search,
   ChevronDown,
   LogOut,
-  User,
   Settings,
   Calendar,
   FlaskConical,
@@ -127,7 +125,21 @@ export default function DashboardHeader({ onMobileMenuOpen }: DashboardHeaderPro
     }
   };
 
-  // Fetch full notifications when dropdown opens (or on initial mount)
+  // Fetch initial unread count on mount
+  useEffect(() => {
+    const fetchUnreadCount = async () => {
+      try {
+        const count = await notificationsApi.getUnreadCount();
+        setUnreadCount(count);
+      } catch (error) {
+        // Silently fail - user might not have notifications yet
+        console.log('[DashboardHeader] Could not fetch unread count:', error);
+      }
+    };
+    fetchUnreadCount();
+  }, []);
+
+  // Fetch full notifications when dropdown opens
   useEffect(() => {
     if (notificationsOpen && notifications.length === 0) {
       fetchNotifications();
@@ -208,15 +220,20 @@ export default function DashboardHeader({ onMobileMenuOpen }: DashboardHeaderPro
             <Menu className="h-5 w-5" />
           </button>
 
-          {/* Search */}
-          <div className="flex-1 max-w-lg">
-            <div className="relative">
-              <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-400" />
-              <input
-                type="search"
-                placeholder="Search patients, records..."
-                className="w-full h-10 pl-10 pr-4 rounded-lg border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-neutral-800 text-sm text-gray-900 dark:text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-[#5b21b6]/50 focus:border-[#5b21b6]"
-              />
+          {/* Welcome message and date */}
+          <div className="flex-1">
+            <div className="hidden sm:block">
+              <p className="text-sm font-medium text-gray-900 dark:text-white">
+                Welcome back, {user?.full_name?.split(' ')[0] || 'User'}
+              </p>
+              <p className="text-xs text-gray-500">
+                {new Date().toLocaleDateString('en-US', {
+                  weekday: 'long',
+                  year: 'numeric',
+                  month: 'long',
+                  day: 'numeric'
+                })}
+              </p>
             </div>
           </div>
 
@@ -375,16 +392,6 @@ export default function DashboardHeader({ onMobileMenuOpen }: DashboardHeaderPro
                       </p>
                     </div>
                     <div className="py-1">
-                      <button
-                        onClick={() => {
-                          setProfileOpen(false);
-                          router.push('/dashboard/profile');
-                        }}
-                        className="flex items-center gap-3 w-full px-3 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800"
-                      >
-                        <User className="h-4 w-4" />
-                        Your Profile
-                      </button>
                       <button
                         onClick={() => {
                           setProfileOpen(false);
