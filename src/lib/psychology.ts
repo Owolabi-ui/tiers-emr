@@ -410,6 +410,12 @@ export const psychologyApi = {
       severity: a.severity
     })).sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime());
   },
+
+  // Statistics
+  async getStatistics(): Promise<PsychologyStatistics> {
+    const response = await api.get('/api/v1/psychology/statistics');
+    return response.data;
+  },
 };
 
 // ============================================
@@ -532,6 +538,21 @@ export interface AssessmentTrendData {
   date: string;
   score: number;
   severity: string;
+}
+
+export interface PsychologyStatistics {
+  total_sessions: number;
+  sessions_this_month: number;
+  total_patients: number;
+  active_patients: number;
+  total_phq9_assessments: number;
+  total_gad7_assessments: number;
+  total_audit_c_assessments: number;
+  average_phq9_score: number;
+  average_gad7_score: number;
+  high_risk_patients: number;
+  active_therapy_goals: number;
+  completed_goals: number;
 }
 
 export function getSeverityColor(severity: string): string {
