@@ -355,6 +355,15 @@ export default function DashboardHeader({ onMobileMenuOpen }: DashboardHeaderPro
               )}
             </div>
 
+            {/* Messages */}
+            <Link
+              href="/dashboard/messages"
+              className="relative p-2 rounded-lg text-gray-500 hover:bg-gray-100 dark:hover:bg-gray-800"
+              title="Messages"
+            >
+              <MessageSquare className="h-5 w-5" />
+            </Link>
+
             {/* Profile dropdown */}
             <div className="relative">
               <button

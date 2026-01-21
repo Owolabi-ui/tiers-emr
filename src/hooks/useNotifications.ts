@@ -201,6 +201,12 @@ export function useNotifications(options: UseNotificationsOptions = {}) {
 
       ws.onmessage = (event) => {
         try {
+          // Handle plain string messages like "pong"
+          if (typeof event.data === 'string' && event.data.toLowerCase() === 'pong') {
+            // Server responded to our ping, connection is alive
+            return;
+          }
+
           const message: WebSocketMessage = JSON.parse(event.data);
 
           // Handle different message types based on the structure

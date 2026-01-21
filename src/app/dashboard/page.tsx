@@ -317,7 +317,14 @@ export default function DashboardPage() {
             </h3>
           </div>
           <div className="divide-y divide-gray-100 dark:divide-gray-800 max-h-[370px] overflow-y-auto">
-            {Array.isArray(recentActivity) && recentActivity.map((activity) => (
+            {(!Array.isArray(recentActivity) || recentActivity.length === 0) ? (
+              <div className="px-6 py-8 text-center">
+                <Activity className="h-8 w-8 text-gray-300 mx-auto mb-2" />
+                <p className="text-sm text-gray-500 dark:text-gray-400">
+                  No recent activity in the last 24 hours
+                </p>
+              </div>
+            ) : recentActivity.map((activity) => (
               <div key={activity.id} className="px-6 py-3 flex items-start gap-3 hover:bg-gray-50 dark:hover:bg-gray-800/50 transition-colors">
                 <div
                   className={`mt-0.5 p-1.5 rounded-full ${
