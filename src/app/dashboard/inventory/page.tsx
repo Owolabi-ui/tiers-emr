@@ -1069,10 +1069,14 @@ export default function InventoryPage() {
                     <p className="text-xs text-blue-700 dark:text-blue-300 mt-2 font-semibold">
                       ⚠️ The first row should contain these column headers in the exact order shown above.
                     </p>
-                    <button className="mt-3 inline-flex items-center gap-2 text-sm text-blue-600 dark:text-blue-400 hover:underline">
+                    <a
+                      href="/templates/inventory-template.xlsx"
+                      download="inventory-template.xlsx"
+                      className="mt-3 inline-flex items-center gap-2 text-sm text-blue-600 dark:text-blue-400 hover:underline"
+                    >
                       <Download className="h-4 w-4" />
                       Download Template (Pre-formatted with correct columns)
-                    </button>
+                    </a>
                   </div>
                 </div>
               </div>

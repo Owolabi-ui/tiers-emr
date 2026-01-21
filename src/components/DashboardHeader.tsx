@@ -9,6 +9,7 @@ import {
   Notification,
   formatNotificationTime,
 } from '@/lib/notifications';
+import { messagesApi, Message } from '@/lib/messages';
 import { useNotifications } from '@/hooks/useNotifications';
 import {
   Menu,
@@ -65,10 +66,15 @@ export default function DashboardHeader({ onMobileMenuOpen }: DashboardHeaderPro
   const { user, logout } = useAuthStore();
   const [profileOpen, setProfileOpen] = useState(false);
   const [notificationsOpen, setNotificationsOpen] = useState(false);
+  const [messagesOpen, setMessagesOpen] = useState(false);
   const [notifications, setNotifications] = useState<Notification[]>([]);
+  const [messages, setMessages] = useState<Message[]>([]);
   const [unreadCount, setUnreadCount] = useState(0);
+  const [unreadMessagesCount, setUnreadMessagesCount] = useState(0);
   const [loading, setLoading] = useState(false);
+  const [messagesLoading, setMessagesLoading] = useState(false);
   const notificationRef = useRef<HTMLDivElement>(null);
+  const messagesRef = useRef<HTMLDivElement>(null);
 
   // Real-time notifications via WebSocket
   const { isConnected } = useNotifications({
@@ -146,11 +152,48 @@ export default function DashboardHeader({ onMobileMenuOpen }: DashboardHeaderPro
     }
   }, [notificationsOpen]);
 
-  // Close dropdown when clicking outside
+  // Fetch messages
+  const fetchMessages = async () => {
+    try {
+      setMessagesLoading(true);
+      const response = await messagesApi.getInbox();
+      setMessages(response.messages.slice(0, 5)); // Show only latest 5
+      setUnreadMessagesCount(response.unread_count);
+    } catch (error) {
+      console.error('Failed to fetch messages:', error);
+    } finally {
+      setMessagesLoading(false);
+    }
+  };
+
+  // Fetch initial messages unread count on mount
+  useEffect(() => {
+    const fetchMessagesCount = async () => {
+      try {
+        const stats = await messagesApi.getStats();
+        setUnreadMessagesCount(stats.unread_messages);
+      } catch (error) {
+        console.log('[DashboardHeader] Could not fetch messages count:', error);
+      }
+    };
+    fetchMessagesCount();
+  }, []);
+
+  // Fetch full messages when dropdown opens
+  useEffect(() => {
+    if (messagesOpen && messages.length === 0) {
+      fetchMessages();
+    }
+  }, [messagesOpen]);
+
+  // Close dropdowns when clicking outside
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
       if (notificationRef.current && !notificationRef.current.contains(event.target as Node)) {
         setNotificationsOpen(false);
+      }
+      if (messagesRef.current && !messagesRef.current.contains(event.target as Node)) {
+        setMessagesOpen(false);
       }
     };
 
@@ -206,6 +249,38 @@ export default function DashboardHeader({ onMobileMenuOpen }: DashboardHeaderPro
       router.push(notification.link);
       setNotificationsOpen(false);
     }
+  };
+
+  const handleMessageClick = async (message: Message) => {
+    if (!message.is_read) {
+      try {
+        await messagesApi.markRead([message.id]);
+        setMessages(prev =>
+          prev.map(m => m.id === message.id ? { ...m, is_read: true } : m)
+        );
+        setUnreadMessagesCount(prev => Math.max(0, prev - 1));
+      } catch (error) {
+        console.error('Failed to mark message as read:', error);
+      }
+    }
+    router.push(`/dashboard/messages?thread=${message.thread_id || message.id}`);
+    setMessagesOpen(false);
+  };
+
+  // Format message time
+  const formatMessageTime = (dateString: string) => {
+    const date = new Date(dateString);
+    const now = new Date();
+    const diffMs = now.getTime() - date.getTime();
+    const diffMins = Math.floor(diffMs / 60000);
+    const diffHours = Math.floor(diffMs / 3600000);
+    const diffDays = Math.floor(diffMs / 86400000);
+
+    if (diffMins < 1) return 'Just now';
+    if (diffMins < 60) return `${diffMins}m ago`;
+    if (diffHours < 24) return `${diffHours}h ago`;
+    if (diffDays < 7) return `${diffDays}d ago`;
+    return date.toLocaleDateString();
   };
 
   return (
@@ -356,13 +431,97 @@ export default function DashboardHeader({ onMobileMenuOpen }: DashboardHeaderPro
             </div>
 
             {/* Messages */}
-            <Link
-              href="/dashboard/messages"
-              className="relative p-2 rounded-lg text-gray-500 hover:bg-gray-100 dark:hover:bg-gray-800"
-              title="Messages"
-            >
-              <MessageSquare className="h-5 w-5" />
-            </Link>
+            <div className="relative" ref={messagesRef}>
+              <button
+                onClick={() => setMessagesOpen(!messagesOpen)}
+                className="relative p-2 rounded-lg text-gray-500 hover:bg-gray-100 dark:hover:bg-gray-800"
+                title="Messages"
+              >
+                <MessageSquare className="h-5 w-5" />
+                {unreadMessagesCount > 0 && (
+                  <span className="absolute top-1 right-1 h-4 w-4 rounded-full bg-blue-500 text-[10px] font-medium text-white flex items-center justify-center">
+                    {unreadMessagesCount > 9 ? '9+' : unreadMessagesCount}
+                  </span>
+                )}
+              </button>
+
+              {/* Messages dropdown */}
+              {messagesOpen && (
+                <div className="absolute right-0 mt-2 w-80 sm:w-96 rounded-lg bg-white dark:bg-neutral-900 border border-gray-200 dark:border-gray-700 shadow-lg z-50">
+                  {/* Header */}
+                  <div className="flex items-center justify-between px-4 py-3 border-b border-gray-100 dark:border-gray-800">
+                    <h3 className="text-sm font-semibold text-gray-900 dark:text-white">
+                      Messages
+                    </h3>
+                    {unreadMessagesCount > 0 && (
+                      <span className="text-xs bg-blue-500 text-white px-2 py-0.5 rounded-full">
+                        {unreadMessagesCount} new
+                      </span>
+                    )}
+                  </div>
+
+                  {/* Messages list */}
+                  <div className="max-h-96 overflow-y-auto">
+                    {messagesLoading ? (
+                      <div className="flex items-center justify-center py-8">
+                        <Loader2 className="h-6 w-6 animate-spin text-[#5b21b6]" />
+                      </div>
+                    ) : messages.length === 0 ? (
+                      <div className="py-8 text-center">
+                        <MessageSquare className="h-8 w-8 text-gray-300 mx-auto mb-2" />
+                        <p className="text-sm text-gray-500">No messages</p>
+                      </div>
+                    ) : (
+                      messages.map((message) => (
+                        <div
+                          key={message.id}
+                          className={`px-4 py-3 border-b border-gray-50 dark:border-gray-800 last:border-0 hover:bg-gray-50 dark:hover:bg-gray-800/50 cursor-pointer ${
+                            !message.is_read ? 'bg-blue-50/50 dark:bg-blue-900/10' : ''
+                          }`}
+                          onClick={() => handleMessageClick(message)}
+                        >
+                          <div className="flex gap-3">
+                            <div className="flex-shrink-0 h-10 w-10 rounded-full bg-purple-500 flex items-center justify-center text-white font-semibold text-sm">
+                              {message.sender_name?.charAt(0).toUpperCase() || 'S'}
+                            </div>
+                            <div className="flex-1 min-w-0">
+                              <div className="flex items-center justify-between gap-2">
+                                <p className={`text-sm truncate ${!message.is_read ? 'font-semibold text-gray-900 dark:text-white' : 'font-medium text-gray-700 dark:text-gray-300'}`}>
+                                  {message.sender_name || 'System'}
+                                </p>
+                                <span className="text-xs text-gray-400 flex-shrink-0">
+                                  {formatMessageTime(message.created_at)}
+                                </span>
+                              </div>
+                              <p className={`text-sm truncate ${!message.is_read ? 'font-medium text-gray-800 dark:text-gray-200' : 'text-gray-600 dark:text-gray-400'}`}>
+                                {message.subject}
+                              </p>
+                              <p className="text-xs text-gray-500 dark:text-gray-400 mt-0.5 line-clamp-1">
+                                {message.message_body}
+                              </p>
+                            </div>
+                            {!message.is_read && (
+                              <span className="h-2 w-2 rounded-full bg-blue-500 mt-2 flex-shrink-0" />
+                            )}
+                          </div>
+                        </div>
+                      ))
+                    )}
+                  </div>
+
+                  {/* Footer */}
+                  <div className="px-4 py-2 border-t border-gray-100 dark:border-gray-800">
+                    <Link
+                      href="/dashboard/messages"
+                      className="text-xs text-[#5b21b6] hover:text-[#4c1d95] font-medium"
+                      onClick={() => setMessagesOpen(false)}
+                    >
+                      View all messages
+                    </Link>
+                  </div>
+                </div>
+              )}
+            </div>
 
             {/* Profile dropdown */}
             <div className="relative">
