@@ -9,7 +9,7 @@ import {
   isOutOfStock,
   isExpired,
   isExpiringSoon,
-  CreateDrugRequest
+  CreateDrugRequest 
 } from '@/lib/pharmacy';
 import { getErrorMessage } from '@/lib/api';
 
@@ -518,16 +518,49 @@ export default function InventoryPage() {
         </div>
       </div>
 
-      {/* Info Note */}
+      {/* Bulk Upload Info */}
       <div className="mt-6 bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-lg p-4">
         <div className="flex">
-          <svg className="h-5 w-5 text-blue-400 mr-3 mt-0.5" fill="currentColor" viewBox="0 0 20 20">
+          <svg className="h-5 w-5 text-blue-400 mr-3 mt-0.5 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
             <path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clipRule="evenodd" />
           </svg>
-          <div className="text-sm text-blue-700 dark:text-blue-400">
-            <p className="font-medium mb-1">Bulk Upload</p>
-            <p>For bulk drug uploads, use the backend API endpoint: <code className="bg-blue-100 dark:bg-blue-900 px-2 py-0.5 rounded">POST /api/v1/pharmacy/drugs/bulk-upload</code></p>
-            <p className="mt-1 text-xs">Upload an Excel file with columns: commodity_name, commodity_id, pack_type, pack_type_id, commodity_type, quantity, batch_no, expiry_month, expiry_year</p>
+          <div className="flex-1">
+            <p className="text-sm font-semibold text-blue-900 dark:text-blue-100 mb-2">
+              Excel File Requirements for Bulk Upload
+            </p>
+            <p className="text-sm text-blue-800 dark:text-blue-200 mb-2">
+              <strong>IMPORTANT:</strong> Columns must be in this exact order (left to right):
+            </p>
+            <ol className="text-xs text-blue-700 dark:text-blue-300 space-y-1 list-decimal list-inside">
+              <li><strong>commodity_name</strong> - Drug/item name (REQUIRED)</li>
+              <li><strong>commodity_id</strong> - Unique commodity identifier (REQUIRED)</li>
+              <li><strong>pack_type</strong> - Package type e.g., Bottle, Box, Strip (REQUIRED)</li>
+              <li><strong>pack_type_id</strong> - Pack type identifier (REQUIRED)</li>
+              <li><strong>commodity_type</strong> - Type category e.g., ARV, OI Drug (REQUIRED)</li>
+              <li><strong>quantity</strong> - Stock quantity number (optional, defaults to 0)</li>
+              <li><strong>batch_no</strong> - Batch number (optional)</li>
+              <li><strong>expiry_month</strong> - Expiry month 1-12 (optional)</li>
+              <li><strong>expiry_year</strong> - Expiry year e.g., 2026 (optional)</li>
+            </ol>
+            <div className="mt-3 p-2 bg-yellow-50 dark:bg-yellow-900/20 border border-yellow-200 dark:border-yellow-700 rounded text-xs text-yellow-800 dark:text-yellow-300">
+              <strong>Validation Rules:</strong>
+              <ul className="mt-1 space-y-0.5 list-disc list-inside">
+                <li>commodity_id must be unique (no duplicates)</li>
+                <li>expiry_month and expiry_year must both be provided together, or both left empty</li>
+                <li>Expiry date cannot be in the past</li>
+                <li>expiry_month must be between 1 and 12</li>
+              </ul>
+            </div>
+            <a
+              href="/templates/inventory-template.xlsx"
+              download="pharmacy-bulk-upload-template.xlsx"
+              className="mt-3 inline-flex items-center gap-2 text-sm text-blue-600 dark:text-blue-400 hover:underline"
+            >
+              <svg className="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
+              </svg>
+              Download Template (Pre-formatted with correct columns)
+            </a>
           </div>
         </div>
       </div>

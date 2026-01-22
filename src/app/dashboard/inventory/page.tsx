@@ -1061,11 +1061,20 @@ export default function InventoryPage() {
                       <li><strong>pack_type</strong> - Package type e.g., Bottle, Box, Strip (REQUIRED)</li>
                       <li><strong>pack_type_id</strong> - Pack type identifier (REQUIRED)</li>
                       <li><strong>commodity_type</strong> - Type category e.g., Drug, Supply (REQUIRED)</li>
-                      <li><strong>quantity</strong> - Stock quantity number (optional)</li>
+                      <li><strong>quantity</strong> - Stock quantity number (optional, defaults to 0)</li>
                       <li><strong>batch_no</strong> - Batch number (optional)</li>
                       <li><strong>expiry_month</strong> - Expiry month 1-12 (optional)</li>
-                      <li><strong>expiry_year</strong> - Expiry year YYYY (optional)</li>
+                      <li><strong>expiry_year</strong> - Expiry year e.g., 2026 (optional)</li>
                     </ol>
+                    <div className="mt-3 p-2 bg-yellow-50 dark:bg-yellow-900/20 border border-yellow-200 dark:border-yellow-700 rounded text-xs text-yellow-800 dark:text-yellow-300">
+                      <strong>Validation Rules:</strong>
+                      <ul className="mt-1 space-y-0.5 list-disc list-inside">
+                        <li>commodity_id must be unique (no duplicates)</li>
+                        <li>expiry_month and expiry_year must both be provided together, or both left empty</li>
+                        <li>Expiry date cannot be in the past</li>
+                        <li>expiry_month must be between 1 and 12</li>
+                      </ul>
+                    </div>
                     <p className="text-xs text-blue-700 dark:text-blue-300 mt-2 font-semibold">
                       ⚠️ The first row should contain these column headers in the exact order shown above.
                     </p>
