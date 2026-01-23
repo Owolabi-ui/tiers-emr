@@ -202,87 +202,64 @@ export function useNotifications(options: UseNotificationsOptions = {}) {
       ws.onmessage = (event) => {
         try {
           // Handle plain string messages like "pong"
-          if (typeof event.data === 'string' && event.data.toLowerCase() === 'pong') {
-            // Server responded to our ping, connection is alive
-            return;
-          }
-
-          const message: WebSocketMessage = JSON.parse(event.data);
-
-          // Handle different message types based on the structure
-          // Backend sends: { "Notification": {...} } or { "UnreadCount": 5 } etc.
-          const messageType = Object.keys(message)[0]?.toLowerCase();
-          const messageData = Object.values(message)[0];
-
-          switch (messageType) {
-            case 'notification':
-              if (messageData && typeof messageData === 'object') {
-                const notification = messageData as Notification;
-                showSystemNotification(notification);
-                callbacksRef.current.onNewNotification?.(notification);
-              }
-              break;
-
-            case 'unread_count':
-            case 'unreadcount':
-              if (typeof messageData === 'number') {
-                callbacksRef.current.onUnreadCountChange?.(messageData);
-              }
-              break;
-
-            case 'marked_read':
-            case 'markedread':
-              if (messageData && typeof messageData === 'object' && 'notification_id' in messageData) {
-                callbacksRef.current.onMarkedRead?.((messageData as { notification_id: string }).notification_id);
-              }
-              break;
-
-            case 'deleted':
-              if (messageData && typeof messageData === 'object' && 'notification_id' in messageData) {
-                callbacksRef.current.onDeleted?.((messageData as { notification_id: string }).notification_id);
-              }
-              break;
-
-            case 'pong':
-              // Server responded to our ping, connection is alive
-              break;
-
-            default:
-              // Also handle flat message format: { type: "notification", data: {...} }
-              if ('type' in message && 'data' in message) {
-                const flatMessage = message as { type: string; data: unknown };
-                switch (flatMessage.type) {
-                  case 'notification':
-                    if (flatMessage.data) {
-                      const notification = flatMessage.data as Notification;
-                      showSystemNotification(notification);
-                      callbacksRef.current.onNewNotification?.(notification);
-                    }
-                    break;
-                  case 'unread_count':
-                    if (typeof flatMessage.data === 'number') {
-                      callbacksRef.current.onUnreadCountChange?.(flatMessage.data);
-                    }
-                    break;
-                  case 'marked_read':
-                    if (flatMessage.data && typeof flatMessage.data === 'object' && 'notification_id' in flatMessage.data) {
-                      callbacksRef.current.onMarkedRead?.((flatMessage.data as { notification_id: string }).notification_id);
-                    }
-                    break;
-                  case 'deleted':
-                    if (flatMessage.data && typeof flatMessage.data === 'object' && 'notification_id' in flatMessage.data) {
-                      callbacksRef.current.onDeleted?.((flatMessage.data as { notification_id: string }).notification_id);
-                    }
-                    break;
-                  case 'pong':
-                    break;
-                  default:
-                    console.warn('[Notifications] Unknown message type:', flatMessage.type);
-                }
-              }
+          if (typeof event.data === 'string') {
+            if (event.data.toLowerCase() === 'pong') {
+              console.log('[Notifications] Pong received');
+              return;
+            }
+            // Try to parse as JSON if it's a string
+            try {
+              const message: WebSocketMessage = JSON.parse(event.data);
+              handleMessage(message);
+            } catch (parseError) {
+              console.warn('[Notifications] Failed to parse message:', event.data);
+              return;
+            }
+          } else {
+            // Already an object
+            handleMessage(event.data);
           }
         } catch (error) {
-          console.error('[Notifications] Error parsing message:', error);
+          console.error('[Notifications] Error processing message:', error);
+        }
+      };
+
+      const handleMessage = (message: WebSocketMessage) => {
+        console.log('[Notifications] Message received:', message.type);
+
+        switch (message.type) {
+          case 'notification':
+            if (message.data && typeof message.data === 'object' && 'id' in message.data) {
+              const notification = message.data as Notification;
+              showSystemNotification(notification);
+              callbacksRef.current.onNewNotification?.(notification);
+            }
+            break;
+
+          case 'unread_count':
+            if (typeof message.data === 'number') {
+              callbacksRef.current.onUnreadCountChange?.(message.data);
+            }
+            break;
+
+          case 'marked_read':
+            if (message.data && typeof message.data === 'object' && 'notification_id' in message.data) {
+              callbacksRef.current.onMarkedRead?.((message.data as { notification_id: string }).notification_id);
+            }
+            break;
+
+          case 'deleted':
+            if (message.data && typeof message.data === 'object' && 'notification_id' in message.data) {
+              callbacksRef.current.onDeleted?.((message.data as { notification_id: string }).notification_id);
+            }
+            break;
+
+          case 'pong':
+            // Server responded to our ping, connection is alive
+            break;
+
+          default:
+            console.warn('[Notifications] Unknown message type:', message.type);
         }
       };
 
