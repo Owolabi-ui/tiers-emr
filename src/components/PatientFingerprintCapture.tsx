@@ -1,7 +1,7 @@
 'use client';
 
 import { useState } from 'react';
-import { getFingerprintBridge, FingerprintCaptureResult } from '@/lib/fingerprint';
+import { getFingerprintService, FingerprintCaptureResult } from '@/lib/fingerprint';
 import { biometricsApi, BiometricType } from '@/lib/biometrics';
 import { Fingerprint, CheckCircle2, Loader2, AlertCircle, X } from 'lucide-react';
 import { useToast } from './toast-provider';
@@ -24,7 +24,7 @@ export default function PatientFingerprintCapture({
   const [quality, setQuality] = useState<number | null>(null);
   const { showSuccess, showError } = useToast();
 
-  const bridge = getFingerprintBridge();
+  const service = getFingerprintService();
 
   const fingerOptions: BiometricType[] = [
     'Right Thumb',
@@ -46,18 +46,20 @@ export default function PatientFingerprintCapture({
     setQuality(null);
 
     try {
-      // Connect to bridge
-      await bridge.connect();
-
       // Check device
-      const device = await bridge.detectDevice();
+      const device = await service.detectDevice();
       if (!device.detected) {
+        // Check if service is running
+        const isRunning = await service.healthCheck();
+        if (!isRunning) {
+          throw new Error('Fingerprint service not running. Please start the TIERS Fingerprint Service.');
+        }
         throw new Error('Fingerprint scanner not detected. Please ensure it is connected.');
       }
 
-      // Capture fingerprint
+      // Capture fingerprint with image included
       setStatus('capturing');
-      const result = await bridge.captureFingerprint(50);
+      const result = await service.captureFingerprint(10000, true);
 
       // Display captured image
       displayCapturedFingerprint(result);
@@ -68,7 +70,7 @@ export default function PatientFingerprintCapture({
       await biometricsApi.capture({
         patient_id: patientId,
         biometric_type: selectedFinger,
-        fingerprint_data: result.imageData,
+        fingerprint_data: result.imageData || '',
         fingerprint_template: result.template,
         quality_score: result.quality,
         is_primary: true,
@@ -99,6 +101,8 @@ export default function PatientFingerprintCapture({
   };
 
   const displayCapturedFingerprint = (result: FingerprintCaptureResult) => {
+    if (!result.imageData) return;
+
     const canvas = document.createElement('canvas');
     canvas.width = result.width;
     canvas.height = result.height;

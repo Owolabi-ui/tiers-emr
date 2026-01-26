@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef, useCallback } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { useAuthStore, getRoleDisplayName } from '@/lib/auth-store';
@@ -76,43 +76,36 @@ export default function DashboardHeader({ onMobileMenuOpen }: DashboardHeaderPro
   const notificationRef = useRef<HTMLDivElement>(null);
   const messagesRef = useRef<HTMLDivElement>(null);
 
+  // Memoize notification callbacks to prevent issues with stale closures on re-render.
+  const onNewNotification = useCallback((notification: Notification) => {
+    setNotifications(prev => [notification, ...prev.slice(0, 9)]);
+    setUnreadCount(prev => prev + 1);
+    console.log('[DashboardHeader] New notification received:', notification.title);
+  }, []);
+
+  const onUnreadCountChange = useCallback((count: number) => {
+    setUnreadCount(count);
+    console.log('[DashboardHeader] Unread count updated:', count);
+  }, []);
+
+  const onMarkedRead = useCallback((notificationId: string) => {
+    setNotifications(prev =>
+      prev.map(n => (n.id === notificationId ? { ...n, is_read: true } : n))
+    );
+    console.log('[DashboardHeader] Notification marked as read:', notificationId);
+  }, []);
+
+  const onDeleted = useCallback((notificationId: string) => {
+    setNotifications(prev => prev.filter(n => n.id !== notificationId));
+    console.log('[DashboardHeader] Notification deleted:', notificationId);
+  }, []);
+
   // Real-time notifications via WebSocket
   const { isConnected } = useNotifications({
-    onNewNotification: (notification) => {
-      // Add to top of list
-      setNotifications(prev => [notification, ...prev.slice(0, 9)]);
-      
-      // Increment unread count
-      setUnreadCount(prev => prev + 1);
-
-      // TODO: Show toast notification (requires useToast hook setup)
-      // For now, just log the notification
-      console.log('[DashboardHeader] Toast notification:', {
-        title: notification.title,
-        message: notification.message,
-        priority: notification.priority,
-      });
-
-      console.log('[DashboardHeader] New notification received:', notification.title);
-    },
-
-    onUnreadCountChange: (count) => {
-      setUnreadCount(count);
-      console.log('[DashboardHeader] Unread count updated:', count);
-    },
-
-    onMarkedRead: (notificationId) => {
-      setNotifications(prev =>
-        prev.map(n => n.id === notificationId ? { ...n, is_read: true } : n)
-      );
-      console.log('[DashboardHeader] Notification marked as read:', notificationId);
-    },
-
-    onDeleted: (notificationId) => {
-      setNotifications(prev => prev.filter(n => n.id !== notificationId));
-      console.log('[DashboardHeader] Notification deleted:', notificationId);
-    },
-
+    onNewNotification,
+    onUnreadCountChange,
+    onMarkedRead,
+    onDeleted,
     autoReconnect: true,
     reconnectDelay: 3000,
   });

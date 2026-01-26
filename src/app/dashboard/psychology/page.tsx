@@ -108,7 +108,7 @@ export default function PsychologyPage() {
         <Loader2 className="h-8 w-8 animate-spin text-indigo-600 dark:text-indigo-400" />
       </div>
     );
-  }
+  }  
 
   return (
     <div className="space-y-6">

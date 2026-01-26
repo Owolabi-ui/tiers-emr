@@ -1,8 +1,8 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { getFingerprintBridge, FingerprintCaptureResult } from '@/lib/fingerprint';
-import { Fingerprint, CheckCircle2, XCircle, Loader2, AlertCircle } from 'lucide-react';
+import { getFingerprintService, FingerprintCaptureResult } from '@/lib/fingerprint';
+import { Fingerprint, CheckCircle2, Loader2, AlertCircle } from 'lucide-react';
 
 interface FingerprintCaptureProps {
   onCapture: (data: FingerprintCaptureResult) => void;
@@ -17,7 +17,7 @@ export default function FingerprintCapture({ onCapture, onCancel, minQuality = 5
   const [capturedImage, setCapturedImage] = useState<string | null>(null);
   const [quality, setQuality] = useState<number | null>(null);
 
-  const bridge = getFingerprintBridge();
+  const service = getFingerprintService();
 
   useEffect(() => {
     checkDevice();
@@ -28,18 +28,23 @@ export default function FingerprintCapture({ onCapture, onCancel, minQuality = 5
     setError(null);
 
     try {
-      await bridge.connect();
-      const device = await bridge.detectDevice();
+      const device = await service.detectDevice();
 
       if (device.detected) {
         setDeviceInfo(`${device.deviceName || 'Fingerprint Scanner'} detected`);
         setStatus('ready');
       } else {
-        setError('No fingerprint scanner detected. Please connect your device and try again.');
+        // Check if service is running but scanner not connected
+        const isRunning = await service.healthCheck();
+        if (isRunning) {
+          setError('Fingerprint scanner not detected. Please connect your device and try again.');
+        } else {
+          setError('Fingerprint service not running. Please start the TIERS Fingerprint Service.');
+        }
         setStatus('error');
       }
     } catch (err: any) {
-      setError(err.message || 'Failed to connect to fingerprint bridge');
+      setError(err.message || 'Failed to connect to fingerprint service');
       setStatus('error');
     }
   };
@@ -51,29 +56,32 @@ export default function FingerprintCapture({ onCapture, onCancel, minQuality = 5
     setQuality(null);
 
     try {
-      const result = await bridge.captureFingerprint(minQuality);
+      // Capture with image included for display
+      const result = await service.captureFingerprint(10000, true);
 
-      // Convert raw image data to displayable format
-      const canvas = document.createElement('canvas');
-      canvas.width = result.width;
-      canvas.height = result.height;
-      const ctx = canvas.getContext('2d');
+      // Convert raw image data to displayable format if image is included
+      if (result.imageData) {
+        const canvas = document.createElement('canvas');
+        canvas.width = result.width;
+        canvas.height = result.height;
+        const ctx = canvas.getContext('2d');
 
-      if (ctx) {
-        const imageData = ctx.createImageData(result.width, result.height);
-        const rawData = atob(result.imageData);
+        if (ctx) {
+          const imageData = ctx.createImageData(result.width, result.height);
+          const rawData = atob(result.imageData);
 
-        // Convert grayscale to RGBA
-        for (let i = 0; i < rawData.length; i++) {
-          const value = rawData.charCodeAt(i);
-          imageData.data[i * 4] = value;     // R
-          imageData.data[i * 4 + 1] = value; // G
-          imageData.data[i * 4 + 2] = value; // B
-          imageData.data[i * 4 + 3] = 255;   // A
+          // Convert grayscale to RGBA
+          for (let i = 0; i < rawData.length; i++) {
+            const value = rawData.charCodeAt(i);
+            imageData.data[i * 4] = value;     // R
+            imageData.data[i * 4 + 1] = value; // G
+            imageData.data[i * 4 + 2] = value; // B
+            imageData.data[i * 4 + 3] = 255;   // A
+          }
+
+          ctx.putImageData(imageData, 0, 0);
+          setCapturedImage(canvas.toDataURL());
         }
-
-        ctx.putImageData(imageData, 0, 0);
-        setCapturedImage(canvas.toDataURL());
       }
 
       setQuality(result.quality);
@@ -202,10 +210,10 @@ export default function FingerprintCapture({ onCapture, onCancel, minQuality = 5
         <div className="mt-4 p-4 bg-gray-50 dark:bg-gray-900/50 rounded-lg">
           <p className="text-xs font-medium text-gray-700 dark:text-gray-300 mb-2">Troubleshooting:</p>
           <ul className="text-xs text-gray-600 dark:text-gray-400 space-y-1 list-disc list-inside">
-            <li>Make sure the fingerprint bridge server is running</li>
+            <li>Make sure the TIERS Fingerprint Service is running</li>
             <li>Check that your fingerprint scanner is connected</li>
             <li>Try unplugging and replugging the device</li>
-            <li>Restart the bridge server</li>
+            <li>Restart the fingerprint service</li>
           </ul>
           <button
             onClick={checkDevice}

@@ -1,4 +1,8 @@
-// Fingerprint Bridge Client Library
+// Fingerprint Service Client Library
+// Communicates with the local TIERS Fingerprint Service via HTTP
+
+const FINGERPRINT_SERVICE_URL = 'http://localhost:3456';
+
 export interface FingerprintDevice {
   detected: boolean;
   deviceName?: string;
@@ -9,7 +13,7 @@ export interface FingerprintDevice {
 
 export interface FingerprintCaptureResult {
   success: boolean;
-  imageData: string; // base64
+  imageData?: string; // base64 (optional, only if include_image is true)
   template: string; // base64
   quality: number; // 0-100
   width: number;
@@ -18,151 +22,199 @@ export interface FingerprintCaptureResult {
 
 export interface FingerprintVerificationResult {
   matched: boolean;
-  score: number; // 0-1
-  rawScore: number;
+  score: number; // 0-100
 }
 
-export class FingerprintBridge {
-  private ws: WebSocket | null = null;
-  private url: string;
-  private reconnectInterval: number = 3000;
-  private isConnecting: boolean = false;
+export interface ScannerStatus {
+  connected: boolean;
+  device_name: string;
+  serial_number: string;
+  image_width: number;
+  image_height: number;
+  image_dpi: number;
+}
 
-  constructor(url: string = 'ws://localhost:9876') {
-    this.url = url;
+export class FingerprintService {
+  private baseUrl: string;
+
+  constructor(baseUrl: string = FINGERPRINT_SERVICE_URL) {
+    this.baseUrl = baseUrl;
   }
 
-  async connect(): Promise<void> {
-    if (this.ws?.readyState === WebSocket.OPEN || this.isConnecting) {
-      return;
+  /**
+   * Check if the fingerprint service is running
+   */
+  async healthCheck(): Promise<boolean> {
+    try {
+      const response = await fetch(`${this.baseUrl}/health`, {
+        method: 'GET',
+        headers: { 'Content-Type': 'application/json' },
+      });
+      return response.ok;
+    } catch {
+      return false;
     }
+  }
 
-    this.isConnecting = true;
+  /**
+   * Get scanner status and device info
+   */
+  async getStatus(): Promise<ScannerStatus | null> {
+    try {
+      const response = await fetch(`${this.baseUrl}/status`, {
+        method: 'GET',
+        headers: { 'Content-Type': 'application/json' },
+      });
 
-    return new Promise((resolve, reject) => {
-      try {
-        this.ws = new WebSocket(this.url);
-
-        this.ws.onopen = () => {
-          console.log('[Fingerprint] Connected to bridge');
-          this.isConnecting = false;
-          resolve();
-        };
-
-        this.ws.onerror = (error) => {
-          console.error('[Fingerprint] Connection error:', error);
-          this.isConnecting = false;
-          reject(new Error('Failed to connect to fingerprint bridge. Make sure the bridge server is running.'));
-        };
-
-        this.ws.onclose = () => {
-          console.log('[Fingerprint] Disconnected from bridge');
-          this.isConnecting = false;
-        };
-      } catch (error) {
-        this.isConnecting = false;
-        reject(error);
+      if (!response.ok) {
+        const error = await response.json();
+        throw new Error(error.error || 'Failed to get scanner status');
       }
-    });
-  }
 
-  disconnect(): void {
-    if (this.ws) {
-      this.ws.close();
-      this.ws = null;
+      const data = await response.json();
+      return data.scanner;
+    } catch (error) {
+      console.error('[Fingerprint] Status check failed:', error);
+      return null;
     }
   }
 
-  private async sendCommand<T>(command: any): Promise<T> {
-    if (!this.ws || this.ws.readyState !== WebSocket.OPEN) {
-      await this.connect();
-    }
-
-    return new Promise((resolve, reject) => {
-      const timeout = setTimeout(() => {
-        reject(new Error('Command timeout'));
-      }, 30000); // 30 second timeout
-
-      const handleMessage = (event: MessageEvent) => {
-        try {
-          const response = JSON.parse(event.data);
-
-          // Ignore connection messages
-          if (response.type === 'CONNECTED') {
-            return;
-          }
-
-          clearTimeout(timeout);
-          this.ws?.removeEventListener('message', handleMessage);
-
-          if (response.error || response.type?.includes('ERROR')) {
-            reject(new Error(response.error || 'Unknown error'));
-          } else {
-            resolve(response as T);
-          }
-        } catch (error) {
-          clearTimeout(timeout);
-          this.ws?.removeEventListener('message', handleMessage);
-          reject(error);
-        }
-      };
-
-      this.ws?.addEventListener('message', handleMessage);
-      this.ws?.send(JSON.stringify(command));
-    });
-  }
-
+  /**
+   * Detect if a fingerprint device is connected
+   */
   async detectDevice(): Promise<FingerprintDevice> {
-    const response = await this.sendCommand<{ type: string } & FingerprintDevice>({
-      action: 'DETECT_DEVICE'
+    try {
+      const status = await this.getStatus();
+
+      if (!status) {
+        return { detected: false };
+      }
+
+      return {
+        detected: status.connected,
+        deviceName: status.device_name,
+        serialNumber: status.serial_number,
+        imageWidth: status.image_width,
+        imageHeight: status.image_height,
+      };
+    } catch {
+      return { detected: false };
+    }
+  }
+
+  /**
+   * Capture a fingerprint from the scanner
+   * @param timeoutMs Capture timeout in milliseconds (default: 10000)
+   * @param includeImage Whether to include the fingerprint image in response
+   */
+  async captureFingerprint(
+    timeoutMs: number = 10000,
+    includeImage: boolean = false
+  ): Promise<FingerprintCaptureResult> {
+    const response = await fetch(`${this.baseUrl}/capture`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        timeout_ms: timeoutMs,
+        include_image: includeImage,
+      }),
     });
+
+    if (!response.ok) {
+      const error = await response.json();
+      throw new Error(error.error || 'Failed to capture fingerprint');
+    }
+
+    const data = await response.json();
     return {
-      detected: response.detected,
-      deviceName: response.deviceName,
-      serialNumber: response.serialNumber,
-      imageWidth: response.imageWidth,
-      imageHeight: response.imageHeight,
+      success: data.success,
+      imageData: data.data.image,
+      template: data.data.template,
+      quality: data.data.quality,
+      width: data.data.width,
+      height: data.data.height,
     };
   }
 
-  async captureFingerprint(minQuality: number = 50): Promise<FingerprintCaptureResult> {
-    const response = await this.sendCommand<{ type: string } & FingerprintCaptureResult>({
-      action: 'CAPTURE_FINGERPRINT',
-      quality: minQuality
+  /**
+   * Verify a captured fingerprint against a stored template
+   * @param capturedTemplate Base64-encoded captured template
+   * @param storedTemplate Base64-encoded stored template to verify against
+   */
+  async verifyFingerprint(
+    capturedTemplate: string,
+    storedTemplate: string
+  ): Promise<FingerprintVerificationResult> {
+    const response = await fetch(`${this.baseUrl}/verify`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        captured_template: capturedTemplate,
+        stored_template: storedTemplate,
+      }),
     });
+
+    if (!response.ok) {
+      const error = await response.json();
+      throw new Error(error.error || 'Failed to verify fingerprint');
+    }
+
+    const data = await response.json();
     return {
-      success: response.success,
-      imageData: response.imageData,
-      template: response.template,
-      quality: response.quality,
-      width: response.width,
-      height: response.height,
+      matched: data.result.matched,
+      score: data.result.score,
     };
   }
 
-  async verifyFingerprint(template: string): Promise<FingerprintVerificationResult> {
-    const response = await this.sendCommand<{ type: string } & FingerprintVerificationResult>({
-      action: 'VERIFY_FINGERPRINT',
-      template
+  /**
+   * Match two fingerprint templates
+   * @param template1 Base64-encoded first template
+   * @param template2 Base64-encoded second template
+   */
+  async matchTemplates(
+    template1: string,
+    template2: string
+  ): Promise<FingerprintVerificationResult> {
+    const response = await fetch(`${this.baseUrl}/match`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        template1,
+        template2,
+      }),
     });
+
+    if (!response.ok) {
+      const error = await response.json();
+      throw new Error(error.error || 'Failed to match fingerprints');
+    }
+
+    const data = await response.json();
     return {
-      matched: response.matched,
-      score: response.score,
-      rawScore: response.rawScore,
+      matched: data.result.matched,
+      score: data.result.score,
     };
   }
 
-  isConnected(): boolean {
-    return this.ws?.readyState === WebSocket.OPEN;
+  /**
+   * Check if service is available and scanner is connected
+   */
+  async isReady(): Promise<boolean> {
+    const device = await this.detectDevice();
+    return device.detected;
   }
 }
 
 // Singleton instance
-let bridgeInstance: FingerprintBridge | null = null;
+let serviceInstance: FingerprintService | null = null;
 
-export function getFingerprintBridge(): FingerprintBridge {
-  if (!bridgeInstance) {
-    bridgeInstance = new FingerprintBridge();
+export function getFingerprintService(): FingerprintService {
+  if (!serviceInstance) {
+    serviceInstance = new FingerprintService();
   }
-  return bridgeInstance;
+  return serviceInstance;
 }
+
+// Legacy export for backward compatibility
+export const FingerprintBridge = FingerprintService;
+export const getFingerprintBridge = getFingerprintService;
