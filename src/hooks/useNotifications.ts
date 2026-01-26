@@ -200,27 +200,41 @@ export function useNotifications(options: UseNotificationsOptions = {}) {
       };
 
       ws.onmessage = (event) => {
+        console.log('[Notifications] Raw message received. Type:', typeof event.data);
+
+        const processMessage = (messageText: string) => {
+          // It's common for keep-alive messages to be simple strings
+          if (messageText.toLowerCase().includes('pong')) {
+            console.log('[Notifications] Pong received');
+            return;
+          }
+          try {
+            const message: WebSocketMessage = JSON.parse(messageText);
+            handleMessage(message);
+          } catch (parseError) {
+            console.warn('[Notifications] Failed to parse message as JSON:', messageText);
+          }
+        };
+
         try {
-          // Handle plain string messages like "pong"
           if (typeof event.data === 'string') {
-            if (event.data.toLowerCase() === 'pong') {
-              console.log('[Notifications] Pong received');
-              return;
-            }
-            // Try to parse as JSON if it's a string
-            try {
-              const message: WebSocketMessage = JSON.parse(event.data);
-              handleMessage(message);
-            } catch (parseError) {
-              console.warn('[Notifications] Failed to parse message:', event.data);
-              return;
-            }
+            processMessage(event.data);
+          } else if (event.data instanceof Blob) {
+            console.log('[Notifications] Message is a Blob, reading as text...');
+            event.data.text().then(text => {
+              processMessage(text);
+            }).catch(err => {
+              console.error('[Notifications] Failed to read Blob text:', err);
+            });
           } else {
-            // Already an object
-            handleMessage(event.data);
+            // Attempt to handle other types, like ArrayBuffer, by decoding
+            const decoder = new TextDecoder('utf-8');
+            const text = decoder.decode(event.data);
+            console.log('[Notifications] Decoded non-string message:', text);
+            processMessage(text);
           }
         } catch (error) {
-          console.error('[Notifications] Error processing message:', error);
+          console.error('[Notifications] Error processing message:', error, 'Raw data:', event.data);
         }
       };
 
