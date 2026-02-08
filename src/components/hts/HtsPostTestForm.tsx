@@ -20,6 +20,24 @@ export default function HtsPostTestForm({ initialData, onSave, loading, htsIniti
     hepatitisB: false,
     hepatitisC: false,
   });
+  const normalizeAdditionalTestResult = (raw: string) => {
+    // Assumption: Lab techs may enter case or hyphen variants (e.g., "Non-reactive").
+    // We normalize to HTS AdditionalTestResult values without changing backend behavior.
+    const normalized = raw.trim().toLowerCase().replace(/\s+/g, " ").replace(/-/g, " ");
+    if (normalized === "reactive" || normalized === "positive") return "Positive";
+    if (normalized === "non reactive" || normalized === "negative" || normalized === "nonreactive") return "Negative";
+    if (
+      normalized === "not done" ||
+      normalized === "notdone" ||
+      normalized === "not performed" ||
+      normalized === "notperformed" ||
+      normalized === "n/a" ||
+      normalized === "na"
+    ) {
+      return "Not done";
+    }
+    return null;
+  };
 
   const {
     register,
@@ -65,10 +83,9 @@ export default function HtsPostTestForm({ initialData, onSave, loading, htsIniti
             
             if (order.test_info.test_code === 'TPHA' && order.result_value) {
               console.log('Found TPHA result:', order.result_value);
-              // Validate result - only use if it's a valid option
-              const validResults = ['Positive', 'Negative', 'Not done'];
-              if (validResults.includes(order.result_value)) {
-                setValue("syphilis_test_result", order.result_value);
+              const normalized = normalizeAdditionalTestResult(order.result_value);
+              if (normalized) {
+                setValue("syphilis_test_result", normalized);
                 hasResults = true;
               } else {
                 console.warn('Invalid TPHA result from lab:', order.result_value, '- will require manual selection');
@@ -76,9 +93,9 @@ export default function HtsPostTestForm({ initialData, onSave, loading, htsIniti
             }
             if (order.test_info.test_code === 'HBSAG' && order.result_value) {
               console.log('Found HBSAG result:', order.result_value);
-              const validResults = ['Positive', 'Negative', 'Not done'];
-              if (validResults.includes(order.result_value)) {
-                setValue("hepatitis_b_test_result", order.result_value);
+              const normalized = normalizeAdditionalTestResult(order.result_value);
+              if (normalized) {
+                setValue("hepatitis_b_test_result", normalized);
                 hasResults = true;
               } else {
                 console.warn('Invalid HBSAG result from lab:', order.result_value, '- will require manual selection');
@@ -86,9 +103,9 @@ export default function HtsPostTestForm({ initialData, onSave, loading, htsIniti
             }
             if (order.test_info.test_code === 'HCVAB' && order.result_value) {
               console.log('Found HCVAB result:', order.result_value);
-              const validResults = ['Positive', 'Negative', 'Not done'];
-              if (validResults.includes(order.result_value)) {
-                setValue("hepatitis_c_test_result", order.result_value);
+              const normalized = normalizeAdditionalTestResult(order.result_value);
+              if (normalized) {
+                setValue("hepatitis_c_test_result", normalized);
                 hasResults = true;
               } else {
                 console.warn('Invalid HCVAB result from lab:', order.result_value, '- will require manual selection');
