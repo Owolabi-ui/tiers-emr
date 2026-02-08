@@ -5,6 +5,9 @@ import { useRouter } from "next/navigation";
 import { ChevronLeft, FileText, User, CheckCircle, XCircle, Edit } from "lucide-react";
 import { htsApi, CompleteHtsWorkflow } from "@/lib/hts";
 
+// Type helper for dynamic property access
+type PreTestRecord = Record<string, any>;
+
 export default function HtsDetailPage({ params }: { params: Promise<{ id: string }> }) {
   const router = useRouter();
   const { id } = use(params);
@@ -54,6 +57,97 @@ export default function HtsDetailPage({ params }: { params: Promise<{ id: string
       </div>
     );
   }
+
+  const preTest = htsData.pre_test;
+  const knowledgeScoreItems = preTest
+    ? {
+        score1: [
+          { key: "previously_tested_negative", label: "Previously tested negative" },
+          { key: "informed_hiv_transmission", label: "Informed about HIV transmission" },
+          { key: "informed_risk_factors", label: "Informed about risk factors" },
+          { key: "informed_prevention_methods", label: "Informed about prevention methods" },
+          { key: "informed_test_results", label: "Informed about test results" },
+          { key: "consent_given", label: "Consent given for testing" },
+          { key: "used_drugs_sexual_performance", label: "Used drugs for sexual performance" },
+        ],
+        score2: [
+          { key: "transmission_sexual_intercourse", label: "Transmission: Sexual intercourse" },
+          { key: "transmission_blood_transfusion", label: "Transmission: Blood transfusion" },
+          { key: "transmission_mother_to_child", label: "Transmission: Mother to child" },
+          { key: "transmission_sharing_toilet", label: "Transmission: Sharing toilet" },
+          { key: "transmission_sharp_objects", label: "Transmission: Sharp objects" },
+          { key: "transmission_eating_utensils", label: "Transmission: Eating utensils" },
+          { key: "transmission_mosquito_bites", label: "Transmission: Mosquito bites" },
+          { key: "transmission_kissing", label: "Transmission: Kissing" },
+          { key: "transmission_hugging", label: "Transmission: Hugging" },
+        ],
+        score3: [
+          { key: "prevention_faithful_partner", label: "Prevention: Faithful partner" },
+          { key: "prevention_condom_use", label: "Prevention: Condom use" },
+          { key: "prevention_abstinence", label: "Prevention: Abstinence" },
+          { key: "prevention_delay_sexual_debut", label: "Prevention: Delay sexual debut" },
+          { key: "prevention_reduce_partners", label: "Prevention: Reduce partners" },
+          { key: "prevention_avoid_risky_partners", label: "Prevention: Avoid risky partners" },
+          { key: "prevention_avoid_sharp_objects", label: "Prevention: Avoid sharp objects" },
+          { key: "prevention_healthy_looking_can_have_hiv", label: "Prevention: Healthy-looking can have HIV" },
+        ],
+      }
+    : null;
+
+  const hivRiskItems = preTest
+    ? [
+        { key: "risk_unprotected_anal_sex", label: "Unprotected anal sex", points: 3 },
+        { key: "risk_sharing_needles", label: "Sharing needles", points: 3 },
+        { key: "risk_been_paid_for_sex", label: "Been paid for sex", points: 3 },
+        { key: "risk_unprotected_vaginal_sex", label: "Unprotected vaginal sex", points: 2 },
+        { key: "risk_multiple_partners", label: "Multiple partners", points: 2 },
+        { key: "risk_sti", label: "Recent STI", points: 2 },
+        { key: "risk_paid_for_sex", label: "Paid for sex", points: 2 },
+        { key: "risk_sexual_orgy", label: "Sexual orgy", points: 2 },
+        { key: "risk_blood_transfusion", label: "Blood transfusion", points: 1 },
+        { key: "risk_sex_under_influence", label: "Sex under influence", points: 1 },
+        { key: "risk_condom_breakage", label: "Condom breakage", points: 1 },
+        { key: "risk_anal_sex", label: "Anal sex", points: 1 },
+        { key: "risk_vaginal_sex", label: "Vaginal sex", points: 1 },
+      ]
+    : null;
+
+  const partnerRiskItems = preTest
+    ? [
+        { key: "partner_hiv_positive", label: "Partner HIV positive", points: 3 },
+        { key: "partner_injects_drugs", label: "Partner injects drugs", points: 3 },
+        { key: "partner_newly_diagnosed_on_treatment", label: "Partner newly diagnosed on treatment", points: 2 },
+        { key: "partner_returned_after_ltfu", label: "Partner returned after LTFU", points: 2 },
+        { key: "partner_has_sex_with_men", label: "Partner has sex with men", points: 2 },
+        { key: "partner_adolescent_hiv_positive", label: "Partner adolescent HIV positive", points: 2 },
+        { key: "partner_on_arv_suppressed_vl", label: "Partner on ARV suppressed VL", points: 1 },
+        { key: "partner_pregnant_on_arv", label: "Partner pregnant on ARV", points: 1 },
+        { key: "partner_transgender", label: "Partner transgender", points: 1 },
+      ]
+    : null;
+
+  const stiRiskItems = preTest
+    ? [
+        { key: "sti_urethral_discharge", label: "Urethral discharge", points: 1 },
+        { key: "sti_scrotal_swelling", label: "Scrotal swelling", points: 1 },
+        { key: "sti_genital_sore", label: "Genital sore", points: 1 },
+        { key: "sti_anal_pain", label: "Anal pain", points: 1 },
+        { key: "sti_anal_discharge", label: "Anal discharge", points: 1 },
+        { key: "sti_anal_itching", label: "Anal itching", points: 1 },
+      ]
+    : null;
+
+  const sumPoints = (items: { key: string; points: number }[]) =>
+    items.reduce((total, item) => {
+      // Assumption: points are awarded when the risk factor is present (true).
+      return total + ((preTest as PreTestRecord)?.[item.key] ? item.points : 0);
+    }, 0);
+
+  const sumKnowledge = (items: { key: string }[]) =>
+    items.reduce((total, item) => {
+      // Assumption: each checked knowledge item contributes 1 point.
+      return total + ((preTest as PreTestRecord)?.[item.key] ? 1 : 0);
+    }, 0);
 
   return (
     <div className="min-h-screen bg-gray-50 py-8">
@@ -158,18 +252,84 @@ export default function HtsDetailPage({ params }: { params: Promise<{ id: string
                     <div className="bg-gray-50 p-3 rounded">
                       <p className="text-xs text-gray-500">Knowledge Score 1</p>
                       <p className="text-lg font-semibold text-gray-900">{htsData.pre_test.knowledge_score_1}</p>
+                      {knowledgeScoreItems && (
+                        <div className="mt-3 space-y-2">
+                          <p className="text-xs text-gray-500">Breakdown (1 point each)</p>
+                          {knowledgeScoreItems.score1.map((item) => {
+                            const checked = (preTest as PreTestRecord)?.[item.key] ?? false;
+                            return (
+                              <div key={item.key} className="flex items-start gap-2 text-xs">
+                                {checked ? (
+                                  <CheckCircle className="h-3.5 w-3.5 text-green-600 mt-0.5" />
+                                ) : (
+                                  <XCircle className="h-3.5 w-3.5 text-gray-300 mt-0.5" />
+                                )}
+                                <span className={checked ? "text-gray-900" : "text-gray-500"}>{item.label}</span>
+                                <span className="ml-auto text-gray-400">{checked ? "+1" : "0"}</span>
+                              </div>
+                            );
+                          })}
+                          <p className="text-xs text-gray-500">
+                            Total: {sumKnowledge(knowledgeScoreItems.score1)}
+                          </p>
+                        </div>
+                      )}
                     </div>
                   )}
                   {htsData.pre_test.knowledge_score_2 !== null && (
                     <div className="bg-gray-50 p-3 rounded">
                       <p className="text-xs text-gray-500">Knowledge Score 2</p>
                       <p className="text-lg font-semibold text-gray-900">{htsData.pre_test.knowledge_score_2}</p>
+                      {knowledgeScoreItems && (
+                        <div className="mt-3 space-y-2">
+                          <p className="text-xs text-gray-500">Breakdown (1 point each)</p>
+                          {knowledgeScoreItems.score2.map((item) => {
+                            const checked = (preTest as PreTestRecord)?.[item.key] ?? false;
+                            return (
+                              <div key={item.key} className="flex items-start gap-2 text-xs">
+                                {checked ? (
+                                  <CheckCircle className="h-3.5 w-3.5 text-green-600 mt-0.5" />
+                                ) : (
+                                  <XCircle className="h-3.5 w-3.5 text-gray-300 mt-0.5" />
+                                )}
+                                <span className={checked ? "text-gray-900" : "text-gray-500"}>{item.label}</span>
+                                <span className="ml-auto text-gray-400">{checked ? "+1" : "0"}</span>
+                              </div>
+                            );
+                          })}
+                          <p className="text-xs text-gray-500">
+                            Total: {sumKnowledge(knowledgeScoreItems.score2)}
+                          </p>
+                        </div>
+                      )}
                     </div>
                   )}
                   {htsData.pre_test.knowledge_score_3 !== null && (
                     <div className="bg-gray-50 p-3 rounded">
                       <p className="text-xs text-gray-500">Knowledge Score 3</p>
                       <p className="text-lg font-semibold text-gray-900">{htsData.pre_test.knowledge_score_3}</p>
+                      {knowledgeScoreItems && (
+                        <div className="mt-3 space-y-2">
+                          <p className="text-xs text-gray-500">Breakdown (1 point each)</p>
+                          {knowledgeScoreItems.score3.map((item) => {
+                            const checked = (preTest as PreTestRecord)?.[item.key] ?? false;
+                            return (
+                              <div key={item.key} className="flex items-start gap-2 text-xs">
+                                {checked ? (
+                                  <CheckCircle className="h-3.5 w-3.5 text-green-600 mt-0.5" />
+                                ) : (
+                                  <XCircle className="h-3.5 w-3.5 text-gray-300 mt-0.5" />
+                                )}
+                                <span className={checked ? "text-gray-900" : "text-gray-500"}>{item.label}</span>
+                                <span className="ml-auto text-gray-400">{checked ? "+1" : "0"}</span>
+                              </div>
+                            );
+                          })}
+                          <p className="text-xs text-gray-500">
+                            Total: {sumKnowledge(knowledgeScoreItems.score3)}
+                          </p>
+                        </div>
+                      )}
                     </div>
                   )}
                 </div>
@@ -181,18 +341,78 @@ export default function HtsDetailPage({ params }: { params: Promise<{ id: string
                     <div className="bg-red-50 p-3 rounded">
                       <p className="text-xs text-red-700">HIV Risk Score</p>
                       <p className="text-lg font-semibold text-red-900">{htsData.pre_test.hiv_risk_score}</p>
+                      {hivRiskItems && (
+                        <div className="mt-3 space-y-2">
+                          <p className="text-xs text-red-700">Breakdown</p>
+                          {hivRiskItems.map((item) => {
+                            const checked = (preTest as PreTestRecord)?.[item.key] ?? false;
+                            return (
+                              <div key={item.key} className="flex items-start gap-2 text-xs">
+                                {checked ? (
+                                  <CheckCircle className="h-3.5 w-3.5 text-red-600 mt-0.5" />
+                                ) : (
+                                  <XCircle className="h-3.5 w-3.5 text-red-200 mt-0.5" />
+                                )}
+                                <span className={checked ? "text-red-900" : "text-red-500"}>{item.label}</span>
+                                <span className="ml-auto text-red-600">{checked ? `+${item.points}` : "0"}</span>
+                              </div>
+                            );
+                          })}
+                          <p className="text-xs text-red-700">Total: {sumPoints(hivRiskItems)}</p>
+                        </div>
+                      )}
                     </div>
                   )}
                   {htsData.pre_test.partner_risk_score !== null && (
                     <div className="bg-orange-50 p-3 rounded">
                       <p className="text-xs text-orange-700">Partner Risk Score</p>
                       <p className="text-lg font-semibold text-orange-900">{htsData.pre_test.partner_risk_score}</p>
+                      {partnerRiskItems && (
+                        <div className="mt-3 space-y-2">
+                          <p className="text-xs text-orange-700">Breakdown</p>
+                          {partnerRiskItems.map((item) => {
+                            const checked = (preTest as PreTestRecord)?.[item.key] ?? false;
+                            return (
+                              <div key={item.key} className="flex items-start gap-2 text-xs">
+                                {checked ? (
+                                  <CheckCircle className="h-3.5 w-3.5 text-orange-600 mt-0.5" />
+                                ) : (
+                                  <XCircle className="h-3.5 w-3.5 text-orange-200 mt-0.5" />
+                                )}
+                                <span className={checked ? "text-orange-900" : "text-orange-500"}>{item.label}</span>
+                                <span className="ml-auto text-orange-600">{checked ? `+${item.points}` : "0"}</span>
+                              </div>
+                            );
+                          })}
+                          <p className="text-xs text-orange-700">Total: {sumPoints(partnerRiskItems)}</p>
+                        </div>
+                      )}
                     </div>
                   )}
                   {htsData.pre_test.sti_screening_score !== null && (
                     <div className="bg-yellow-50 p-3 rounded">
                       <p className="text-xs text-yellow-700">STI Screening Score</p>
                       <p className="text-lg font-semibold text-yellow-900">{htsData.pre_test.sti_screening_score}</p>
+                      {stiRiskItems && (
+                        <div className="mt-3 space-y-2">
+                          <p className="text-xs text-yellow-700">Breakdown (1 point each)</p>
+                          {stiRiskItems.map((item) => {
+                            const checked = (preTest as PreTestRecord)?.[item.key] ?? false;
+                            return (
+                              <div key={item.key} className="flex items-start gap-2 text-xs">
+                                {checked ? (
+                                  <CheckCircle className="h-3.5 w-3.5 text-yellow-600 mt-0.5" />
+                                ) : (
+                                  <XCircle className="h-3.5 w-3.5 text-yellow-200 mt-0.5" />
+                                )}
+                                <span className={checked ? "text-yellow-900" : "text-yellow-500"}>{item.label}</span>
+                                <span className="ml-auto text-yellow-600">{checked ? `+${item.points}` : "0"}</span>
+                              </div>
+                            );
+                          })}
+                          <p className="text-xs text-yellow-700">Total: {sumPoints(stiRiskItems)}</p>
+                        </div>
+                      )}
                     </div>
                   )}
                 </div>

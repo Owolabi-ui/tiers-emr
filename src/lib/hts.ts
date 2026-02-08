@@ -224,12 +224,13 @@ export interface CreateHtsReferralRequest {
 // ============================================================================
 
 export interface CompleteHtsWorkflow {
-  hts_initial: HtsInitialResponse;
-  hts_pre_test: any | null;
-  hts_testing: any | null;
+  initial: HtsInitialResponse;
+  pre_test: any | null;
+  testing: any | null;
   prep_eligibility: any | null;
-  hts_post_test: any | null;
-  hts_referral: any | null;
+  post_test: any | null;
+  referral: any | null;
+  lab_results: any | null;
 }
 
 // ============================================================================
