@@ -20,6 +20,11 @@ export default function HtsPostTestForm({ initialData, onSave, loading, htsIniti
     hepatitisB: false,
     hepatitisC: false,
   });
+  const [labResultLocks, setLabResultLocks] = useState({
+    syphilis: false,
+    hepatitisB: false,
+    hepatitisC: false,
+  });
   const normalizeAdditionalTestResult = (raw: string) => {
     // Assumption: Lab techs may enter case or hyphen variants (e.g., "Non-reactive").
     // We normalize to HTS AdditionalTestResult values without changing backend behavior.
@@ -86,6 +91,7 @@ export default function HtsPostTestForm({ initialData, onSave, loading, htsIniti
               const normalized = normalizeAdditionalTestResult(order.result_value);
               if (normalized) {
                 setValue("syphilis_test_result", normalized);
+                setLabResultLocks(prev => ({ ...prev, syphilis: true }));
                 hasResults = true;
               } else {
                 console.warn('Invalid TPHA result from lab:', order.result_value, '- will require manual selection');
@@ -96,6 +102,7 @@ export default function HtsPostTestForm({ initialData, onSave, loading, htsIniti
               const normalized = normalizeAdditionalTestResult(order.result_value);
               if (normalized) {
                 setValue("hepatitis_b_test_result", normalized);
+                setLabResultLocks(prev => ({ ...prev, hepatitisB: true }));
                 hasResults = true;
               } else {
                 console.warn('Invalid HBSAG result from lab:', order.result_value, '- will require manual selection');
@@ -106,6 +113,7 @@ export default function HtsPostTestForm({ initialData, onSave, loading, htsIniti
               const normalized = normalizeAdditionalTestResult(order.result_value);
               if (normalized) {
                 setValue("hepatitis_c_test_result", normalized);
+                setLabResultLocks(prev => ({ ...prev, hepatitisC: true }));
                 hasResults = true;
               } else {
                 console.warn('Invalid HCVAB result from lab:', order.result_value, '- will require manual selection');
@@ -408,14 +416,18 @@ export default function HtsPostTestForm({ initialData, onSave, loading, htsIniti
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-2">
                   Syphilis Test (TPHA) <span className="text-red-500">*</span>
-                  {labResultsLoaded && <Lock className="inline h-4 w-4 ml-1 text-green-600" />}
+                  {labResultLocks.syphilis && <Lock className="inline h-4 w-4 ml-1 text-green-600" />}
                 </label>
                 <select
                   {...register("syphilis_test_result", { required: availableTests.syphilis ? "Syphilis test result is required" : false })}
+                  disabled={labResultLocks.syphilis}
+                  title={labResultLocks.syphilis ? "Result is from the lab and cannot be edited here." : undefined}
                   className={`mt-1 block w-full rounded-md shadow-sm sm:text-sm focus:ring-blue-500 focus:border-blue-500 ${
-                    labResultsLoaded 
-                      ? "bg-green-50 border-green-300 text-gray-900" 
-                      : "bg-white border-gray-300 text-gray-700"
+                    labResultLocks.syphilis
+                      ? "bg-gray-100 border-gray-300 text-gray-600 cursor-not-allowed"
+                      : labResultsLoaded
+                        ? "bg-green-50 border-green-300 text-gray-900"
+                        : "bg-white border-gray-300 text-gray-700"
                   }`}
                 >
                   <option value="">{labResultsLoaded ? 'Select result' : 'Waiting for lab...'}</option>
@@ -428,8 +440,8 @@ export default function HtsPostTestForm({ initialData, onSave, loading, htsIniti
                 {errors.syphilis_test_result && (
                   <p className="mt-1 text-sm text-red-600">{errors.syphilis_test_result.message}</p>
                 )}
-                {labResultsLoaded && (
-                  <p className="mt-1 text-xs text-green-600">✓ Result loaded from lab - verify before proceeding</p>
+                {labResultLocks.syphilis && (
+                  <p className="mt-1 text-xs text-green-600">✓ Result loaded from lab - locked</p>
                 )}
               </div>
             )}
@@ -438,14 +450,18 @@ export default function HtsPostTestForm({ initialData, onSave, loading, htsIniti
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-2">
                   Hepatitis B Test (HBsAg) <span className="text-red-500">*</span>
-                  {labResultsLoaded && <Lock className="inline h-4 w-4 ml-1 text-green-600" />}
+                  {labResultLocks.hepatitisB && <Lock className="inline h-4 w-4 ml-1 text-green-600" />}
                 </label>
                 <select
                   {...register("hepatitis_b_test_result", { required: availableTests.hepatitisB ? "Hepatitis B test result is required" : false })}
+                  disabled={labResultLocks.hepatitisB}
+                  title={labResultLocks.hepatitisB ? "Result is from the lab and cannot be edited here." : undefined}
                   className={`mt-1 block w-full rounded-md shadow-sm sm:text-sm focus:ring-blue-500 focus:border-blue-500 ${
-                    labResultsLoaded 
-                      ? "bg-green-50 border-green-300 text-gray-900" 
-                      : "bg-white border-gray-300 text-gray-700"
+                    labResultLocks.hepatitisB
+                      ? "bg-gray-100 border-gray-300 text-gray-600 cursor-not-allowed"
+                      : labResultsLoaded
+                        ? "bg-green-50 border-green-300 text-gray-900"
+                        : "bg-white border-gray-300 text-gray-700"
                   }`}
                 >
                   <option value="">{labResultsLoaded ? 'Select result' : 'Waiting for lab...'}</option>
@@ -458,8 +474,8 @@ export default function HtsPostTestForm({ initialData, onSave, loading, htsIniti
                 {errors.hepatitis_b_test_result && (
                   <p className="mt-1 text-sm text-red-600">{errors.hepatitis_b_test_result.message}</p>
                 )}
-                {labResultsLoaded && (
-                  <p className="mt-1 text-xs text-green-600">✓ Result loaded from lab - verify before proceeding</p>
+                {labResultLocks.hepatitisB && (
+                  <p className="mt-1 text-xs text-green-600">✓ Result loaded from lab - locked</p>
                 )}
               </div>
             )}
@@ -468,14 +484,18 @@ export default function HtsPostTestForm({ initialData, onSave, loading, htsIniti
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-2">
                   Hepatitis C Test (HCV-AB) <span className="text-red-500">*</span>
-                  {labResultsLoaded && <Lock className="inline h-4 w-4 ml-1 text-green-600" />}
+                  {labResultLocks.hepatitisC && <Lock className="inline h-4 w-4 ml-1 text-green-600" />}
                 </label>
                 <select
                   {...register("hepatitis_c_test_result", { required: availableTests.hepatitisC ? "Hepatitis C test result is required" : false })}
+                  disabled={labResultLocks.hepatitisC}
+                  title={labResultLocks.hepatitisC ? "Result is from the lab and cannot be edited here." : undefined}
                   className={`mt-1 block w-full rounded-md shadow-sm sm:text-sm focus:ring-blue-500 focus:border-blue-500 ${
-                    labResultsLoaded 
-                      ? "bg-green-50 border-green-300 text-gray-900" 
-                      : "bg-white border-gray-300 text-gray-700"
+                    labResultLocks.hepatitisC
+                      ? "bg-gray-100 border-gray-300 text-gray-600 cursor-not-allowed"
+                      : labResultsLoaded
+                        ? "bg-green-50 border-green-300 text-gray-900"
+                        : "bg-white border-gray-300 text-gray-700"
                   }`}
                 >
                   <option value="">{labResultsLoaded ? 'Select result' : 'Waiting for lab...'}</option>
@@ -488,8 +508,8 @@ export default function HtsPostTestForm({ initialData, onSave, loading, htsIniti
                 {errors.hepatitis_c_test_result && (
                   <p className="mt-1 text-sm text-red-600">{errors.hepatitis_c_test_result.message}</p>
                 )}
-                {labResultsLoaded && (
-                  <p className="mt-1 text-xs text-green-600">✓ Result loaded from lab - verify before proceeding</p>
+                {labResultLocks.hepatitisC && (
+                  <p className="mt-1 text-xs text-green-600">✓ Result loaded from lab - locked</p>
                 )}
               </div>
             )}
