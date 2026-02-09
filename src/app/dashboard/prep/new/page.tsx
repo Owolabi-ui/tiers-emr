@@ -100,7 +100,7 @@ export default function NewPrepPage() {
 
     try {
       const response = await prepApi.createCommencement(selectedHtsId, formData);
-      router.push(`/dashboard/prep/${response.id}`);
+      router.push(`/dashboard/prep/${selectedHtsId}`);
     } catch (err) {
       setError(getErrorMessage(err));
     } finally {

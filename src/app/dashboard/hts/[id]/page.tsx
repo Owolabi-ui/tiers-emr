@@ -7,6 +7,7 @@ import { htsApi, CompleteHtsWorkflow } from "@/lib/hts";
 
 // Type helper for dynamic property access
 type PreTestRecord = Record<string, any>;
+const isTrue = (value: unknown): value is true => value === true;
 
 export default function HtsDetailPage({ params }: { params: Promise<{ id: string }> }) {
   const router = useRouter();
@@ -140,13 +141,13 @@ export default function HtsDetailPage({ params }: { params: Promise<{ id: string
   const sumPoints = (items: { key: string; points: number }[]) =>
     items.reduce((total, item) => {
       // Assumption: points are awarded when the risk factor is present (true).
-      return total + ((preTest as PreTestRecord)?.[item.key] ? item.points : 0);
+      return total + (isTrue((preTest as PreTestRecord)?.[item.key]) ? item.points : 0);
     }, 0);
 
   const sumKnowledge = (items: { key: string }[]) =>
     items.reduce((total, item) => {
       // Assumption: each checked knowledge item contributes 1 point.
-      return total + ((preTest as PreTestRecord)?.[item.key] ? 1 : 0);
+      return total + (isTrue((preTest as PreTestRecord)?.[item.key]) ? 1 : 0);
     }, 0);
 
   return (
@@ -256,7 +257,7 @@ export default function HtsDetailPage({ params }: { params: Promise<{ id: string
                         <div className="mt-3 space-y-2">
                           <p className="text-xs text-gray-500">Breakdown (1 point each)</p>
                           {knowledgeScoreItems.score1.map((item) => {
-                            const checked = (preTest as PreTestRecord)?.[item.key] ?? false;
+                            const checked = isTrue((preTest as PreTestRecord)?.[item.key]);
                             return (
                               <div key={item.key} className="flex items-start gap-2 text-xs">
                                 {checked ? (
@@ -284,7 +285,7 @@ export default function HtsDetailPage({ params }: { params: Promise<{ id: string
                         <div className="mt-3 space-y-2">
                           <p className="text-xs text-gray-500">Breakdown (1 point each)</p>
                           {knowledgeScoreItems.score2.map((item) => {
-                            const checked = (preTest as PreTestRecord)?.[item.key] ?? false;
+                            const checked = isTrue((preTest as PreTestRecord)?.[item.key]);
                             return (
                               <div key={item.key} className="flex items-start gap-2 text-xs">
                                 {checked ? (
@@ -312,7 +313,7 @@ export default function HtsDetailPage({ params }: { params: Promise<{ id: string
                         <div className="mt-3 space-y-2">
                           <p className="text-xs text-gray-500">Breakdown (1 point each)</p>
                           {knowledgeScoreItems.score3.map((item) => {
-                            const checked = (preTest as PreTestRecord)?.[item.key] ?? false;
+                            const checked = isTrue((preTest as PreTestRecord)?.[item.key]);
                             return (
                               <div key={item.key} className="flex items-start gap-2 text-xs">
                                 {checked ? (
@@ -345,7 +346,7 @@ export default function HtsDetailPage({ params }: { params: Promise<{ id: string
                         <div className="mt-3 space-y-2">
                           <p className="text-xs text-red-700">Breakdown</p>
                           {hivRiskItems.map((item) => {
-                            const checked = (preTest as PreTestRecord)?.[item.key] ?? false;
+                            const checked = isTrue((preTest as PreTestRecord)?.[item.key]);
                             return (
                               <div key={item.key} className="flex items-start gap-2 text-xs">
                                 {checked ? (
@@ -371,7 +372,7 @@ export default function HtsDetailPage({ params }: { params: Promise<{ id: string
                         <div className="mt-3 space-y-2">
                           <p className="text-xs text-orange-700">Breakdown</p>
                           {partnerRiskItems.map((item) => {
-                            const checked = (preTest as PreTestRecord)?.[item.key] ?? false;
+                            const checked = isTrue((preTest as PreTestRecord)?.[item.key]);
                             return (
                               <div key={item.key} className="flex items-start gap-2 text-xs">
                                 {checked ? (
@@ -397,7 +398,7 @@ export default function HtsDetailPage({ params }: { params: Promise<{ id: string
                         <div className="mt-3 space-y-2">
                           <p className="text-xs text-yellow-700">Breakdown (1 point each)</p>
                           {stiRiskItems.map((item) => {
-                            const checked = (preTest as PreTestRecord)?.[item.key] ?? false;
+                            const checked = isTrue((preTest as PreTestRecord)?.[item.key]);
                             return (
                               <div key={item.key} className="flex items-start gap-2 text-xs">
                                 {checked ? (
