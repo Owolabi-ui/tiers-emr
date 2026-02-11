@@ -129,7 +129,7 @@ export default function UsersPage() {
                 <option value="Doctor">Doctor</option>
                 <option value="Nurse">Nurse</option>
                 <option value="Pharmacist">Pharmacist</option>
-                <option value="LabTech">Lab Technician</option>
+                <option value="LabTech">Lab Scientist</option>
                 <option value="Psychologist">Psychologist</option>
                 <option value="Receptionist">Receptionist</option>
               </select>
@@ -363,7 +363,7 @@ function CreateUserModal({ onClose }: { onClose: () => void }) {
               <option value="Doctor">Doctor</option>
               <option value="Nurse">Nurse</option>
               <option value="Pharmacist">Pharmacist</option>
-              <option value="LabTech">Lab Technician</option>
+              <option value="LabTech">Lab Scientist</option>
               <option value="Psychologist">Psychologist</option>
               <option value="Receptionist">Receptionist</option>
               <option value="Admin">Administrator</option>
@@ -496,7 +496,7 @@ function EditUserModal({ user, onClose }: { user: User; onClose: () => void }) {
               <option value="Doctor">Doctor</option>
               <option value="Nurse">Nurse</option>
               <option value="Pharmacist">Pharmacist</option>
-              <option value="LabTech">Lab Technician</option>
+              <option value="LabTech">Lab Scientist</option>
               <option value="Psychologist">Psychologist</option>
               <option value="Receptionist">Receptionist</option>
               <option value="Admin">Administrator</option>

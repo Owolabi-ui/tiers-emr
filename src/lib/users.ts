@@ -107,7 +107,7 @@ export const getRoleDisplayName = (role: UserRole): string => {
     Doctor: 'Doctor',
     Nurse: 'Nurse',
     Pharmacist: 'Pharmacist',
-    LabTech: 'Lab Technician',
+    LabTech: 'Lab Scientist',
     Psychologist: 'Psychologist',
     Receptionist: 'Receptionist',
   };

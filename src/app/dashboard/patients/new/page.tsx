@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import { useRouter } from 'next/navigation';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -24,6 +24,18 @@ import {
   ServiceType,
 } from '@/lib/patients';
 import { clinicsApi, Clinic } from '@/lib/clinics';
+import { vitalSignsApi } from '@/lib/vital-signs';
+import {
+  getTemperatureStatus,
+  getPulseStatus,
+  getRespirationStatus,
+  getSystolicBpStatus,
+  getDiastolicBpStatus,
+  getSpO2Status,
+  getBmiStatus,
+  getStatusColor,
+  getStatusLabel,
+} from '@/lib/vital-signs-ranges';
 import { getErrorMessage } from '@/lib/api';
 import { useToast } from '@/components/toast-provider';
 import {
@@ -37,8 +49,17 @@ import {
   Briefcase,
   UserPlus,
   Heart,
+  Activity,
+  ChevronDown,
+  ChevronUp,
 } from 'lucide-react';
 import Link from 'next/link';
+
+const optionalNumber = (min: number, max: number) =>
+  z.preprocess(
+    (val) => (val === '' || val === null || val === undefined ? undefined : Number(val)),
+    z.number().min(min).max(max).optional()
+  );
 
 // Validation schema
 const patientSchema = z.object({
@@ -64,6 +85,15 @@ const patientSchema = z.object({
   emergency_contact_phone: z.string().optional().nullable(),
   current_clinic_id: z.string().min(1, 'Please select a clinic'),
   service_types: z.array(z.string()).optional().nullable(),
+  // Vital Signs (optional)
+  temperature: optionalNumber(30, 45),
+  pulse_rate: optionalNumber(20, 250),
+  respiratory_rate: optionalNumber(4, 60),
+  blood_pressure_systolic: optionalNumber(40, 300),
+  blood_pressure_diastolic: optionalNumber(20, 200),
+  oxygen_saturation: optionalNumber(50, 100),
+  weight: optionalNumber(0.5, 500),
+  height: optionalNumber(20, 300),
 });
 
 type PatientFormData = z.infer<typeof patientSchema>;
@@ -77,6 +107,7 @@ export default function NewPatientPage() {
   const [lgas, setLgas] = useState<NigerianLga[]>([]);
   const [clinics, setClinics] = useState<Clinic[]>([]);
   const [selectedServices, setSelectedServices] = useState<ServiceType[]>([]);
+  const [vitalSignsExpanded, setVitalSignsExpanded] = useState(false);
 
   const {
     register,
@@ -92,6 +123,22 @@ export default function NewPatientPage() {
   });
 
   const selectedStateId = watch('state_id');
+  const watchedTemperature = watch('temperature');
+  const watchedPulse = watch('pulse_rate');
+  const watchedRespiration = watch('respiratory_rate');
+  const watchedSystolic = watch('blood_pressure_systolic');
+  const watchedDiastolic = watch('blood_pressure_diastolic');
+  const watchedSpO2 = watch('oxygen_saturation');
+  const watchedWeight = watch('weight');
+  const watchedHeight = watch('height');
+
+  const calculatedBmi = useMemo(() => {
+    if (watchedWeight && watchedHeight && watchedHeight > 0) {
+      const heightInMeters = watchedHeight / 100;
+      return watchedWeight / (heightInMeters * heightInMeters);
+    }
+    return null;
+  }, [watchedWeight, watchedHeight]);
 
   // Load states and clinics on mount
   useEffect(() => {
@@ -165,7 +212,41 @@ export default function NewPatientPage() {
       };
 
       const patient = await patientsApi.create(request);
-      showSuccess('Patient registered successfully!');
+
+      const hasVitals = [
+        data.temperature,
+        data.pulse_rate,
+        data.respiratory_rate,
+        data.blood_pressure_systolic,
+        data.blood_pressure_diastolic,
+        data.oxygen_saturation,
+        data.weight,
+        data.height,
+      ].some((value) => value !== null && value !== undefined);
+
+      if (hasVitals) {
+        try {
+          await vitalSignsApi.create({
+            patient_id: patient.id,
+            temperature: data.temperature ?? null,
+            pulse_rate: data.pulse_rate ?? null,
+            respiratory_rate: data.respiratory_rate ?? null,
+            blood_pressure_systolic: data.blood_pressure_systolic ?? null,
+            blood_pressure_diastolic: data.blood_pressure_diastolic ?? null,
+            oxygen_saturation: data.oxygen_saturation ?? null,
+            weight: data.weight ?? null,
+            height: data.height ?? null,
+            bmi: calculatedBmi ?? null,
+          });
+          showSuccess('Patient registered with vital signs!');
+        } catch {
+          // Patient registration succeeded; do not block user on secondary save failure.
+          showSuccess('Patient registered! Note: Vital signs could not be saved.');
+        }
+      } else {
+        showSuccess('Patient registered successfully!');
+      }
+
       router.push(`/dashboard/patients/${patient.id}`);
     } catch (err) {
       setError(getErrorMessage(err));
@@ -556,6 +637,177 @@ export default function NewPatientPage() {
               ))}
             </div>
           </div>
+        </div>
+
+        {/* Vital Signs (Optional) */}
+        <div className="rounded-xl border border-black/10 dark:border-white/15 bg-white dark:bg-neutral-900 overflow-hidden">
+          <button
+            type="button"
+            onClick={() => setVitalSignsExpanded((prev) => !prev)}
+            className="w-full bg-[#5b21b6] px-5 py-3 flex items-center justify-between text-left"
+          >
+            <div className="flex items-center gap-2">
+              <Activity className="h-5 w-5 text-white" />
+              <h2 className="font-semibold text-white">Vital Signs</h2>
+              <span className="inline-flex items-center rounded-full bg-white/20 px-2 py-0.5 text-xs text-white">
+                Optional
+              </span>
+            </div>
+            {vitalSignsExpanded ? (
+              <ChevronUp className="h-5 w-5 text-white" />
+            ) : (
+              <ChevronDown className="h-5 w-5 text-white" />
+            )}
+          </button>
+
+          {vitalSignsExpanded && (
+            <div className="p-5 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+              <div>
+                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                  Temperature (°C)
+                </label>
+                <input
+                  {...register('temperature')}
+                  type="number"
+                  step="0.1"
+                  placeholder="e.g., 36.5"
+                  className="w-full h-10 rounded-lg border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-neutral-800 px-3 text-sm focus:outline-none focus:ring-2 focus:ring-[#5b21b6]/50"
+                />
+                {watchedTemperature !== undefined && watchedTemperature !== null && (
+                  <p className={`mt-1 text-xs font-medium ${getStatusColor(getTemperatureStatus(watchedTemperature))}`}>
+                    {getStatusLabel(getTemperatureStatus(watchedTemperature))} (Normal: 36.5-37.5°C)
+                  </p>
+                )}
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                  Pulse Rate (bpm)
+                </label>
+                <input
+                  {...register('pulse_rate')}
+                  type="number"
+                  placeholder="e.g., 72"
+                  className="w-full h-10 rounded-lg border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-neutral-800 px-3 text-sm focus:outline-none focus:ring-2 focus:ring-[#5b21b6]/50"
+                />
+                {watchedPulse !== undefined && watchedPulse !== null && (
+                  <p className={`mt-1 text-xs font-medium ${getStatusColor(getPulseStatus(watchedPulse))}`}>
+                    {getStatusLabel(getPulseStatus(watchedPulse))} (Normal: 60-100 bpm)
+                  </p>
+                )}
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                  Respiration (cpm)
+                </label>
+                <input
+                  {...register('respiratory_rate')}
+                  type="number"
+                  placeholder="e.g., 16"
+                  className="w-full h-10 rounded-lg border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-neutral-800 px-3 text-sm focus:outline-none focus:ring-2 focus:ring-[#5b21b6]/50"
+                />
+                {watchedRespiration !== undefined && watchedRespiration !== null && (
+                  <p className={`mt-1 text-xs font-medium ${getStatusColor(getRespirationStatus(watchedRespiration))}`}>
+                    {getStatusLabel(getRespirationStatus(watchedRespiration))} (Normal: 12-20 cpm)
+                  </p>
+                )}
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                  BP Systolic (mmHg)
+                </label>
+                <input
+                  {...register('blood_pressure_systolic')}
+                  type="number"
+                  placeholder="e.g., 120"
+                  className="w-full h-10 rounded-lg border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-neutral-800 px-3 text-sm focus:outline-none focus:ring-2 focus:ring-[#5b21b6]/50"
+                />
+                {watchedSystolic !== undefined && watchedSystolic !== null && (
+                  <p className={`mt-1 text-xs font-medium ${getStatusColor(getSystolicBpStatus(watchedSystolic))}`}>
+                    {getStatusLabel(getSystolicBpStatus(watchedSystolic))} (Normal: 90-130 mmHg)
+                  </p>
+                )}
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                  BP Diastolic (mmHg)
+                </label>
+                <input
+                  {...register('blood_pressure_diastolic')}
+                  type="number"
+                  placeholder="e.g., 80"
+                  className="w-full h-10 rounded-lg border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-neutral-800 px-3 text-sm focus:outline-none focus:ring-2 focus:ring-[#5b21b6]/50"
+                />
+                {watchedDiastolic !== undefined && watchedDiastolic !== null && (
+                  <p className={`mt-1 text-xs font-medium ${getStatusColor(getDiastolicBpStatus(watchedDiastolic))}`}>
+                    {getStatusLabel(getDiastolicBpStatus(watchedDiastolic))} (Normal: 60-90 mmHg)
+                  </p>
+                )}
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                  SpO2 (%)
+                </label>
+                <input
+                  {...register('oxygen_saturation')}
+                  type="number"
+                  step="0.1"
+                  placeholder="e.g., 98"
+                  className="w-full h-10 rounded-lg border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-neutral-800 px-3 text-sm focus:outline-none focus:ring-2 focus:ring-[#5b21b6]/50"
+                />
+                {watchedSpO2 !== undefined && watchedSpO2 !== null && (
+                  <p className={`mt-1 text-xs font-medium ${getStatusColor(getSpO2Status(watchedSpO2))}`}>
+                    {getStatusLabel(getSpO2Status(watchedSpO2))} (Normal: 95-100%)
+                  </p>
+                )}
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                  Weight (kg)
+                </label>
+                <input
+                  {...register('weight')}
+                  type="number"
+                  step="0.1"
+                  placeholder="e.g., 70.5"
+                  className="w-full h-10 rounded-lg border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-neutral-800 px-3 text-sm focus:outline-none focus:ring-2 focus:ring-[#5b21b6]/50"
+                />
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                  Height (cm)
+                </label>
+                <input
+                  {...register('height')}
+                  type="number"
+                  step="0.1"
+                  placeholder="e.g., 170"
+                  className="w-full h-10 rounded-lg border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-neutral-800 px-3 text-sm focus:outline-none focus:ring-2 focus:ring-[#5b21b6]/50"
+                />
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                  BMI (Auto-calculated)
+                </label>
+                <div className="w-full h-10 rounded-lg border border-gray-200 dark:border-gray-700 bg-gray-100 dark:bg-neutral-800/50 px-3 text-sm flex items-center">
+                  {calculatedBmi ? (
+                    <span className={getStatusColor(getBmiStatus(calculatedBmi))}>
+                      {calculatedBmi.toFixed(1)} - {getStatusLabel(getBmiStatus(calculatedBmi))}
+                    </span>
+                  ) : (
+                    <span className="text-gray-400">Enter weight and height</span>
+                  )}
+                </div>
+              </div>
+            </div>
+          )}
         </div>
 
         {/* Submit Buttons */}

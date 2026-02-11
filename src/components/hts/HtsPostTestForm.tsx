@@ -409,7 +409,7 @@ export default function HtsPostTestForm({ initialData, onSave, loading, htsIniti
         <div className="bg-gray-50 p-6 rounded-lg">
           <h3 className="text-lg font-medium text-gray-900 mb-4">STI Screening Results</h3>
           <p className="text-sm text-gray-600 mb-4">
-            These tests were ordered through the Laboratory module. Results auto-populate when completed by lab technician.
+            These tests were ordered through the Laboratory module. Results auto-populate when completed by lab scientist.
           </p>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
             {availableTests.syphilis && (
