@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useRef } from 'react';
+import { useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { useAuthStore } from '@/lib/auth-store';
 import { htsApi } from '@/lib/hts';
@@ -11,10 +11,12 @@ import { laboratoryApi } from '@/lib/laboratory';
 import { pharmacyApi } from '@/lib/pharmacy';
 import { inventoryApi } from '@/lib/inventory';
 import { dashboardApi } from '@/lib/dashboard';
+import { psychologyApi } from '@/lib/psychology';
+import PrintButton from '@/components/common/PrintButton';
+import PrintablePageWrapper from '@/components/common/PrintablePageWrapper';
+import PrintHeader from '@/components/common/PrintHeader';
 import {
   FileText,
-  Download,
-  Printer,
   Activity,
   Heart,
   Shield,
@@ -31,39 +33,6 @@ import {
   Loader2,
   TrendingUp,
 } from 'lucide-react';
-
-// Print styles for proper page breaks
-const printStyles = `
-  @media print {
-    body {
-      -webkit-print-color-adjust: exact !important;
-      print-color-adjust: exact !important;
-    }
-    .no-print {
-      display: none !important;
-    }
-    .print-break-before {
-      page-break-before: always;
-    }
-    .print-break-after {
-      page-break-after: always;
-    }
-    .print-avoid-break {
-      page-break-inside: avoid;
-    }
-    .report-section {
-      page-break-inside: avoid;
-      margin-bottom: 20px;
-    }
-    .stat-card {
-      page-break-inside: avoid;
-    }
-    @page {
-      margin: 1cm;
-      size: A4;
-    }
-  }
-`;
 
 // Stat Card Component
 interface StatCardProps {
@@ -125,7 +94,6 @@ function SectionHeader({ title, icon, description }: SectionHeaderProps) {
 
 export default function ReportsPage() {
   const user = useAuthStore((state) => state.user);
-  const printRef = useRef<HTMLDivElement>(null);
   const [dateRange, setDateRange] = useState({
     start: new Date(new Date().setMonth(new Date().getMonth() - 1)).toISOString().split('T')[0],
     end: new Date().toISOString().split('T')[0],
@@ -201,6 +169,13 @@ export default function ReportsPage() {
     enabled: true,
   });
 
+  // Fetch Mental Health Statistics
+  const { data: psychologyStats, isLoading: psychologyLoading } = useQuery({
+    queryKey: ['psychology-stats'],
+    queryFn: () => psychologyApi.getStatistics(),
+    enabled: showMentalHealth,
+  });
+
   // Calculate derived statistics
   const prepStats = {
     total: Array.isArray(prepData) ? prepData.length : 0,
@@ -238,25 +213,18 @@ export default function ReportsPage() {
     lowStock: Array.isArray(inventoryData?.items) ? inventoryData.items.filter((i: any) => i.current_stock <= i.reorder_level).length : 0,
   };
 
-  // Handle Print
-  const handlePrint = () => {
-    window.print();
-  };
-
-  // Handle Download as PDF (using print dialog)
-  const handleDownload = () => {
-    // Trigger print dialog which allows saving as PDF
-    window.print();
-  };
-
-  const isLoading = htsLoading || prepLoading || pepLoading || artLoading || labLoading || drugsLoading || alertsLoading || inventoryLoading || dashboardLoading;
+  const isLoading = htsLoading || prepLoading || pepLoading || artLoading || labLoading || drugsLoading || alertsLoading || inventoryLoading || dashboardLoading || psychologyLoading;
 
   return (
-    <>
-      {/* Inject print styles */}
-      <style dangerouslySetInnerHTML={{ __html: printStyles }} />
-
-      <div className="h-full flex flex-col" ref={printRef}>
+    <PrintablePageWrapper
+      printHeader={
+        <PrintHeader
+          title="TIERS EMR - System Report"
+          subtitle={`Generated: ${new Date().toLocaleDateString()} | Period: ${new Date(dateRange.start).toLocaleDateString()} - ${new Date(dateRange.end).toLocaleDateString()}`}
+        />
+      }
+    >
+      <div className="h-full flex flex-col">
         {/* Header - Hide on print */}
         <div className="flex items-center justify-between mb-6 no-print">
           <div>
@@ -266,39 +234,7 @@ export default function ReportsPage() {
             </p>
           </div>
           <div className="flex gap-3">
-            <button
-              onClick={handlePrint}
-              className="flex items-center gap-2 px-4 py-2 border border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors"
-            >
-              <Printer className="h-4 w-4" />
-              Print
-            </button>
-            <button
-              onClick={handleDownload}
-              className="flex items-center gap-2 px-4 py-2 bg-[#5b21b6] text-white rounded-lg hover:bg-[#4c1d95] transition-colors"
-            >
-              <Download className="h-4 w-4" />
-              Download PDF
-            </button>
-          </div>
-        </div>
-
-        {/* Print Header - Show only on print */}
-        <div className="hidden print:block mb-6">
-          <div className="text-center border-b pb-4 mb-4">
-            <h1 className="text-2xl font-bold">TIERS EMR - System Report</h1>
-            <p className="text-sm text-gray-600 mt-1">
-              Generated on {new Date().toLocaleDateString('en-US', {
-                year: 'numeric',
-                month: 'long',
-                day: 'numeric',
-                hour: '2-digit',
-                minute: '2-digit'
-              })}
-            </p>
-            <p className="text-sm text-gray-600">
-              Report Period: {new Date(dateRange.start).toLocaleDateString()} - {new Date(dateRange.end).toLocaleDateString()}
-            </p>
+            <PrintButton label="Print Report" />
           </div>
         </div>
 
@@ -334,7 +270,7 @@ export default function ReportsPage() {
         ) : (
           <div className="space-y-8 flex-1 overflow-y-auto">
             {/* Overall Summary - Visible to all */}
-            <div className="report-section">
+            <div className="report-section print-section">
               <SectionHeader
                 title="Overall Summary"
                 icon={<FileText className="h-5 w-5 text-[#5b21b6]" />}
@@ -372,7 +308,7 @@ export default function ReportsPage() {
 
             {/* Clinical Reports - HTS */}
             {showClinical && (
-              <div className="report-section print-break-before">
+              <div className="report-section print-section page-break-before">
                 <SectionHeader
                   title="HIV Testing Services (HTS)"
                   icon={<Activity className="h-5 w-5 text-[#5b21b6]" />}
@@ -409,7 +345,7 @@ export default function ReportsPage() {
 
             {/* Clinical Reports - PrEP */}
             {showClinical && (
-              <div className="report-section">
+              <div className="report-section print-section">
                 <SectionHeader
                   title="Pre-Exposure Prophylaxis (PrEP)"
                   icon={<ShieldCheck className="h-5 w-5 text-[#5b21b6]" />}
@@ -448,7 +384,7 @@ export default function ReportsPage() {
 
             {/* Clinical Reports - PEP */}
             {showClinical && (
-              <div className="report-section">
+              <div className="report-section print-section">
                 <SectionHeader
                   title="Post-Exposure Prophylaxis (PEP)"
                   icon={<Shield className="h-5 w-5 text-[#5b21b6]" />}
@@ -485,7 +421,7 @@ export default function ReportsPage() {
 
             {/* Clinical Reports - ART */}
             {showClinical && (
-              <div className="report-section print-break-before">
+              <div className="report-section print-section page-break-before">
                 <SectionHeader
                   title="Antiretroviral Therapy (ART)"
                   icon={<Heart className="h-5 w-5 text-[#5b21b6]" />}
@@ -522,7 +458,7 @@ export default function ReportsPage() {
 
             {/* Laboratory Reports */}
             {showLab && (
-              <div className="report-section print-break-before">
+              <div className="report-section print-section page-break-before">
                 <SectionHeader
                   title="Laboratory"
                   icon={<FlaskConical className="h-5 w-5 text-[#5b21b6]" />}
@@ -585,7 +521,7 @@ export default function ReportsPage() {
 
             {/* Pharmacy Reports */}
             {showPharmacy && (
-              <div className="report-section print-break-before">
+              <div className="report-section print-section page-break-before">
                 <SectionHeader
                   title="Pharmacy & Drug Stock"
                   icon={<Pill className="h-5 w-5 text-[#5b21b6]" />}
@@ -625,7 +561,7 @@ export default function ReportsPage() {
 
             {/* Inventory Reports */}
             {showPharmacy && (
-              <div className="report-section">
+              <div className="report-section print-section">
                 <SectionHeader
                   title="Inventory & Supplies"
                   icon={<Package className="h-5 w-5 text-[#5b21b6]" />}
@@ -651,7 +587,7 @@ export default function ReportsPage() {
 
             {/* Mental Health Reports */}
             {showMentalHealth && (
-              <div className="report-section print-break-before">
+              <div className="report-section print-section page-break-before">
                 <SectionHeader
                   title="Mental Health"
                   icon={<Brain className="h-5 w-5 text-[#5b21b6]" />}
@@ -659,34 +595,61 @@ export default function ReportsPage() {
                 />
                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
                   <StatCard
-                    title="Total Assessments"
-                    value="--"
+                    title="Total Sessions"
+                    value={psychologyStats?.total_sessions?.toLocaleString() || '0'}
                     icon={<FileText className="h-6 w-6 text-purple-600" />}
                     iconBg="bg-purple-100 dark:bg-purple-900/30"
+                    change={`${psychologyStats?.sessions_this_month || 0} this month`}
+                    changeType="positive"
                   />
                   <StatCard
-                    title="Counseling Sessions"
-                    value="--"
+                    title="Active Patients"
+                    value={psychologyStats?.active_patients?.toLocaleString() || '0'}
                     icon={<Users className="h-6 w-6 text-blue-600" />}
                     iconBg="bg-blue-100 dark:bg-blue-900/30"
                   />
                   <StatCard
-                    title="Active Patients"
-                    value="--"
+                    title="High Risk Patients"
+                    value={psychologyStats?.high_risk_patients?.toLocaleString() || '0'}
+                    icon={<AlertCircle className="h-6 w-6 text-red-600" />}
+                    iconBg="bg-red-100 dark:bg-red-900/30"
+                    changeType={(psychologyStats?.high_risk_patients || 0) > 0 ? 'negative' : 'neutral'}
+                  />
+                  <StatCard
+                    title="Active Therapy Goals"
+                    value={psychologyStats?.active_therapy_goals?.toLocaleString() || '0'}
                     icon={<CheckCircle className="h-6 w-6 text-green-600" />}
                     iconBg="bg-green-100 dark:bg-green-900/30"
                   />
-                  <StatCard
-                    title="Follow-ups Due"
-                    value="--"
-                    icon={<Calendar className="h-6 w-6 text-orange-600" />}
-                    iconBg="bg-orange-100 dark:bg-orange-900/30"
-                  />
                 </div>
-                <div className="mt-4 p-4 bg-yellow-50 dark:bg-yellow-900/20 rounded-lg border border-yellow-200 dark:border-yellow-800">
-                  <p className="text-sm text-yellow-800 dark:text-yellow-200">
-                    Mental health statistics API integration pending. Data will be available once the statistics endpoint is implemented.
-                  </p>
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mt-4">
+                  <StatCard
+                    title="PHQ-9 Assessments"
+                    value={psychologyStats?.total_phq9_assessments?.toLocaleString() || '0'}
+                    icon={<Brain className="h-6 w-6 text-indigo-600" />}
+                    iconBg="bg-indigo-100 dark:bg-indigo-900/30"
+                    change={psychologyStats?.average_phq9_score ? `Avg: ${psychologyStats.average_phq9_score.toFixed(1)}` : undefined}
+                  />
+                  <StatCard
+                    title="GAD-7 Assessments"
+                    value={psychologyStats?.total_gad7_assessments?.toLocaleString() || '0'}
+                    icon={<Brain className="h-6 w-6 text-cyan-600" />}
+                    iconBg="bg-cyan-100 dark:bg-cyan-900/30"
+                    change={psychologyStats?.average_gad7_score ? `Avg: ${psychologyStats.average_gad7_score.toFixed(1)}` : undefined}
+                  />
+                  <StatCard
+                    title="AUDIT-C Assessments"
+                    value={psychologyStats?.total_audit_c_assessments?.toLocaleString() || '0'}
+                    icon={<Activity className="h-6 w-6 text-pink-600" />}
+                    iconBg="bg-pink-100 dark:bg-pink-900/30"
+                  />
+                  <StatCard
+                    title="Completed Goals"
+                    value={psychologyStats?.completed_goals?.toLocaleString() || '0'}
+                    icon={<CheckCircle className="h-6 w-6 text-teal-600" />}
+                    iconBg="bg-teal-100 dark:bg-teal-900/30"
+                    changeType="positive"
+                  />
                 </div>
               </div>
             )}
@@ -699,6 +662,7 @@ export default function ReportsPage() {
           </div>
         )}
       </div>
-    </>
+    </PrintablePageWrapper>
   );
 }
+

@@ -15,6 +15,7 @@ import {
   formatAppointmentDate,
   isAppointmentToday,
   getAppointmentDateLabel,
+  getAppointmentServiceLabel,
 } from '@/lib/appointments';
 import { patientsApi, Patient, getPatientFullName } from '@/lib/patients';
 import { getErrorMessage } from '@/lib/api';
@@ -520,7 +521,7 @@ export default function AppointmentsPage() {
                     </span>
                   </td>
                   <td className="px-4 py-3 text-gray-600 dark:text-gray-400">
-                    {appointment.service_type || '-'}
+                    {getAppointmentServiceLabel(appointment)}
                   </td>
                   <td className="px-4 py-3 text-gray-600 dark:text-gray-400 max-w-[150px] truncate">
                     {appointment.reason || '-'}

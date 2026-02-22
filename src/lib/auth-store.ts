@@ -173,7 +173,9 @@ export function getRoleDisplayName(role: string): string {
     Nurse: 'Nurse',
     Pharmacist: 'Pharmacist',
     LabTech: 'Laboratory Scientist',
+    Psychologist: 'Psychologist',
     Receptionist: 'Receptionist',
+    ProgramAssociate: 'Program Associate',
   };
   return roleNames[role] || role;
 }

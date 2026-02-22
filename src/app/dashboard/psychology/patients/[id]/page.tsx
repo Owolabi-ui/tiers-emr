@@ -351,26 +351,26 @@ export default function EnhancedPatientPsychologyPage() {
                       <span className="font-medium text-gray-900 dark:text-white">{latestPHQ9.feeling_tired}/3</span>
                     </div>
                     <div className="flex justify-between">
-                      <span className="text-gray-600 dark:text-gray-400">Appetite changes:</span>
-                      <span className="font-medium text-gray-900 dark:text-white">{latestPHQ9.appetite_changes}/3</span>
+                      <span className="text-gray-600 dark:text-gray-400">Appetite problems:</span>
+                      <span className="font-medium text-gray-900 dark:text-white">{latestPHQ9.appetite_problems}/3</span>
                     </div>
                     <div className="flex justify-between">
                       <span className="text-gray-600 dark:text-gray-400">Feeling bad:</span>
                       <span className="font-medium text-gray-900 dark:text-white">{latestPHQ9.feeling_bad}/3</span>
                     </div>
                     <div className="flex justify-between">
-                      <span className="text-gray-600 dark:text-gray-400">Trouble concentrating:</span>
-                      <span className="font-medium text-gray-900 dark:text-white">{latestPHQ9.trouble_concentrating}/3</span>
+                      <span className="text-gray-600 dark:text-gray-400">Concentration problems:</span>
+                      <span className="font-medium text-gray-900 dark:text-white">{latestPHQ9.concentration_problems}/3</span>
                     </div>
                     <div className="flex justify-between">
-                      <span className="text-gray-600 dark:text-gray-400">Moving slowly/restless:</span>
-                      <span className="font-medium text-gray-900 dark:text-white">{latestPHQ9.moving_slowly}/3</span>
+                      <span className="text-gray-600 dark:text-gray-400">Moving/speaking:</span>
+                      <span className="font-medium text-gray-900 dark:text-white">{latestPHQ9.moving_speaking}/3</span>
                     </div>
                     <div className="flex justify-between">
                       <span className="text-gray-600 dark:text-gray-400">Self-harm thoughts:</span>
                       <span className={`font-medium ${
-                        latestPHQ9.self_harm_thoughts > 0 
-                          ? 'text-red-600 dark:text-red-400' 
+                        latestPHQ9.self_harm_thoughts > 0
+                          ? 'text-red-600 dark:text-red-400'
                           : 'text-gray-900 dark:text-white'
                       }`}>
                         {latestPHQ9.self_harm_thoughts}/3
@@ -407,7 +407,7 @@ export default function EnhancedPatientPsychologyPage() {
                     </div>
                     <div className="flex justify-between">
                       <span className="text-gray-600 dark:text-gray-400">Can't stop worrying:</span>
-                      <span className="font-medium text-gray-900 dark:text-white">{latestGAD7.not_stop_worrying}/3</span>
+                      <span className="font-medium text-gray-900 dark:text-white">{latestGAD7.cant_stop_worrying}/3</span>
                     </div>
                     <div className="flex justify-between">
                       <span className="text-gray-600 dark:text-gray-400">Worrying too much:</span>
@@ -456,12 +456,12 @@ export default function EnhancedPatientPsychologyPage() {
                   </div>
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-3 text-sm">
                     <div className="flex justify-between">
-                      <span className="text-gray-600 dark:text-gray-400">Frequency:</span>
-                      <span className="font-medium text-gray-900 dark:text-white">{auditc.frequency}/4</span>
+                      <span className="text-gray-600 dark:text-gray-400">Drinking frequency:</span>
+                      <span className="font-medium text-gray-900 dark:text-white">{auditc.drinking_frequency}/4</span>
                     </div>
                     <div className="flex justify-between">
-                      <span className="text-gray-600 dark:text-gray-400">Quantity:</span>
-                      <span className="font-medium text-gray-900 dark:text-white">{auditc.quantity}/4</span>
+                      <span className="text-gray-600 dark:text-gray-400">Typical drinks:</span>
+                      <span className="font-medium text-gray-900 dark:text-white">{auditc.typical_drinks}/4</span>
                     </div>
                     <div className="flex justify-between">
                       <span className="text-gray-600 dark:text-gray-400">Binge frequency:</span>

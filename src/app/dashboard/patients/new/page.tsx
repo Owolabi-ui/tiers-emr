@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect, useMemo } from 'react';
+import { useState, useEffect, useMemo, useRef } from 'react';
 import { useRouter } from 'next/navigation';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -8,6 +8,7 @@ import { z } from 'zod';
 import {
   patientsApi,
   CreatePatientRequest,
+  Patient,
   NigerianState,
   NigerianLga,
   sexOptions,
@@ -15,16 +16,17 @@ import {
   maritalStatusOptions,
   educationalLevelOptions,
   occupationOptions,
-  serviceTypeOptions,
   SexType,
   GenderIdentity,
   MaritalStatus,
   EducationalLevel,
   OccupationType,
-  ServiceType,
 } from '@/lib/patients';
 import { clinicsApi, Clinic } from '@/lib/clinics';
 import { vitalSignsApi } from '@/lib/vital-signs';
+import { notificationsApi } from '@/lib/notifications';
+import { useAuthStore } from '@/lib/auth-store';
+import { UserRole } from '@/lib/users';
 import {
   getTemperatureStatus,
   getPulseStatus,
@@ -52,6 +54,9 @@ import {
   Activity,
   ChevronDown,
   ChevronUp,
+  Send,
+  ShieldCheck,
+  Lock,
 } from 'lucide-react';
 import Link from 'next/link';
 
@@ -84,7 +89,6 @@ const patientSchema = z.object({
   emergency_contact_relationship: z.string().optional().nullable(),
   emergency_contact_phone: z.string().optional().nullable(),
   current_clinic_id: z.string().min(1, 'Please select a clinic'),
-  service_types: z.array(z.string()).optional().nullable(),
   // Vital Signs (optional)
   temperature: optionalNumber(30, 45),
   pulse_rate: optionalNumber(20, 250),
@@ -98,16 +102,107 @@ const patientSchema = z.object({
 
 type PatientFormData = z.infer<typeof patientSchema>;
 
+type ServiceLaunchOption = {
+  key: string;
+  name: string;
+  description: string;
+  allowedRoles: UserRole[];
+  primaryRole: UserRole;
+  targetRoleCode: string;
+  allowReferral?: boolean;
+  route: (patientId: string) => string;
+};
+
+const serviceLaunchOptions: ServiceLaunchOption[] = [
+  {
+    key: 'hts',
+    name: 'HIV Testing (HTS)',
+    description: 'Start a new HIV testing workflow',
+    allowedRoles: ['Admin', 'Doctor', 'Nurse', 'LabTech'],
+    primaryRole: 'Doctor',
+    targetRoleCode: 'doctor',
+    route: (patientId: string) => `/dashboard/hts/new?patient_id=${patientId}`,
+  },
+  {
+    key: 'prep',
+    name: 'PREP',
+    description: 'Initiate PREP workflow',
+    allowedRoles: ['Admin', 'Doctor', 'Nurse', 'LabTech'],
+    primaryRole: 'Doctor',
+    targetRoleCode: 'doctor',
+    route: (patientId: string) => `/dashboard/prep/new?patient_id=${patientId}`,
+  },
+  {
+    key: 'pep',
+    name: 'PEP',
+    description: 'Initiate PEP workflow',
+    allowedRoles: ['Admin', 'Doctor', 'Nurse', 'LabTech'],
+    primaryRole: 'Doctor',
+    targetRoleCode: 'doctor',
+    route: (patientId: string) => `/dashboard/pep/new?patient_id=${patientId}`,
+  },
+  {
+    key: 'art',
+    name: 'ART',
+    description: 'Start ART enrollment',
+    allowedRoles: ['Admin', 'Doctor', 'Nurse'],
+    primaryRole: 'Doctor',
+    targetRoleCode: 'doctor',
+    route: (patientId: string) => `/dashboard/art/new?patient_id=${patientId}`,
+  },
+  {
+    key: 'lab',
+    name: 'Laboratory',
+    description: 'Create a new lab order',
+    allowedRoles: ['Admin', 'Doctor', 'Nurse', 'LabTech'],
+    primaryRole: 'LabTech',
+    targetRoleCode: 'labtech',
+    route: (patientId: string) => `/dashboard/laboratory/new?patient_id=${patientId}`,
+  },
+  {
+    key: 'pharmacy',
+    name: 'Pharmacy',
+    description: 'Create a prescription for this patient',
+    allowedRoles: ['Admin', 'Doctor', 'Nurse', 'Pharmacist'],
+    primaryRole: 'Pharmacist',
+    targetRoleCode: 'pharmacist',
+    route: (patientId: string) => `/dashboard/pharmacy/prescriptions/new?patient_id=${patientId}`,
+  },
+  {
+    key: 'psychology',
+    name: 'Mental Health (Psychology)',
+    description: 'Generate intake QR/link and start mental health workflow',
+    allowedRoles: ['Admin', 'Doctor', 'Nurse', 'Psychologist'],
+    primaryRole: 'Psychologist',
+    targetRoleCode: 'psychologist',
+    allowReferral: false,
+    route: (patientId: string) => `/dashboard/psychology/intake/new/${patientId}`,
+  },
+  {
+    key: 'appointments',
+    name: 'Appointments',
+    description: 'Book an appointment for this patient',
+    allowedRoles: ['Admin', 'Doctor', 'Nurse', 'Receptionist'],
+    primaryRole: 'Nurse',
+    targetRoleCode: 'nurse',
+    route: (patientId: string) => `/dashboard/appointments/new?patient_id=${patientId}`,
+  },
+];
+
 export default function NewPatientPage() {
   const router = useRouter();
-  const { showSuccess } = useToast();
+  const { showSuccess, showError } = useToast();
+  const currentUser = useAuthStore((state) => state.user);
+  const userRole = currentUser?.role as UserRole | undefined;
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [states, setStates] = useState<NigerianState[]>([]);
   const [lgas, setLgas] = useState<NigerianLga[]>([]);
   const [clinics, setClinics] = useState<Clinic[]>([]);
-  const [selectedServices, setSelectedServices] = useState<ServiceType[]>([]);
   const [vitalSignsExpanded, setVitalSignsExpanded] = useState(false);
+  const [createdPatient, setCreatedPatient] = useState<Patient | null>(null);
+  const [referringServiceKey, setReferringServiceKey] = useState<string | null>(null);
+  const notificationRefreshTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   const {
     register,
@@ -175,12 +270,6 @@ export default function NewPatientPage() {
     loadLgas();
   }, [selectedStateId, setValue]);
 
-  const toggleService = (service: ServiceType) => {
-    setSelectedServices((prev) =>
-      prev.includes(service) ? prev.filter((s) => s !== service) : [...prev, service]
-    );
-  };
-
   const onSubmit = async (data: PatientFormData) => {
     try {
       setLoading(true);
@@ -208,7 +297,6 @@ export default function NewPatientPage() {
         emergency_contact_relationship: data.emergency_contact_relationship || null,
         emergency_contact_phone: data.emergency_contact_phone || null,
         current_clinic_id: data.current_clinic_id || null,
-        service_types: selectedServices.length > 0 ? selectedServices : null,
       };
 
       const patient = await patientsApi.create(request);
@@ -247,13 +335,164 @@ export default function NewPatientPage() {
         showSuccess('Patient registered successfully!');
       }
 
-      router.push(`/dashboard/patients/${patient.id}`);
+      setCreatedPatient(patient);
     } catch (err) {
       setError(getErrorMessage(err));
     } finally {
       setLoading(false);
     }
   };
+
+  const handleReferral = async (service: ServiceLaunchOption, patient: Patient) => {
+    const confirmed = window.confirm(
+      `Refer ${patient.first_name} ${patient.last_name} to ${service.primaryRole} for ${service.name}?`
+    );
+    if (!confirmed) {
+      return;
+    }
+
+    try {
+      setReferringServiceKey(service.key);
+      await notificationsApi.broadcast({
+        notification_type: 'ALERT',
+        title: `${service.name} referral`,
+        message: `Patient ${patient.first_name} ${patient.last_name} (${patient.hospital_no}) has been referred for ${service.name}.`,
+        priority: 'NORMAL',
+        link: service.route(patient.id),
+        target_roles: [service.targetRoleCode],
+        metadata: {
+          patient_id: patient.id,
+          service_name: service.name,
+          referred_by_role: currentUser?.role ?? 'Unknown',
+        },
+      });
+      showSuccess(`Referral sent to ${service.primaryRole}`);
+      if (typeof window !== 'undefined') {
+        if (notificationRefreshTimerRef.current) {
+          clearTimeout(notificationRefreshTimerRef.current);
+        }
+        notificationRefreshTimerRef.current = setTimeout(() => {
+          window.dispatchEvent(new Event('notifications:refresh'));
+          notificationRefreshTimerRef.current = null;
+        }, 300);
+      }
+    } catch (err: any) {
+      const status = err?.response?.status;
+      if (status === 403) {
+        showError(
+          'Permission Denied',
+          'You do not have permission to send this referral.'
+        );
+      } else if (status === 404) {
+        showError(
+          'Role Not Found',
+          `No active ${service.primaryRole} users were found to receive this referral.`
+        );
+      } else {
+        showError(
+          'Referral Failed',
+          'Could not send referral notification. Please try again.'
+        );
+      }
+    } finally {
+      setReferringServiceKey(null);
+    }
+  };
+
+  useEffect(() => {
+    return () => {
+      if (notificationRefreshTimerRef.current) {
+        clearTimeout(notificationRefreshTimerRef.current);
+      }
+    };
+  }, []);
+
+  if (createdPatient) {
+    return (
+      <div className="space-y-6">
+        <div className="rounded-xl border border-green-200 dark:border-green-800 bg-green-50 dark:bg-green-900/20 p-5">
+          <h1 className="text-2xl font-bold text-[#5b21b6]">Patient Registered</h1>
+          <p className="mt-2 text-sm text-green-800 dark:text-green-300">
+            {createdPatient.first_name} {createdPatient.last_name} was registered successfully.
+          </p>
+          <p className="mt-1 text-sm text-gray-700 dark:text-gray-300">
+            Hospital Number: <span className="font-semibold">{createdPatient.hospital_no}</span>
+          </p>
+        </div>
+
+        <div className="rounded-xl border border-black/10 dark:border-white/15 bg-white dark:bg-neutral-900 overflow-hidden">
+          <div className="bg-[#5b21b6] px-5 py-3 flex items-center gap-2">
+            <Heart className="h-5 w-5 text-white" />
+            <h2 className="font-semibold text-white">Continue to Service</h2>
+          </div>
+          <div className="p-5 grid grid-cols-1 md:grid-cols-2 gap-3">
+            {serviceLaunchOptions.map((service) => (
+              (() => {
+                const canLaunch = !!userRole && service.allowedRoles.includes(userRole);
+                return (
+              <div
+                key={service.key}
+                className="rounded-lg border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-neutral-800 p-4"
+              >
+                <p className="text-sm font-semibold text-gray-900 dark:text-white">{service.name}</p>
+                <p className="mt-1 text-xs text-gray-600 dark:text-gray-300">{service.description}</p>
+                {!canLaunch && (
+                  <div className="mt-2 flex items-center gap-1.5 text-xs text-amber-700 dark:text-amber-400">
+                    <Lock className="h-3 w-3" />
+                    <span>Requires: {service.primaryRole}</span>
+                  </div>
+                )}
+                <div className="mt-3 flex items-center gap-2">
+                  {canLaunch && (
+                    <button
+                      type="button"
+                      onClick={() => router.push(service.route(createdPatient.id))}
+                      className="inline-flex items-center gap-1.5 rounded-md border border-[#5b21b6]/30 px-3 py-1.5 text-xs font-medium text-[#5b21b6] hover:bg-[#5b21b6]/10 transition-colors"
+                    >
+                      <ShieldCheck className="h-3.5 w-3.5" />
+                      Launch Service
+                    </button>
+                  )}
+                  {service.allowReferral !== false && (
+                    <button
+                      type="button"
+                      disabled={referringServiceKey === service.key}
+                      onClick={() => handleReferral(service, createdPatient)}
+                      className="inline-flex items-center gap-1.5 rounded-md border border-gray-300 dark:border-gray-600 px-3 py-1.5 text-xs font-medium text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-neutral-700 disabled:opacity-60 disabled:cursor-not-allowed transition-colors"
+                    >
+                      {referringServiceKey === service.key ? (
+                        <Loader2 className="h-3.5 w-3.5 animate-spin" />
+                      ) : (
+                        <Send className="h-3.5 w-3.5" />
+                      )}
+                      Refer to {service.primaryRole}
+                    </button>
+                  )}
+                </div>
+              </div>
+                );
+              })()
+            ))}
+          </div>
+        </div>
+
+        <div className="flex items-center justify-end gap-3">
+          <Link
+            href={`/dashboard/patients/${createdPatient.id}`}
+            className="px-4 py-2.5 rounded-lg border border-gray-200 dark:border-gray-700 text-sm font-medium text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"
+          >
+            View Patient Profile
+          </Link>
+          <Link
+            href="/dashboard/patients"
+            className="inline-flex items-center gap-2 px-6 py-2.5 rounded-lg bg-[#5b21b6] text-white text-sm font-medium shadow-lg hover:bg-[#4c1d95] transition-all"
+          >
+            Back to Patients
+          </Link>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="space-y-6">
@@ -606,35 +845,6 @@ export default function NewPatientPage() {
                 className="w-full h-10 rounded-lg border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-neutral-800 px-3 text-sm focus:outline-none focus:ring-2 focus:ring-[#5b21b6]/50"
                 placeholder="e.g., 08012345678"
               />
-            </div>
-          </div>
-        </div>
-
-        {/* Service Enrollment */}
-        <div className="rounded-xl border border-black/10 dark:border-white/15 bg-white dark:bg-neutral-900 overflow-hidden">
-          <div className="bg-[#5b21b6] px-5 py-3 flex items-center gap-2">
-            <Heart className="h-5 w-5 text-white" />
-            <h2 className="font-semibold text-white">Service Enrollment (Optional)</h2>
-          </div>
-          <div className="p-5">
-            <p className="text-sm text-gray-500 mb-3">
-              Select services to enroll the patient in upon registration:
-            </p>
-            <div className="flex flex-wrap gap-2">
-              {serviceTypeOptions.map((service) => (
-                <button
-                  key={service}
-                  type="button"
-                  onClick={() => toggleService(service)}
-                  className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${
-                    selectedServices.includes(service)
-                      ? 'bg-[#5b21b6] text-white'
-                      : 'bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-700'
-                  }`}
-                >
-                  {service}
-                </button>
-              ))}
             </div>
           </div>
         </div>

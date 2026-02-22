@@ -132,6 +132,7 @@ export default function UsersPage() {
                 <option value="LabTech">Lab Scientist</option>
                 <option value="Psychologist">Psychologist</option>
                 <option value="Receptionist">Receptionist</option>
+                <option value="ProgramAssociate">Program Associate</option>
               </select>
             </div>
 
@@ -366,6 +367,7 @@ function CreateUserModal({ onClose }: { onClose: () => void }) {
               <option value="LabTech">Lab Scientist</option>
               <option value="Psychologist">Psychologist</option>
               <option value="Receptionist">Receptionist</option>
+              <option value="ProgramAssociate">Program Associate</option>
               <option value="Admin">Administrator</option>
             </select>
           </div>
@@ -499,6 +501,7 @@ function EditUserModal({ user, onClose }: { user: User; onClose: () => void }) {
               <option value="LabTech">Lab Scientist</option>
               <option value="Psychologist">Psychologist</option>
               <option value="Receptionist">Receptionist</option>
+              <option value="ProgramAssociate">Program Associate</option>
               <option value="Admin">Administrator</option>
             </select>
           </div>

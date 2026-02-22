@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useRef } from "react";
 import { useForm } from "react-hook-form";
-import { Save } from "lucide-react";
+import { Save, Loader2 } from "lucide-react";
 import {
   HtsInitialRequest,
   TARGET_GROUP_CODES,
@@ -19,9 +19,10 @@ interface HtsInitialFormProps {
   initialData?: Partial<HtsInitialRequest>;
   onSave: (data: HtsInitialRequest) => void;
   loading?: boolean;
+  preselectedPatientId?: string | null;
 }
 
-export default function HtsInitialForm({ initialData, onSave, loading }: HtsInitialFormProps) {
+export default function HtsInitialForm({ initialData, onSave, loading, preselectedPatientId }: HtsInitialFormProps) {
   const {
     register,
     handleSubmit,
@@ -40,6 +41,7 @@ export default function HtsInitialForm({ initialData, onSave, loading }: HtsInit
   const [patientSearch, setPatientSearch] = useState("");
   const [showPatientDropdown, setShowPatientDropdown] = useState(false);
   const [selectedPatient, setSelectedPatient] = useState<any>(null);
+  const [prefillLoading, setPrefillLoading] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
   const searchTimeoutRef = useRef<NodeJS.Timeout | null>(null);
 
@@ -81,6 +83,26 @@ export default function HtsInitialForm({ initialData, onSave, loading }: HtsInit
       }
     };
   }, [patientSearch, selectedPatient]);
+
+  // Prefill patient from query parameter when present
+  useEffect(() => {
+    const prefillPatient = async () => {
+      if (!preselectedPatientId || selectedPatient) return;
+      try {
+        setPrefillLoading(true);
+        const patient = await patientsApi.getById(preselectedPatientId);
+        setSelectedPatient(patient);
+        setValue("patient_id", patient.id);
+        setPatientSearch(`${patient.first_name} ${patient.last_name} - ${patient.hospital_number || patient.hospital_no}`);
+        setShowPatientDropdown(false);
+      } catch (error) {
+        console.error("Failed to prefill patient for HTS:", error);
+      } finally {
+        setPrefillLoading(false);
+      }
+    };
+    prefillPatient();
+  }, [preselectedPatientId, selectedPatient, setValue]);
 
   const handlePatientSelect = (patient: any) => {
     setSelectedPatient(patient);
@@ -145,6 +167,23 @@ export default function HtsInitialForm({ initialData, onSave, loading }: HtsInit
     <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
       {/* Patient Selection - Searchable */}
       <div className="relative" ref={dropdownRef}>
+        {preselectedPatientId && prefillLoading ? (
+          <div className="mb-3 rounded-lg bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 p-4">
+            <div className="flex items-center gap-3">
+              <Loader2 className="h-5 w-5 text-blue-600 dark:text-blue-400 animate-spin" />
+              <p className="text-sm text-blue-800 dark:text-blue-200">Loading patient information...</p>
+            </div>
+          </div>
+        ) : preselectedPatientId && selectedPatient ? (
+          <div className="mb-3 rounded-lg bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 p-3">
+            <p className="text-sm text-blue-800 dark:text-blue-200">
+              Patient pre-selected:{' '}
+              <strong>
+                {selectedPatient.hospital_number || selectedPatient.hospital_no} - {selectedPatient.first_name} {selectedPatient.last_name}
+              </strong>
+            </p>
+          </div>
+        ) : null}
         <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
           Patient <span className="text-red-500">*</span>
         </label>
@@ -155,9 +194,11 @@ export default function HtsInitialForm({ initialData, onSave, loading }: HtsInit
             onChange={(e) => handleSearchChange(e.target.value)}
             onFocus={() => setShowPatientDropdown(true)}
             placeholder="Search by name or hospital number..."
+            disabled={!!(preselectedPatientId && selectedPatient)}
             className="block w-full pl-10 pr-10 py-2.5 text-sm border border-gray-300 dark:border-gray-600 rounded-lg
                      focus:ring-2 focus:ring-purple-500 focus:border-purple-500
                      dark:bg-gray-700 dark:text-white dark:placeholder-gray-400
+                     disabled:opacity-70 disabled:cursor-not-allowed
                      transition-all duration-200 ease-in-out
                      hover:border-gray-400 dark:hover:border-gray-500"
           />

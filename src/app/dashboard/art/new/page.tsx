@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { useRouter } from 'next/navigation';
+import { useRouter, useSearchParams } from 'next/navigation';
 import { useForm } from 'react-hook-form';
 import { 
   artApi, 
@@ -28,12 +28,15 @@ type FormData = Omit<CreateArtInformationRequest, 'patient_id'>;
 
 export default function NewArtPage() {
   const router = useRouter();
+  const searchParams = useSearchParams();
+  const preselectedPatientId = searchParams.get('patient_id');
   const [currentStep, setCurrentStep] = useState(1);
   const [selectedPatient, setSelectedPatient] = useState<Patient | null>(null);
   const [patients, setPatients] = useState<Patient[]>([]);
   const [loading, setLoading] = useState(true);
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [prefillLoading, setPrefillLoading] = useState(false);
   const [searchTerm, setSearchTerm] = useState('');
   const [generatedArtNo, setGeneratedArtNo] = useState<string>('');
 
@@ -80,6 +83,24 @@ export default function NewArtPage() {
 
     fetchPatients();
   }, []);
+
+  useEffect(() => {
+    const prefillPatient = async () => {
+      if (!preselectedPatientId || selectedPatient) return;
+      try {
+        setPrefillLoading(true);
+        const patient = await patientsApi.getById(preselectedPatientId);
+        setSelectedPatient(patient);
+        setCurrentStep(2);
+      } catch (err) {
+        console.error('Failed to prefill ART patient:', err);
+      } finally {
+        setPrefillLoading(false);
+      }
+    };
+
+    prefillPatient();
+  }, [preselectedPatientId, selectedPatient]);
 
   const filteredPatients = patients.filter((patient) => {
     if (!searchTerm) return true;
@@ -213,6 +234,18 @@ export default function NewArtPage() {
 
   const renderStep1 = () => (
     <div className="space-y-6">
+      {preselectedPatientId && prefillLoading ? (
+        <div className="rounded-lg bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 p-4">
+          <div className="flex items-center gap-3">
+            <Loader2 className="h-5 w-5 text-blue-600 dark:text-blue-400 animate-spin" />
+            <p className="text-sm text-blue-800 dark:text-blue-300">Loading patient information...</p>
+          </div>
+        </div>
+      ) : preselectedPatientId ? (
+        <div className="bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-lg p-3 text-sm text-blue-800 dark:text-blue-300">
+          Patient pre-selected from registration. You can proceed directly or choose another patient.
+        </div>
+      ) : null}
       <div>
         <h2 className="text-xl font-semibold text-gray-900 dark:text-white mb-2">
           Select Patient
@@ -303,6 +336,23 @@ export default function NewArtPage() {
 
   const renderStep2 = () => (
     <div className="space-y-6">
+      {preselectedPatientId && prefillLoading ? (
+        <div className="rounded-lg bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 p-4">
+          <div className="flex items-center gap-3">
+            <Loader2 className="h-5 w-5 text-blue-600 dark:text-blue-400 animate-spin" />
+            <p className="text-sm text-blue-800 dark:text-blue-300">Loading patient information...</p>
+          </div>
+        </div>
+      ) : preselectedPatientId && selectedPatient ? (
+        <div className="rounded-lg bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 p-3">
+          <p className="text-sm text-blue-800 dark:text-blue-200">
+            Patient pre-selected:{' '}
+            <strong>
+              {selectedPatient.hospital_no} - {selectedPatient.first_name} {selectedPatient.last_name}
+            </strong>
+          </p>
+        </div>
+      ) : null}
       <div className="flex items-center justify-between">
         <div>
           <h2 className="text-xl font-semibold text-gray-900 dark:text-white mb-2">
@@ -315,7 +365,8 @@ export default function NewArtPage() {
         <button
           type="button"
           onClick={() => setCurrentStep(1)}
-          className="text-sm text-[#5b21b6] hover:underline flex items-center gap-1"
+          disabled={!!preselectedPatientId}
+          className="text-sm text-[#5b21b6] hover:underline disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-1"
         >
           <ArrowLeft className="h-4 w-4" />
           Change Patient

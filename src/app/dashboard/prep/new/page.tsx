@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { useRouter } from 'next/navigation';
+import { useRouter, useSearchParams } from 'next/navigation';
 import { prepApi, CreatePrepCommencementRequest, PrepType } from '@/lib/prep';
 import { HtsInitialResponse } from '@/lib/hts';
 import { getErrorMessage } from '@/lib/api';
@@ -24,6 +24,8 @@ const STEPS = [
 
 export default function NewPrepPage() {
   const router = useRouter();
+  const searchParams = useSearchParams();
+  const preselectedPatientId = searchParams.get('patient_id');
   const [currentStep, setCurrentStep] = useState(1);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -64,7 +66,16 @@ export default function NewPrepPage() {
     fetchHtsRecords();
   }, []);
 
+  useEffect(() => {
+    if (!preselectedPatientId || selectedHtsId) return;
+    const patientRecords = htsRecords.filter((record) => record.patient_id === preselectedPatientId);
+    if (patientRecords.length === 1) {
+      setSelectedHtsId(patientRecords[0].id);
+    }
+  }, [preselectedPatientId, htsRecords, selectedHtsId]);
+
   const filteredHtsRecords = htsRecords.filter((record) => {
+    if (preselectedPatientId && record.patient_id !== preselectedPatientId) return false;
     if (!searchTerm) return true;
     const search = searchTerm.toLowerCase();
     return (
@@ -113,6 +124,11 @@ export default function NewPrepPage() {
       case 1:
         return (
           <div className="space-y-6">
+            {preselectedPatientId && (
+              <div className="bg-blue-50 border border-blue-200 rounded-lg p-3 text-sm text-blue-800">
+                Showing HTS records for the pre-selected patient from registration.
+              </div>
+            )}
             <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
               <div className="flex gap-3">
                 <AlertCircle className="h-5 w-5 text-blue-600 flex-shrink-0 mt-0.5" />

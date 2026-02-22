@@ -10,6 +10,10 @@ import {
   frequencyOptions
 } from '@/lib/pharmacy';
 import { getErrorMessage } from '@/lib/api';
+import PrintablePageWrapper from '@/components/common/PrintablePageWrapper';
+import PrintHeader from '@/components/common/PrintHeader';
+import PrintSection from '@/components/common/PrintSection';
+import PrintButton from '@/components/common/PrintButton';
 
 export default function PrescriptionDetailPage() {
   const router = useRouter();
@@ -45,10 +49,6 @@ export default function PrescriptionDetailPage() {
 
   const handleBack = () => {
     router.push('/dashboard/pharmacy');
-  };
-
-  const handlePrint = () => {
-    window.print();
   };
 
   if (loading) {
@@ -98,10 +98,21 @@ export default function PrescriptionDetailPage() {
     return null;
   }
 
+  const prescribedDate = new Date(prescription.prescribed_at).toLocaleDateString();
+  const printedDate = new Date().toLocaleDateString();
+
   return (
+    <PrintablePageWrapper
+      printHeader={
+        <PrintHeader
+          title="Pharmacy Prescription Details"
+          subtitle={`Prescription: ${formatPrescriptionNumber(prescription.prescription_number)} | Date: ${prescribedDate} | Printed: ${printedDate}`}
+        />
+      }
+    >
     <div className="p-6 max-w-5xl mx-auto">
       {/* Header */}
-      <div className="mb-6">
+      <div className="mb-6 no-print">
         <button
           onClick={handleBack}
           className="mb-4 text-[#5b21b6] hover:underline flex items-center text-sm"
@@ -121,19 +132,14 @@ export default function PrescriptionDetailPage() {
             </p>
           </div>
           <div className="flex gap-3">
-            <button
-              onClick={handlePrint}
-              className="inline-flex items-center gap-2 px-4 py-2 rounded-lg border border-[#5b21b6] text-[#5b21b6] text-sm font-medium hover:bg-[#5b21b6] hover:text-white transition-colors print:hidden"
-            >
-              <svg className="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z" />
-              </svg>
-              Print
-            </button>
+            <PrintButton
+              label="Print Record"
+              className="inline-flex items-center gap-2 px-4 py-2 rounded-lg border border-[#5b21b6] text-[#5b21b6] text-sm font-medium hover:bg-[#5b21b6] hover:text-white transition-colors no-print"
+            />
             {prescription.status === 'Pending' && (
               <button
                 onClick={handleDispense}
-                className="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-[#5b21b6] text-white text-sm font-medium hover:bg-[#4c1d95] transition-colors print:hidden"
+                className="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-[#5b21b6] text-white text-sm font-medium hover:bg-[#4c1d95] transition-colors no-print"
               >
                 Dispense Medication
               </button>
@@ -143,14 +149,14 @@ export default function PrescriptionDetailPage() {
       </div>
 
       {/* Status Badge */}
-      <div className="mb-6">
+      <PrintSection className="mb-6">
         <span className={`px-3 py-1 text-sm font-semibold rounded-full ${getPrescriptionStatusColor(prescription.status)}`}>
           {prescription.status}
         </span>
-      </div>
+      </PrintSection>
 
       {/* Patient & Provider Information */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+      <PrintSection className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
         {/* Patient Info */}
         <div className="bg-white dark:bg-gray-800 rounded-xl shadow overflow-hidden">
           <div className="bg-[#5b21b6] px-5 py-3 flex items-center gap-2">
@@ -218,11 +224,11 @@ export default function PrescriptionDetailPage() {
             )}
           </div>
         </div>
-      </div>
+      </PrintSection>
 
       {/* Clinical Information */}
       {(prescription.diagnosis || prescription.clinical_notes) && (
-        <div className="bg-white dark:bg-gray-800 rounded-xl shadow overflow-hidden mb-6">
+        <PrintSection className="bg-white dark:bg-gray-800 rounded-xl shadow overflow-hidden mb-6">
           <div className="bg-[#5b21b6] px-5 py-3 flex items-center gap-2">
             <svg className="h-5 w-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
@@ -245,11 +251,11 @@ export default function PrescriptionDetailPage() {
               </div>
             )}
           </div>
-        </div>
+        </PrintSection>
       )}
 
       {/* Prescription Items */}
-      <div className="bg-white dark:bg-gray-800 rounded-xl shadow overflow-hidden">
+      <PrintSection pageBreakBefore className="bg-white dark:bg-gray-800 rounded-xl shadow overflow-hidden">
         <div className="bg-[#5b21b6] px-5 py-3 flex items-center gap-2">
           <svg className="h-5 w-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19.428 15.428a2 2 0 00-1.022-.547l-2.387-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z" />
@@ -364,7 +370,8 @@ export default function PrescriptionDetailPage() {
             </ul>
           </div>
         )}
-      </div>
+      </PrintSection>
     </div>
+    </PrintablePageWrapper>
   );
 }

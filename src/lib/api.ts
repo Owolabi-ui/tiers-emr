@@ -1,4 +1,6 @@
 import axios, { AxiosError, InternalAxiosRequestConfig } from 'axios';
+import type { UserRole } from './users';
+export type { UserRole } from './users';
 
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8080';
 
@@ -9,6 +11,11 @@ export const api = axios.create({
     'Content-Type': 'application/json',
   },
 });
+
+function isExpectedMissingResource(status?: number, url?: string): boolean {
+  if (status !== 404 || !url) return false;
+  return /\/api\/v1\/psychology\/patients\/[^/]+\/(phq9|gad7|audit-c)\/latest$/.test(url);
+}
 
 // Request interceptor - add auth token
 api.interceptors.request.use(
@@ -36,15 +43,19 @@ api.interceptors.request.use(
 api.interceptors.response.use(
   (response) => response,
   (error: AxiosError<ApiErrorResponse>) => {
-    console.error('[API] Response error:', {
-      status: error.response?.status,
-      statusText: error.response?.statusText,
-      data: error.response?.data,
-      url: error.config?.url,
-    });
+    const status = error.response?.status;
+    const url = error.config?.url;
+    if (!isExpectedMissingResource(status, url)) {
+      console.error('[API] Response error:', {
+        status,
+        statusText: error.response?.statusText,
+        data: error.response?.data,
+        url,
+      });
+    }
     
     // Handle 401 - unauthorized (token invalid/expired)
-    if (error.response?.status === 401) {
+    if (status === 401) {
       console.warn('[API] 401 Unauthorized - Token expired or invalid.');
       console.warn('[API] TEMPORARILY NOT LOGGING OUT FOR DEBUGGING');
       
@@ -99,8 +110,6 @@ export interface User {
   clinic_id?: string | null;
   phone?: string | null;
 }
-
-export type UserRole = 'Admin' | 'Doctor' | 'Nurse' | 'Pharmacist' | 'LabTech' | 'Receptionist';
 
 export interface RegisterRequest {
   email: string;

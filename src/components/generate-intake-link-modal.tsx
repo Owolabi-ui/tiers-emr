@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
+import { useRouter } from 'next/navigation';
 import QRCode from 'qrcode';
 import { psychologyIntakeApi, GenerateIntakeTokenResponse } from '@/lib/psychology-intake';
 import { getErrorMessage } from '@/lib/api';
@@ -11,9 +12,17 @@ interface GenerateIntakeLinkModalProps {
   patientName: string;
   onClose: () => void;
   onSuccess?: () => void;
+  onSubmitted?: () => void;
 }
 
-export function GenerateIntakeLinkModal({ patientId, patientName, onClose, onSuccess }: GenerateIntakeLinkModalProps) {
+export function GenerateIntakeLinkModal({
+  patientId,
+  patientName,
+  onClose,
+  onSuccess,
+  onSubmitted,
+}: GenerateIntakeLinkModalProps) {
+  const router = useRouter();
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [intakeData, setIntakeData] = useState<GenerateIntakeTokenResponse | null>(null);
@@ -23,6 +32,28 @@ export function GenerateIntakeLinkModal({ patientId, patientName, onClose, onSuc
   const [showOptions, setShowOptions] = useState(true);
   const [selectedOption, setSelectedOption] = useState<'share' | 'fill' | null>(null);
 
+  const resolveShareableLink = (link: string) => {
+    const isDevelopment = process.env.NODE_ENV === 'development';
+
+    if (/^https?:\/\//i.test(link)) {
+      if (isDevelopment) {
+        try {
+          const parsed = new URL(link);
+          return `${window.location.origin}${parsed.pathname}${parsed.search}${parsed.hash}`;
+        } catch {
+          return link;
+        }
+      }
+      return link;
+    }
+
+    const baseUrl = (
+      isDevelopment ? window.location.origin : (process.env.NEXT_PUBLIC_APP_URL || window.location.origin)
+    ).replace(/\/$/, '');
+    const normalizedPath = link.startsWith('/') ? link : `/${link}`;
+    return `${baseUrl}${normalizedPath}`;
+  };
+
   const handleGenerate = async () => {
     try {
       setLoading(true);
@@ -31,12 +62,8 @@ export function GenerateIntakeLinkModal({ patientId, patientName, onClose, onSuc
       console.log('[GenerateIntakeModal] Generating token for patient:', patientId);
       const response = await psychologyIntakeApi.generateToken({ patient_id: patientId });
       console.log('[GenerateIntakeModal] Token response:', response);
-      
-      // Create full URL from relative path using network-accessible URL
-      const baseUrl = process.env.NEXT_PUBLIC_APP_URL || window.location.origin;
-      const fullUrl = `${baseUrl}${response.shareable_link}`;
-      
-      // Update response with full URL
+
+      const fullUrl = resolveShareableLink(response.shareable_link);
       const updatedResponse = { ...response, shareable_link: fullUrl };
       setIntakeData(updatedResponse);
       
@@ -68,8 +95,8 @@ export function GenerateIntakeLinkModal({ patientId, patientName, onClose, onSuc
     if (option === 'share') {
       handleGenerate();
     } else if (option === 'fill') {
-      // Navigate to intake form with patient ID pre-filled
-      window.location.href = `/dashboard/psychology/intake/fill/${patientId}`;
+      // Client-side navigation keeps app context and avoids full reload.
+      router.push(`/dashboard/psychology/intake/new/${patientId}?mode=fill`);
     }
   };
 
@@ -79,18 +106,20 @@ export function GenerateIntakeLinkModal({ patientId, patientName, onClose, onSuc
 
     const pollInterval = setInterval(async () => {
       try {
-        const { completed } = await psychologyIntakeApi.checkIntakeStatus(patientId);
-        if (completed) {
+        // Token-level polling avoids false positives from older completed intake rows.
+        await psychologyIntakeApi.getPublicForm(intakeData.token);
+      } catch (err: any) {
+        const message = String(err?.response?.data?.error || err?.message || '').toLowerCase();
+        if (message.includes('token already used')) {
           setFormSubmitted(true);
+          onSubmitted?.();
           clearInterval(pollInterval);
         }
-      } catch (err) {
-        console.error('Error polling intake status:', err);
       }
     }, 3000); // Check every 3 seconds
 
     return () => clearInterval(pollInterval);
-  }, [intakeData, patientId, formSubmitted]);
+  }, [intakeData, formSubmitted]);
 
   const handleCopyLink = async () => {
     if (!intakeData) return;

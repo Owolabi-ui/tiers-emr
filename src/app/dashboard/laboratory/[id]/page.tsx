@@ -1,38 +1,43 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { useParams, useRouter } from 'next/navigation';
+import { useParams } from 'next/navigation';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
 import {
   laboratoryApi,
   LabOrderDetailsResponse,
+  LabResultData,
+  LabTestOrder,
+  EnterResultRequest,
+  CategoricalResult,
+  GlucoseResult,
+  UrinalysisResult,
   getStatusColor,
   getPriorityColor,
   getInterpretationColor,
   formatOrderNumber,
   resultInterpretationOptions,
   ResultInterpretation,
-  isQualitativeTest,
-  getQualitativeOptions,
+  getTestResultType,
+  getCategoricalOptions,
 } from '@/lib/laboratory';
 import { getErrorMessage } from '@/lib/api';
 import {
   ArrowLeft,
   Loader2,
   FlaskConical,
-  Calendar,
   FileText,
   AlertCircle,
   User,
   Clock,
-  CheckCircle2,
   XCircle,
   Microscope,
   ClipboardCheck,
   Send,
   History,
+  Info,
 } from 'lucide-react';
 import Link from 'next/link';
 
@@ -40,17 +45,10 @@ import Link from 'next/link';
 // FORM SCHEMAS
 // ============================================================================
 
-const resultFormSchema = z.object({
-  result_value: z.string().min(1, 'Result value is required'),
-  result_interpretation: z.enum(['Normal', 'Abnormal', 'Critical', 'Indeterminate', 'Pending']),
-  result_notes: z.string().optional(),
-});
-
 const cancelFormSchema = z.object({
   cancellation_reason: z.string().min(1, 'Cancellation reason is required'),
 });
 
-type ResultFormData = z.infer<typeof resultFormSchema>;
 type CancelFormData = z.infer<typeof cancelFormSchema>;
 
 // ============================================================================
@@ -59,24 +57,23 @@ type CancelFormData = z.infer<typeof cancelFormSchema>;
 
 export default function LabOrderDetailPage() {
   const params = useParams();
-  const router = useRouter();
   const orderId = params.id as string;
 
   const [data, setData] = useState<LabOrderDetailsResponse | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [actionLoading, setActionLoading] = useState(false);
+  const [repeatTests, setRepeatTests] = useState<LabTestOrder[]>([]);
 
   // Modal states
   const [showResultModal, setShowResultModal] = useState(false);
   const [showCancelModal, setShowCancelModal] = useState(false);
-
-  const resultForm = useForm<ResultFormData>({
-    resolver: zodResolver(resultFormSchema),
-    defaultValues: {
-      result_interpretation: 'Normal',
-    },
-  });
+  const [resultValue, setResultValue] = useState('');
+  const [resultUnit, setResultUnit] = useState('');
+  const [resultNotes, setResultNotes] = useState('');
+  const [resultInterpretation, setResultInterpretation] = useState<ResultInterpretation>('Normal');
+  const [resultData, setResultData] = useState<LabResultData | null>(null);
+  const testResultType = getTestResultType(data?.order?.test_info?.test_code || '');
 
   const cancelForm = useForm<CancelFormData>({
     resolver: zodResolver(cancelFormSchema),
@@ -86,13 +83,38 @@ export default function LabOrderDetailPage() {
     loadData();
   }, [orderId]);
 
+  useEffect(() => {
+    if (!data?.order?.id) {
+      setRepeatTests([]);
+      return;
+    }
+
+    const fetchRepeatTests = async () => {
+      try {
+        const repeats = await laboratoryApi.getRepeatTests(data.order.id);
+        setRepeatTests(repeats || []);
+      } catch {
+        setRepeatTests([]);
+      }
+    };
+
+    fetchRepeatTests();
+  }, [data?.order?.id]);
+
+  useEffect(() => {
+    if (!showResultModal) return;
+    setResultValue('');
+    setResultUnit('');
+    setResultNotes('');
+    setResultData(null);
+    setResultInterpretation('Normal');
+  }, [showResultModal]);
+
   const loadData = async () => {
     try {
       setLoading(true);
       setError(null);
       const response = await laboratoryApi.getOrderById(orderId);
-      console.log('Lab order data:', response);
-      console.log('Test info:', response.order?.test_info);
       setData(response);
     } catch (err) {
       setError(getErrorMessage(err));
@@ -137,18 +159,47 @@ export default function LabOrderDetailPage() {
     }
   };
 
-  const handleEnterResult = async (formData: ResultFormData) => {
+  const handleEnterResult = async () => {
     try {
       setActionLoading(true);
       setError(null);
-      await laboratoryApi.enterResult(orderId, {
-        result_value: formData.result_value,
-        result_interpretation: formData.result_interpretation as ResultInterpretation,
-        result_notes: formData.result_notes || null,
-      });
+
+      const payload: EnterResultRequest = {
+        result_value: null,
+        result_data: null,
+        result_unit: null,
+        result_interpretation: resultInterpretation,
+        result_notes: resultNotes || null,
+      };
+
+      if (testResultType === 'numeric') {
+        if (!resultValue.trim()) {
+          setError('Result value is required');
+          return;
+        }
+        payload.result_value = resultValue.trim();
+        payload.result_unit = resultUnit.trim() || null;
+      } else if (testResultType === 'categorical') {
+        const categorical = resultData as CategoricalResult | null;
+        if (!categorical?.result) {
+          setError('Please select a result value');
+          return;
+        }
+        payload.result_data = categorical;
+      } else if (testResultType === 'glucose') {
+        const glucose = resultData as GlucoseResult | null;
+        if (!glucose?.test_type || typeof glucose.value !== 'number' || Number.isNaN(glucose.value)) {
+          setError('Please provide glucose test type and value');
+          return;
+        }
+        payload.result_data = glucose;
+      } else {
+        payload.result_data = resultData || {};
+      }
+
+      await laboratoryApi.enterResult(orderId, payload);
       await loadData();
       setShowResultModal(false);
-      resultForm.reset();
     } catch (err) {
       setError(getErrorMessage(err));
     } finally {
@@ -242,6 +293,50 @@ export default function LabOrderDetailPage() {
   const canReview = order.status === 'Completed';
   const canCommunicate = order.status === 'Reviewed';
   const canCancel = !['Cancelled', 'Communicated'].includes(order.status);
+
+  const renderResultValue = (currentOrder: LabTestOrder) => {
+    if (currentOrder.result_data) {
+      const type = getTestResultType(currentOrder.test_info?.test_code || '');
+
+      if (type === 'categorical') {
+        const categorical = currentOrder.result_data as CategoricalResult;
+        return <span className="text-lg font-bold text-gray-900 dark:text-white">{categorical.result}</span>;
+      }
+
+      if (type === 'glucose') {
+        const glucose = currentOrder.result_data as GlucoseResult;
+        return (
+          <div>
+            <span className="text-lg font-bold text-gray-900 dark:text-white">{glucose.value} mg/dL</span>
+            <span className="ml-2 text-sm text-gray-500 dark:text-gray-400">({glucose.test_type})</span>
+          </div>
+        );
+      }
+
+      if (type === 'urinalysis') {
+        const urinalysis = currentOrder.result_data as UrinalysisResult;
+        return (
+          <div className="grid grid-cols-2 gap-3">
+            {Object.entries(urinalysis).map(([key, value]) =>
+              value ? (
+                <div key={key} className="flex items-center justify-between border-b border-gray-200 dark:border-gray-700 pb-1">
+                  <span className="text-sm font-medium capitalize text-gray-700 dark:text-gray-300">{key}</span>
+                  <span className="text-sm text-gray-900 dark:text-white">{value}</span>
+                </div>
+              ) : null
+            )}
+          </div>
+        );
+      }
+    }
+
+    return (
+      <div>
+        <span className="text-lg font-bold text-gray-900 dark:text-white">{currentOrder.result_value || 'N/A'}</span>
+        {currentOrder.result_unit && <span className="ml-2 text-sm text-gray-500 dark:text-gray-400">{currentOrder.result_unit}</span>}
+      </div>
+    );
+  };
 
   return (
     <div className="space-y-6">
@@ -401,23 +496,27 @@ export default function LabOrderDetailPage() {
           </div>
 
           {/* Result Information */}
-          {order.result_value && (
+          {(order.result_value || order.result_data) && (
             <div className="rounded-xl border border-black/10 dark:border-white/15 bg-white dark:bg-neutral-900">
               <div className="bg-[#5b21b6] px-5 py-3 flex items-center gap-2 rounded-t-xl">
                 <FileText className="h-5 w-5 text-white" />
                 <h2 className="font-semibold text-white">Test Result</h2>
               </div>
               <div className="p-6 space-y-4">
-                <div className="grid grid-cols-2 gap-4">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div>
-                    <p className="text-xs text-gray-500 dark:text-gray-400">Result Value</p>
-                    <p className="text-lg font-bold text-gray-900 dark:text-white">{order.result_value}</p>
+                    <p className="text-xs text-gray-500 dark:text-gray-400 mb-1">Result</p>
+                    {renderResultValue(order)}
                   </div>
                   <div>
                     <p className="text-xs text-gray-500 dark:text-gray-400">Interpretation</p>
-                    <span className={`inline-flex items-center px-2 py-1 rounded-full text-xs font-medium ${getInterpretationColor(order.result_interpretation!)}`}>
-                      {order.result_interpretation}
-                    </span>
+                    {order.result_interpretation ? (
+                      <span className={`inline-flex items-center px-2 py-1 rounded-full text-xs font-medium ${getInterpretationColor(order.result_interpretation)}`}>
+                        {order.result_interpretation}
+                      </span>
+                    ) : (
+                      <p className="text-sm text-gray-500 dark:text-gray-400">N/A</p>
+                    )}
                   </div>
                 </div>
                 {order.test_info?.reference_range_text && (
@@ -434,6 +533,66 @@ export default function LabOrderDetailPage() {
                     <p className="text-sm text-gray-700 dark:text-gray-300">{order.result_notes}</p>
                   </div>
                 )}
+              </div>
+            </div>
+          )}
+
+          {/* Repeat/Confirmatory Status */}
+          {order.requires_repeat && (
+            <div className="rounded-xl border border-yellow-300 dark:border-yellow-800 bg-yellow-50 dark:bg-yellow-900/20 p-4">
+              <div className="flex items-start gap-2">
+                <AlertCircle className="h-5 w-5 text-yellow-700 dark:text-yellow-300 mt-0.5" />
+                <div>
+                  <p className="text-sm font-semibold text-yellow-800 dark:text-yellow-200">Repeat Testing Required</p>
+                  <p className="text-sm text-yellow-700 dark:text-yellow-300 mt-1">
+                    {order.repeat_reason || 'This result requires repeat/confirmatory testing.'}
+                  </p>
+                </div>
+              </div>
+            </div>
+          )}
+
+          {repeatTests.length > 0 && (
+            <div className="rounded-xl border border-black/10 dark:border-white/15 bg-white dark:bg-neutral-900">
+              <div className="bg-[#5b21b6] px-5 py-3 flex items-center gap-2 rounded-t-xl">
+                <History className="h-5 w-5 text-white" />
+                <h2 className="font-semibold text-white">Repeat / Confirmatory Tests</h2>
+              </div>
+              <div className="p-6 space-y-3">
+                {repeatTests.map((test) => (
+                  <div key={test.id} className="rounded-lg border border-gray-200 dark:border-gray-700 p-3 flex items-center justify-between">
+                    <div>
+                      <p className="text-sm font-medium text-gray-900 dark:text-white">{test.order_number}</p>
+                      <p className="text-xs text-gray-500 dark:text-gray-400">{test.repeat_reason || 'Repeat order'}</p>
+                    </div>
+                    <Link
+                      href={`/dashboard/laboratory/${test.id}`}
+                      className="text-sm font-medium text-[#5b21b6] hover:underline"
+                    >
+                      View Details
+                    </Link>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
+
+          {order.parent_order_id && (
+            <div className="rounded-xl border border-blue-300 dark:border-blue-800 bg-blue-50 dark:bg-blue-900/20 p-4">
+              <div className="flex items-start gap-2">
+                <Info className="h-5 w-5 text-blue-700 dark:text-blue-300 mt-0.5" />
+                <div>
+                  <p className="text-sm font-semibold text-blue-800 dark:text-blue-200">Repeat / Confirmatory Test</p>
+                  <p className="text-sm text-blue-700 dark:text-blue-300 mt-1">
+                    This order was generated from a prior result. {order.repeat_reason ? `Reason: ${order.repeat_reason}` : ''}
+                  </p>
+                  <Link
+                    href={`/dashboard/laboratory/${order.parent_order_id}`}
+                    className="mt-2 inline-block text-sm font-medium text-blue-700 dark:text-blue-300 hover:underline"
+                  >
+                    View Original Test
+                  </Link>
+                </div>
               </div>
             </div>
           )}
@@ -562,43 +721,122 @@ export default function LabOrderDetailPage() {
                 <XCircle className="h-5 w-5" />
               </button>
             </div>
-            <form onSubmit={resultForm.handleSubmit(handleEnterResult)} className="p-6 space-y-4">
+            <form
+              onSubmit={(e) => {
+                e.preventDefault();
+                handleEnterResult();
+              }}
+              className="p-6 space-y-4"
+            >
               <div>
                 <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                   Result Value <span className="text-red-500">*</span>
                 </label>
-                {data?.order?.test_info && isQualitativeTest(data.order.test_info.test_code) ? (
-                  // Qualitative test - dropdown
+
+                {testResultType === 'categorical' && (
                   <select
-                    {...resultForm.register('result_value')}
+                    value={(resultData as CategoricalResult | null)?.result || ''}
+                    onChange={(e) => setResultData({ result: e.target.value })}
                     className="w-full h-10 px-4 rounded-lg border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-neutral-800 text-sm text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-[#5b21b6]/50"
                   >
                     <option value="">Select result</option>
-                    {getQualitativeOptions(data.order.test_info.test_code).map((option) => (
+                    {getCategoricalOptions(data.order.test_info.test_code).map((option) => (
                       <option key={option} value={option}>
                         {option}
                       </option>
                     ))}
                   </select>
-                ) : (
-                  // Quantitative test - numeric input
-                  <input
-                    {...resultForm.register('result_value')}
-                    type="text"
-                    placeholder="Enter numeric value..."
-                    className="w-full h-10 px-4 rounded-lg border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-neutral-800 text-sm text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-[#5b21b6]/50"
-                  />
                 )}
-                {resultForm.formState.errors.result_value && (
-                  <p className="text-sm text-red-600 dark:text-red-400 mt-1">
-                    {resultForm.formState.errors.result_value.message}
-                  </p>
+
+                {testResultType === 'numeric' && (
+                  <div className="space-y-2">
+                    <input
+                      value={resultValue}
+                      onChange={(e) => setResultValue(e.target.value)}
+                      type="text"
+                      placeholder="Enter result value..."
+                      className="w-full h-10 px-4 rounded-lg border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-neutral-800 text-sm text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-[#5b21b6]/50"
+                    />
+                    <input
+                      value={resultUnit}
+                      onChange={(e) => setResultUnit(e.target.value)}
+                      type="text"
+                      placeholder="Result unit (optional)"
+                      className="w-full h-10 px-4 rounded-lg border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-neutral-800 text-sm text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-[#5b21b6]/50"
+                    />
+                  </div>
                 )}
-                {data?.order?.test_info && !isQualitativeTest(data.order.test_info.test_code) && data.order.test_info.reference_range_text && (
-                  <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">
-                    Reference: {data.order.test_info.reference_range_text}
-                  </p>
+
+                {testResultType === 'glucose' && (
+                  <div className="space-y-2">
+                    <select
+                      value={(resultData as GlucoseResult | null)?.test_type || ''}
+                      onChange={(e) =>
+                        setResultData({
+                          ...((resultData as GlucoseResult | null) || {}),
+                          test_type: e.target.value as 'FBS' | 'RBS',
+                        } as GlucoseResult)
+                      }
+                      className="w-full h-10 px-4 rounded-lg border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-neutral-800 text-sm text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-[#5b21b6]/50"
+                    >
+                      <option value="">Select glucose type</option>
+                      <option value="FBS">FBS (Fasting Blood Sugar)</option>
+                      <option value="RBS">RBS (Random Blood Sugar)</option>
+                    </select>
+                    <input
+                      type="number"
+                      step="0.1"
+                      value={typeof (resultData as GlucoseResult | null)?.value === 'number' ? (resultData as GlucoseResult).value : ''}
+                      onChange={(e) =>
+                        setResultData({
+                          ...((resultData as GlucoseResult | null) || {}),
+                          value: Number(e.target.value),
+                        } as GlucoseResult)
+                      }
+                      placeholder="Enter glucose value (mg/dL)"
+                      className="w-full h-10 px-4 rounded-lg border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-neutral-800 text-sm text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-[#5b21b6]/50"
+                    />
+                  </div>
                 )}
+
+                {testResultType === 'urinalysis' && (
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 max-h-64 overflow-y-auto pr-1">
+                    {[
+                      { key: 'sg', label: 'Specific Gravity (SG)' },
+                      { key: 'ph', label: 'pH' },
+                      { key: 'leucocytes', label: 'Leucocytes' },
+                      { key: 'nitrite', label: 'Nitrite' },
+                      { key: 'protein', label: 'Protein' },
+                      { key: 'glucose', label: 'Glucose' },
+                      { key: 'ketone', label: 'Ketone' },
+                      { key: 'urobilinogen', label: 'Urobilinogen' },
+                      { key: 'bilirubin', label: 'Bilirubin' },
+                      { key: 'blood', label: 'Blood' },
+                    ].map((field) => (
+                      <input
+                        key={field.key}
+                        type="text"
+                        value={(resultData as UrinalysisResult | null)?.[field.key as keyof UrinalysisResult] || ''}
+                        onChange={(e) =>
+                          setResultData({
+                            ...((resultData as UrinalysisResult | null) || {}),
+                            [field.key]: e.target.value,
+                          })
+                        }
+                        placeholder={field.label}
+                        className="w-full h-10 px-3 rounded-lg border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-neutral-800 text-sm text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-[#5b21b6]/50"
+                      />
+                    ))}
+                  </div>
+                )}
+
+                {data?.order?.test_info &&
+                  testResultType === 'numeric' &&
+                  data.order.test_info.reference_range_text && (
+                    <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">
+                      Reference: {data.order.test_info.reference_range_text}
+                    </p>
+                  )}
               </div>
 
               <div>
@@ -606,7 +844,8 @@ export default function LabOrderDetailPage() {
                   Interpretation <span className="text-red-500">*</span>
                 </label>
                 <select
-                  {...resultForm.register('result_interpretation')}
+                  value={resultInterpretation}
+                  onChange={(e) => setResultInterpretation(e.target.value as ResultInterpretation)}
                   className="w-full h-10 px-4 rounded-lg border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-neutral-800 text-sm text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-[#5b21b6]/50"
                 >
                   {resultInterpretationOptions.map((option) => (
@@ -622,7 +861,8 @@ export default function LabOrderDetailPage() {
                   Result Notes
                 </label>
                 <textarea
-                  {...resultForm.register('result_notes')}
+                  value={resultNotes}
+                  onChange={(e) => setResultNotes(e.target.value)}
                   rows={3}
                   placeholder="Enter any additional notes..."
                   className="w-full px-4 py-2 rounded-lg border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-neutral-800 text-sm text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-[#5b21b6]/50"

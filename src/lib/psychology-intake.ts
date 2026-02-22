@@ -4,7 +4,16 @@ import { api } from './api';
 // Enums
 export type ScreeningFrequency = 'Not at all' | 'Several days' | 'More than half the days' | 'Nearly every day';
 export type SubstanceUseFrequency = 'Frequently' | 'Sometimes' | 'Rarely' | 'Never';
-export type ReferralSource = 'Google search' | 'Social media' | 'Friend' | 'Family' | 'Healthcare provider' | 'Workplace/school' | 'Returning client' | 'Community org' | 'Other';
+export type ReferralSource =
+  | 'Google search'
+  | 'Social media (Instagram, TikTok, etc.)'
+  | 'Referral from a friend'
+  | 'Referral from family member'
+  | 'Referral from a healthcare provider'
+  | 'Workplace or school referral'
+  | 'Returning client'
+  | 'Community organization'
+  | 'Other';
 export type SessionPreference = 'Physical' | 'Virtual/Online';
 export type SuicideRiskLevel = 'None' | 'Low' | 'Moderate' | 'High';
 

@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useEffect, useCallback } from 'react';
-import { useRouter } from 'next/navigation';
+import { useRouter, useSearchParams } from 'next/navigation';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
@@ -33,7 +33,7 @@ import Link from 'next/link';
 const labOrderFormSchema = z.object({
   patient_id: z.string().uuid('Please select a patient'),
   test_id: z.string().uuid('Please select a lab test'),
-  priority: z.enum(['Routine', 'Urgent', 'ASAP', 'STAT']),
+  priority: z.enum(['Routine', 'Urgent', 'STAT']),
   clinical_notes: z.string().optional(),
 });
 
@@ -45,6 +45,8 @@ type LabOrderFormData = z.infer<typeof labOrderFormSchema>;
 
 export default function NewLabOrderPage() {
   const router = useRouter();
+  const searchParams = useSearchParams();
+  const preselectedPatientId = searchParams.get('patient_id');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -53,6 +55,7 @@ export default function NewLabOrderPage() {
   const [searchResults, setSearchResults] = useState<Patient[]>([]);
   const [searchLoading, setSearchLoading] = useState(false);
   const [selectedPatient, setSelectedPatient] = useState<Patient | null>(null);
+  const [prefillLoading, setPrefillLoading] = useState(false);
 
   // Lab test catalog
   const [labTests, setLabTests] = useState<LabTestCatalog[]>([]);
@@ -103,6 +106,8 @@ export default function NewLabOrderPage() {
 
   // Debounced patient search
   useEffect(() => {
+    if (preselectedPatientId) return;
+
     if (!patientSearch.trim()) {
       setSearchResults([]);
       return;
@@ -134,7 +139,27 @@ export default function NewLabOrderPage() {
       clearTimeout(timeoutId);
       setSearchLoading(false);
     };
-  }, [patientSearch]);
+  }, [patientSearch, preselectedPatientId]);
+
+  // Prefill patient from query parameter
+  useEffect(() => {
+    const prefillPatient = async () => {
+      if (!preselectedPatientId || selectedPatient) return;
+      try {
+        setPrefillLoading(true);
+        const patient = await patientsApi.getById(preselectedPatientId);
+        setSelectedPatient(patient);
+        setValue('patient_id', patient.id);
+        setPatientSearch(`${patient.first_name} ${patient.last_name}`);
+      } catch (err) {
+        console.error('Failed to prefill laboratory patient:', err);
+      } finally {
+        setPrefillLoading(false);
+      }
+    };
+
+    prefillPatient();
+  }, [preselectedPatientId, selectedPatient, setValue]);
 
   const handlePatientSelect = (patient: Patient) => {
     setSelectedPatient(patient);
@@ -205,8 +230,26 @@ export default function NewLabOrderPage() {
             <h2 className="font-semibold text-white">Patient Selection</h2>
           </div>
           <div className="p-6 space-y-4">
+            {preselectedPatientId && prefillLoading ? (
+              <div className="rounded-lg bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 p-4">
+                <div className="flex items-center gap-3">
+                  <Loader2 className="h-5 w-5 text-blue-600 dark:text-blue-400 animate-spin" />
+                  <p className="text-sm text-blue-800 dark:text-blue-200">Loading patient information...</p>
+                </div>
+              </div>
+            ) : preselectedPatientId && selectedPatient ? (
+              <div className="rounded-lg bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 p-3">
+                <p className="text-sm text-blue-800 dark:text-blue-200">
+                  Patient pre-selected:{' '}
+                  <strong>
+                    {selectedPatient.hospital_no} - {selectedPatient.first_name} {selectedPatient.last_name}
+                  </strong>
+                </p>
+              </div>
+            ) : null}
             {!selectedPatient ? (
               <>
+                <input type="hidden" {...register('patient_id')} />
                 <div className="relative">
                   <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-400" />
                   <input
@@ -214,6 +257,7 @@ export default function NewLabOrderPage() {
                     placeholder="Search by patient name or staff number..."
                     value={patientSearch}
                     onChange={(e) => setPatientSearch(e.target.value)}
+                    disabled={!!preselectedPatientId}
                     className="w-full h-12 pl-10 pr-4 rounded-lg border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-neutral-800 text-sm text-gray-900 dark:text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-[#5b21b6]/50"
                   />
                   {searchLoading && (
@@ -248,6 +292,7 @@ export default function NewLabOrderPage() {
               </>
             ) : (
               <div className="flex items-center justify-between p-4 bg-[#5b21b6]/10 dark:bg-[#5b21b6]/20 rounded-lg">
+                <input type="hidden" {...register('patient_id')} />
                 <div>
                   <p className="font-medium text-gray-900 dark:text-white">
                     {selectedPatient.first_name} {selectedPatient.middle_name ? `${selectedPatient.middle_name} ` : ''}{selectedPatient.last_name}
@@ -259,6 +304,7 @@ export default function NewLabOrderPage() {
                 <button
                   type="button"
                   onClick={handleClearPatient}
+                  disabled={!!preselectedPatientId}
                   className="p-2 hover:bg-gray-200 dark:hover:bg-neutral-700 rounded-lg transition-colors"
                 >
                   <X className="h-5 w-5 text-gray-500" />

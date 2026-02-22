@@ -54,6 +54,28 @@ export function GenerateAssessmentLinkModal({
 
   const config = assessmentConfig[assessmentType];
 
+  const resolveShareableLink = (link: string) => {
+    const isDevelopment = process.env.NODE_ENV === 'development';
+
+    if (/^https?:\/\//i.test(link)) {
+      if (isDevelopment) {
+        try {
+          const parsed = new URL(link);
+          return `${window.location.origin}${parsed.pathname}${parsed.search}${parsed.hash}`;
+        } catch {
+          return link;
+        }
+      }
+      return link;
+    }
+
+    const baseUrl = (
+      isDevelopment ? window.location.origin : (process.env.NEXT_PUBLIC_APP_URL || window.location.origin)
+    ).replace(/\/$/, '');
+    const normalizedPath = link.startsWith('/') ? link : `/${link}`;
+    return `${baseUrl}${normalizedPath}`;
+  };
+
   const handleGenerate = async () => {
     try {
       setLoading(true);
@@ -65,10 +87,7 @@ export function GenerateAssessmentLinkModal({
         assessment_type: assessmentType,
       });
       
-      // Create full URL from relative path using network-accessible URL
-      // Use NEXT_PUBLIC_APP_URL if set, otherwise fall back to window.location.origin
-      const baseUrl = process.env.NEXT_PUBLIC_APP_URL || window.location.origin;
-      const fullUrl = `${baseUrl}${response.shareable_link}`;
+      const fullUrl = resolveShareableLink(response.shareable_link);
       
       setAssessmentToken(response.token);
       setShareableLink(fullUrl);

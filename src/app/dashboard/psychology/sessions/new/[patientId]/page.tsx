@@ -4,7 +4,6 @@ import { useState } from 'react';
 import { useRouter, useParams } from 'next/navigation';
 import { useForm } from 'react-hook-form';
 import { psychologyApi, CreateSessionRequest, sessionTypeOptions } from '@/lib/psychology';
-import { appointmentsApi, CreateAppointmentRequest } from '@/lib/appointments';
 import { getErrorMessage } from '@/lib/api';
 import {
   ArrowLeft,
@@ -54,8 +53,9 @@ export default function NewSessionPage() {
   const [error, setError] = useState<string | null>(null);
   const [concerns, setConcerns] = useState<string[]>([]);
   const [interventions, setInterventions] = useState<string[]>([]);
+  const [scheduleNextSession, setScheduleNextSession] = useState(false);
 
-  const { register, handleSubmit, watch, setValue, formState: { errors } } = useForm<CreateSessionRequest>({
+  const { register, handleSubmit, formState: { errors } } = useForm<CreateSessionRequest>({
     defaultValues: {
       patient_id: patientId,
       session_date: new Date().toISOString().split('T')[0],
@@ -75,8 +75,9 @@ export default function NewSessionPage() {
       setError(null);
       
       // Clean up next_session_scheduled - convert empty string to undefined
-      const nextSessionDate = data.next_session_scheduled && data.next_session_scheduled.trim() !== '' 
-        ? data.next_session_scheduled 
+      const rawNextSession = scheduleNextSession ? data.next_session_scheduled : undefined;
+      const nextSessionDate = rawNextSession && rawNextSession.trim() !== ''
+        ? rawNextSession
         : undefined;
       
       const sessionData: CreateSessionRequest = {
@@ -88,31 +89,7 @@ export default function NewSessionPage() {
         next_session_scheduled: nextSessionDate,
       };
       
-      const session = await psychologyApi.createSession(sessionData);
-
-      // If next_session_scheduled is provided, create an appointment
-      if (nextSessionDate) {
-        try {
-          await appointmentsApi.create({
-            patient_id: patientId,
-            appointment_type: 'Counseling',
-            appointment_date: nextSessionDate,
-            appointment_time: null,
-            auto_generated: true,
-            source_type: 'counseling_session',
-            source_id: session.id,
-            service_type: 'mental_health',
-            service_record_id: session.id,
-            reason: `Follow-up ${data.session_type}`,
-            notes: 'Automatically scheduled from counseling session',
-          });
-        } catch (appointmentErr) {
-          console.error('Error creating appointment:', appointmentErr);
-          // Don't fail the session creation if appointment fails
-          // but notify the user
-          setError('Session created successfully, but failed to create appointment. Please create it manually.');
-        }
-      }
+      await psychologyApi.createSession(sessionData);
 
       router.push(`/dashboard/psychology/patients/${patientId}`);
     } catch (err) {
@@ -213,13 +190,31 @@ export default function NewSessionPage() {
 
             <div>
               <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                Next Session Date (Optional)
+                Schedule Next Session (Optional)
               </label>
-              <input
-                type="date"
-                {...register('next_session_scheduled')}
-                className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-indigo-500 dark:bg-neutral-900 dark:text-white"
-              />
+              <label className="inline-flex items-center gap-2 mb-3">
+                <input
+                  type="checkbox"
+                  checked={scheduleNextSession}
+                  onChange={(e) => setScheduleNextSession(e.target.checked)}
+                  className="rounded border-gray-300 dark:border-gray-600"
+                />
+                <span className="text-sm text-gray-700 dark:text-gray-300">
+                  Auto-create follow-up appointment
+                </span>
+              </label>
+              {scheduleNextSession && (
+                <input
+                  type="datetime-local"
+                  {...register('next_session_scheduled')}
+                  className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-indigo-500 dark:bg-neutral-900 dark:text-white"
+                />
+              )}
+              {scheduleNextSession && (
+                <p className="mt-2 text-xs text-gray-500 dark:text-gray-400">
+                  This will create an appointment record automatically for auditing.
+                </p>
+              )}
             </div>
           </div>
         </div>

@@ -138,6 +138,25 @@ export default function DashboardHeader({ onMobileMenuOpen }: DashboardHeaderPro
     fetchUnreadCount();
   }, []);
 
+  // Refresh notification state when other pages trigger updates.
+  useEffect(() => {
+    const handleNotificationsRefresh = async () => {
+      try {
+        const count = await notificationsApi.getUnreadCount();
+        setUnreadCount(count);
+        if (notificationsOpen) {
+          const response = await notificationsApi.getNotifications({ limit: 10 });
+          setNotifications(response.notifications);
+        }
+      } catch (error) {
+        console.error('Failed to refresh notifications:', error);
+      }
+    };
+
+    window.addEventListener('notifications:refresh', handleNotificationsRefresh);
+    return () => window.removeEventListener('notifications:refresh', handleNotificationsRefresh);
+  }, [notificationsOpen]);
+
   // Fetch full notifications when dropdown opens
   useEffect(() => {
     if (notificationsOpen && notifications.length === 0) {
@@ -226,6 +245,46 @@ export default function DashboardHeader({ onMobileMenuOpen }: DashboardHeaderPro
       }
     } catch (error) {
       console.error('Failed to delete notification:', error);
+    }
+  };
+
+  const isReferralNotification = (notification: Notification): boolean =>
+    notification.notification_type === 'ALERT' &&
+    !!notification.link &&
+    !!notification.metadata &&
+    typeof notification.metadata === 'object' &&
+    'service_name' in notification.metadata;
+
+  const handleAcceptReferral = async (notification: Notification) => {
+    try {
+      if (!notification.is_read) {
+        await notificationsApi.markAsRead(notification.id);
+        setNotifications(prev =>
+          prev.map(n => (n.id === notification.id ? { ...n, is_read: true } : n))
+        );
+        setUnreadCount(prev => Math.max(0, prev - 1));
+      }
+
+      if (notification.link) {
+        router.push(notification.link);
+        setNotificationsOpen(false);
+      }
+    } catch (error) {
+      console.error('Failed to accept referral:', error);
+    }
+  };
+
+  const handleDeclineReferral = async (notification: Notification) => {
+    try {
+      if (!notification.is_read) {
+        await notificationsApi.markAsRead(notification.id);
+        setNotifications(prev =>
+          prev.map(n => (n.id === notification.id ? { ...n, is_read: true } : n))
+        );
+        setUnreadCount(prev => Math.max(0, prev - 1));
+      }
+    } catch (error) {
+      console.error('Failed to decline referral:', error);
     }
   };
 
@@ -397,6 +456,25 @@ export default function DashboardHeader({ onMobileMenuOpen }: DashboardHeaderPro
                               <p className="text-xs text-gray-500 dark:text-gray-400 mt-0.5 line-clamp-2">
                                 {notification.message}
                               </p>
+                              {isReferralNotification(notification) && (
+                                <div
+                                  className="mt-2 flex items-center gap-2"
+                                  onClick={(e) => e.stopPropagation()}
+                                >
+                                  <button
+                                    onClick={() => handleAcceptReferral(notification)}
+                                    className="px-2 py-1 text-[11px] rounded bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-300 hover:bg-green-200 dark:hover:bg-green-900/50"
+                                  >
+                                    Accept Referral
+                                  </button>
+                                  <button
+                                    onClick={() => handleDeclineReferral(notification)}
+                                    className="px-2 py-1 text-[11px] rounded bg-gray-100 text-gray-700 dark:bg-gray-800 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-700"
+                                  >
+                                    Decline
+                                  </button>
+                                </div>
+                              )}
                               <p className="text-xs text-gray-400 mt-1">
                                 {formatNotificationTime(notification.created_at)}
                               </p>

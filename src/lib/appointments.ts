@@ -164,6 +164,38 @@ export interface PendingNotificationsResponse {
 }
 
 // ============================================================================
+// DISPLAY HELPERS
+// ============================================================================
+
+const formatServiceTypeValue = (value: string): string => {
+  const normalized = value.trim().toUpperCase();
+  if (normalized === 'PREP') return 'PrEP';
+  if (normalized === 'PEP') return 'PEP';
+  if (normalized === 'ART') return 'ART';
+  if (normalized === 'HTS') return 'HTS';
+  if (normalized === 'PHARMACY' || normalized === 'PRESCRIPTION') return 'Pharmacy';
+  if (normalized === 'LAB' || normalized === 'LABORATORY') return 'Laboratory';
+  if (normalized === 'MENTAL HEALTH' || normalized === 'PSYCHOLOGY') return 'Psychology';
+  return value;
+};
+
+export function getAppointmentServiceLabel(appointment: Pick<AppointmentResponse, 'service_type' | 'source_type' | 'reason'>): string {
+  if (appointment.service_type) {
+    return formatServiceTypeValue(appointment.service_type);
+  }
+
+  if (appointment.source_type) {
+    return formatServiceTypeValue(appointment.source_type);
+  }
+
+  if (appointment.reason?.toLowerCase().includes('refill')) {
+    return 'Pharmacy';
+  }
+
+  return '-';
+}
+
+// ============================================================================
 // REQUEST DTOs
 // ============================================================================
 

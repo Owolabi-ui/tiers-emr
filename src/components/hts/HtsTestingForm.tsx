@@ -3,7 +3,7 @@
 import { useForm } from "react-hook-form";
 import { Save, CheckCircle, Lock } from "lucide-react";
 import { HtsTestingRequest, TEST_RESULTS } from "@/lib/hts";
-import { getResultsByService } from "@/lib/laboratory";
+import { getOrdersByService, getResultsByService, LabTestOrderWithDetails } from "@/lib/laboratory";
 import { useEffect, useState } from "react";
 
 interface HtsTestingFormProps {
@@ -13,9 +13,47 @@ interface HtsTestingFormProps {
   htsInitialId?: string; // For fetching lab results (UUID)
 }
 
+type ServiceLabResultEntry = {
+  value?: string | null;
+  data?: { result?: string | null } | null;
+  date?: string | null;
+  interpretation?: string | null;
+};
+
+type ServiceLabResultsMap = Record<string, ServiceLabResultEntry>;
+
+const normalizeResult = (value?: string | null): "Reactive" | "Non-reactive" | "Not done" => {
+  const normalized = (value || "").trim().toUpperCase();
+  if (normalized === "REACTIVE" || normalized === "POSITIVE") return "Reactive";
+  if (normalized === "NON-REACTIVE" || normalized === "NEGATIVE" || normalized === "NON REACTIVE") {
+    return "Non-reactive";
+  }
+  return "Not done";
+};
+
+const extractResultValue = (entry?: ServiceLabResultEntry | null): string | null => {
+  if (!entry) return null;
+  return entry.value ?? entry.data?.result ?? null;
+};
+
+const getResultByKeys = (results: ServiceLabResultsMap, keys: string[]): ServiceLabResultEntry | null => {
+  for (const key of keys) {
+    if (results[key]) return results[key];
+  }
+  return null;
+};
+
+const getResultColor = (value?: string | null): string => {
+  const normalized = (value || "").toUpperCase();
+  if (normalized.includes("REACTIVE") || normalized.includes("POSITIVE")) return "text-red-600";
+  if (normalized.includes("NON-REACTIVE") || normalized.includes("NEGATIVE")) return "text-green-600";
+  return "text-gray-600";
+};
+
 export default function HtsTestingForm({ initialData, onSave, loading, htsInitialId }: HtsTestingFormProps) {
   const [labResultsLoaded, setLabResultsLoaded] = useState(false);
   const [loadingLabResults, setLoadingLabResults] = useState(false);
+  const [serviceLabResults, setServiceLabResults] = useState<ServiceLabResultsMap>({});
 
   const {
     register,
@@ -36,12 +74,35 @@ export default function HtsTestingForm({ initialData, onSave, loading, htsInitia
 
       try {
         setLoadingLabResults(true);
-        const results = await getResultsByService("HTS", htsInitialId);
+        const [results, orders] = await Promise.all([
+          getResultsByService("HTS", htsInitialId),
+          getOrdersByService("HTS", htsInitialId),
+        ]);
+        setServiceLabResults(results as ServiceLabResultsMap);
+
+        const completedStatuses = new Set(["Completed", "Reviewed", "Communicated"]);
+        const hasResult = (order: LabTestOrderWithDetails) =>
+          completedStatuses.has(order.status) && !!(order.result_value || (order.result_data as { result?: string } | null)?.result);
+
+        const rapidOrders = (orders || [])
+          .filter((order) => {
+            const code = order.test_info?.test_code?.toUpperCase();
+            return (code === "HIV_RAPID" || code === "HIV-RAPID") && hasResult(order);
+          })
+          .sort((a, b) => {
+            const aTime = new Date(a.resulted_at || a.ordered_at || a.created_at).getTime();
+            const bTime = new Date(b.resulted_at || b.ordered_at || b.created_at).getTime();
+            return aTime - bTime;
+          });
+
+        const repeatRapidOrder = rapidOrders.find((order) => !!order.parent_order_id) || null;
 
         // Check for HIV_RAPID (screening test)
-        if (results.HIV_RAPID) {
-          const { value, date } = results.HIV_RAPID;
-          setValue("screening_test_result", value as "Reactive" | "Non-reactive");
+        const screening = getResultByKeys(results as ServiceLabResultsMap, ["HIV_RAPID", "HIV-RAPID"]);
+        if (screening) {
+          const value = extractResultValue(screening);
+          const date = screening.date;
+          setValue("screening_test_result", normalizeResult(value));
           if (date) {
             setValue("screening_test_date", date.split("T")[0]);
           }
@@ -49,23 +110,42 @@ export default function HtsTestingForm({ initialData, onSave, loading, htsInitia
         }
 
         // Check for HIV_DNA (confirmatory test)
-        if (results.HIV_DNA) {
-          const { value, date } = results.HIV_DNA;
-          setValue("confirmatory_test_result", value as "Reactive" | "Non-reactive");
+        const confirmatory = getResultByKeys(results as ServiceLabResultsMap, ["HIV_DNA", "HIV-DNA"]);
+        if (confirmatory) {
+          const value = extractResultValue(confirmatory);
+          const date = confirmatory.date;
+          setValue("confirmatory_test_result", normalizeResult(value));
           if (date) {
             setValue("confirmatory_test_date", date.split("T")[0]);
           }
         }
 
+        // If no HIV_DNA result, use repeat HIV_RAPID as confirmatory fallback
+        if (!confirmatory && repeatRapidOrder) {
+          const repeatValue =
+            repeatRapidOrder.result_value ??
+            ((repeatRapidOrder.result_data as { result?: string } | null)?.result ?? null);
+
+          setValue("confirmatory_test_result", normalizeResult(repeatValue));
+          if (repeatRapidOrder.resulted_at) {
+            setValue("confirmatory_test_date", repeatRapidOrder.resulted_at.split("T")[0]);
+          }
+        }
+
         // Auto-set final result based on screening
-        if (results.HIV_RAPID) {
-          const screeningValue = results.HIV_RAPID.value;
-          if (results.HIV_DNA) {
+        if (screening) {
+          const screeningValue = extractResultValue(screening);
+          if (confirmatory) {
             // If confirmatory exists, use that
-            setValue("final_result", results.HIV_DNA.value as "Reactive" | "Non-reactive");
+            setValue("final_result", normalizeResult(extractResultValue(confirmatory)));
+          } else if (repeatRapidOrder) {
+            const repeatValue =
+              repeatRapidOrder.result_value ??
+              ((repeatRapidOrder.result_data as { result?: string } | null)?.result ?? null);
+            setValue("final_result", normalizeResult(repeatValue));
           } else {
             // Otherwise use screening result
-            setValue("final_result", screeningValue as "Reactive" | "Non-reactive");
+            setValue("final_result", normalizeResult(screeningValue));
           }
         }
       } catch (error) {
@@ -274,6 +354,67 @@ export default function HtsTestingForm({ initialData, onSave, loading, htsInitia
           )}
         </div>
       </div>
+
+      {/* STI Screening Results (Read-only display) */}
+      {labResultsLoaded && (
+        <div className="bg-gray-50 p-6 rounded-lg border border-gray-200">
+          <h3 className="text-lg font-medium text-gray-900 mb-4">STI Co-infection Screening Results</h3>
+          <p className="text-sm text-gray-600 mb-4">
+            Results from additional screening tests ordered with this HTS session
+          </p>
+
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+            {(() => {
+              const syphilis = getResultByKeys(serviceLabResults, ["TPHA", "VDRL", "RPR", "SYPHILIS_RAPID", "SYPHILIS-RAPID"]);
+              if (!syphilis) return null;
+              const value = extractResultValue(syphilis);
+              return (
+                <div className="bg-white p-4 rounded border border-gray-200">
+                  <p className="text-sm font-medium text-gray-700 mb-1">Syphilis Screening</p>
+                  <p className={`text-lg font-semibold ${getResultColor(value)}`}>{value || "Pending"}</p>
+                  {syphilis.date && (
+                    <p className="text-xs text-gray-500 mt-1">{new Date(syphilis.date).toLocaleDateString()}</p>
+                  )}
+                </div>
+              );
+            })()}
+
+            {(() => {
+              const hepB = getResultByKeys(serviceLabResults, ["HBSAG", "HBsAg", "HBV_RAPID", "HBV-RAPID"]);
+              if (!hepB) return null;
+              const value = extractResultValue(hepB);
+              return (
+                <div className="bg-white p-4 rounded border border-gray-200">
+                  <p className="text-sm font-medium text-gray-700 mb-1">Hepatitis B (HBsAg)</p>
+                  <p className={`text-lg font-semibold ${getResultColor(value)}`}>{value || "Pending"}</p>
+                  {hepB.date && (
+                    <p className="text-xs text-gray-500 mt-1">{new Date(hepB.date).toLocaleDateString()}</p>
+                  )}
+                </div>
+              );
+            })()}
+
+            {(() => {
+              const hepC = getResultByKeys(serviceLabResults, ["HCV_AB", "HCVAB", "HCV_RAPID", "HCV-RAPID"]);
+              if (!hepC) return null;
+              const value = extractResultValue(hepC);
+              return (
+                <div className="bg-white p-4 rounded border border-gray-200">
+                  <p className="text-sm font-medium text-gray-700 mb-1">Hepatitis C (HCV-AB)</p>
+                  <p className={`text-lg font-semibold ${getResultColor(value)}`}>{value || "Pending"}</p>
+                  {hepC.date && (
+                    <p className="text-xs text-gray-500 mt-1">{new Date(hepC.date).toLocaleDateString()}</p>
+                  )}
+                </div>
+              );
+            })()}
+          </div>
+
+          <p className="text-xs text-gray-500 mt-4 italic">
+            Note: STI screening results are read-only here and remain source-of-truth in the laboratory module.
+          </p>
+        </div>
+      )}
 
       {/* Submit Button */}
       <div className="flex justify-end pt-6 border-t">

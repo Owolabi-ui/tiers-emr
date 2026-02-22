@@ -13,6 +13,7 @@ import {
   formatAppointmentDate,
   isAppointmentToday,
   getAppointmentDateLabel,
+  getAppointmentServiceLabel,
 } from '@/lib/appointments';
 import { patientsApi, Patient, getPatientFullName, formatDate } from '@/lib/patients';
 import { getErrorMessage } from '@/lib/api';
@@ -388,7 +389,7 @@ export default function AppointmentDetailPage() {
             Service
           </div>
           <p className="font-semibold text-gray-900 dark:text-white">
-            {appointment.service_type || '-'}
+            {getAppointmentServiceLabel(appointment)}
           </p>
         </div>
       </div>

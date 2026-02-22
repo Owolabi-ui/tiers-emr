@@ -92,7 +92,17 @@ export function ManualIntakeForm({ patientId, patientName, onClose, onSuccess }:
 
   const frequencyOptions: ScreeningFrequency[] = ['Not at all', 'Several days', 'More than half the days', 'Nearly every day'];
   const substanceOptions: SubstanceUseFrequency[] = ['Never', 'Rarely', 'Sometimes', 'Frequently'];
-  const referralOptions: ReferralSource[] = ['Google search', 'Social media', 'Friend', 'Family', 'Healthcare provider', 'Workplace/school', 'Returning client', 'Community org', 'Other'];
+  const referralOptions: ReferralSource[] = [
+    'Google search',
+    'Social media (Instagram, TikTok, etc.)',
+    'Referral from a friend',
+    'Referral from family member',
+    'Referral from a healthcare provider',
+    'Workplace or school referral',
+    'Returning client',
+    'Community organization',
+    'Other',
+  ];
   const sessionOptions: SessionPreference[] = ['Physical', 'Virtual/Online'];
 
   return (

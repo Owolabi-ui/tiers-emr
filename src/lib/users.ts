@@ -5,7 +5,15 @@ import { api } from './api';
 // TYPES
 // ============================================================================
 
-export type UserRole = 'Admin' | 'Doctor' | 'Nurse' | 'Pharmacist' | 'LabTech' | 'Psychologist' | 'Receptionist';
+export type UserRole =
+  | 'Admin'
+  | 'Doctor'
+  | 'Nurse'
+  | 'Pharmacist'
+  | 'LabTech'
+  | 'Psychologist'
+  | 'Receptionist'
+  | 'ProgramAssociate';
 
 export interface UserProfile {
   user_id: string;
@@ -110,6 +118,7 @@ export const getRoleDisplayName = (role: UserRole): string => {
     LabTech: 'Lab Scientist',
     Psychologist: 'Psychologist',
     Receptionist: 'Receptionist',
+    ProgramAssociate: 'Program Associate',
   };
   return roleNames[role] || role;
 };
@@ -123,6 +132,7 @@ export const getRoleColor = (role: UserRole): string => {
     LabTech: 'bg-cyan-100 text-cyan-800 dark:bg-cyan-900/30 dark:text-cyan-400',
     Psychologist: 'bg-pink-100 text-pink-800 dark:bg-pink-900/30 dark:text-pink-400',
     Receptionist: 'bg-gray-100 text-gray-800 dark:bg-gray-900/30 dark:text-gray-400',
+    ProgramAssociate: 'bg-emerald-100 text-emerald-800 dark:bg-emerald-900/30 dark:text-emerald-400',
   };
   return roleColors[role] || 'bg-gray-100 text-gray-800';
 };

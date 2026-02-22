@@ -13,12 +13,6 @@ const nextConfig = {
     // !! WARN !!
     ignoreBuildErrors: true,
   },
-  eslint: {
-    // !! WARN !!
-    // Allow production builds to complete even if there are ESLint errors
-    // !! WARN !!
-    ignoreDuringBuilds: true,
-  },
 } satisfies NextConfig;
 
 export default nextConfig;

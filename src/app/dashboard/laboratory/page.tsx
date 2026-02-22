@@ -7,13 +7,13 @@ import {
   LabTestOrderWithDetails,
   LabTestStatus,
   LabTestPriority,
+  LabStatisticsResponse,
   getStatusColor,
   getPriorityColor,
   formatOrderNumber,
 } from '@/lib/laboratory';
 import { getErrorMessage } from '@/lib/api';
 import {
-  Activity,
   Plus,
   Search,
   FileText,
@@ -24,13 +24,14 @@ import {
   FlaskConical,
   Clock,
   CheckCircle2,
+  RefreshCw,
 } from 'lucide-react';
 
 export default function LaboratoryPage() {
   const [orders, setOrders] = useState<LabTestOrderWithDetails[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const [statistics, setStatistics] = useState<any | null>(null);
+  const [statistics, setStatistics] = useState<LabStatisticsResponse | null>(null);
   const [searchTerm, setSearchTerm] = useState('');
   const [statusFilter, setStatusFilter] = useState<LabTestStatus | 'all'>('all');
   const [priorityFilter, setPriorityFilter] = useState<LabTestPriority | 'all'>('all');
@@ -44,7 +45,10 @@ export default function LaboratoryPage() {
       setLoading(true);
       setError(null);
 
-      const params: any = {};
+      const params: {
+        status?: LabTestStatus;
+        priority?: LabTestPriority;
+      } = {};
       if (statusFilter !== 'all') params.status = statusFilter;
       if (priorityFilter !== 'all') params.priority = priorityFilter;
 
@@ -55,7 +59,7 @@ export default function LaboratoryPage() {
 
       setOrders(ordersResponse.data || []);
       setStatistics(stats);
-    } catch (err) {
+    } catch (err: unknown) {
       setError(getErrorMessage(err));
     } finally {
       setLoading(false);
@@ -118,7 +122,7 @@ export default function LaboratoryPage() {
 
       {/* Statistics Cards */}
       {statistics && (
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4">
           <div className="rounded-xl border border-black/10 dark:border-white/15 bg-white dark:bg-neutral-900 p-6">
             <div className="flex items-center justify-between">
               <div>
@@ -177,6 +181,20 @@ export default function LaboratoryPage() {
               </div>
             </div>
           </div>
+
+          <div className="rounded-xl border border-black/10 dark:border-white/15 bg-white dark:bg-neutral-900 p-6">
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-sm text-gray-500 dark:text-gray-400">Repeat Tests Pending</p>
+                <p className="text-2xl font-bold text-orange-600 dark:text-orange-400 mt-1">
+                  {statistics.repeat_tests_pending || 0}
+                </p>
+              </div>
+              <div className="p-3 rounded-lg bg-orange-100 dark:bg-orange-900/30">
+                <RefreshCw className="h-6 w-6 text-orange-600" />
+              </div>
+            </div>
+          </div>
         </div>
       )}
 
@@ -229,7 +247,6 @@ export default function LaboratoryPage() {
               <option value="all">All Priorities</option>
               <option value="Routine">Routine</option>
               <option value="Urgent">Urgent</option>
-              <option value="ASAP">ASAP</option>
               <option value="STAT">STAT</option>
             </select>
           </div>

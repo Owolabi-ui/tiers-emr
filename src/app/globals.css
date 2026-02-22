@@ -82,3 +82,196 @@ body {
   background-color: #5b21b6; /* brand purple */
   color: #ffffff;
 }
+
+/* Print styles */
+.print-header { display: none; }
+.print-repeat-header { display: none; }
+
+@media print {
+  @page {
+    size: A4;
+    margin: 14mm;
+  }
+
+  html,
+  body {
+    width: 100% !important;
+    height: auto !important;
+    overflow: visible !important;
+    background: #fff !important;
+    color: #000 !important;
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+
+  body.print-mode,
+  body.print-mode *,
+  body.hts-print-mode,
+  body.hts-print-mode * {
+    max-height: none !important;
+  }
+
+  body.print-mode main,
+  body.print-mode [class*="overflow"],
+  body.print-mode [style*="overflow"],
+  body.hts-print-mode main,
+  body.hts-print-mode [class*="overflow"],
+  body.hts-print-mode [style*="overflow"] {
+    overflow: visible !important;
+  }
+
+  /* Strong isolation: keep layout flow, show only HTS print root content */
+  body.print-mode *,
+  body.hts-print-mode * {
+    visibility: hidden !important;
+  }
+
+  body.print-mode .printable-page-root,
+  body.print-mode .printable-page-root *,
+  body.print-mode .hts-print-root,
+  body.print-mode .hts-print-root *,
+  body.hts-print-mode .printable-page-root,
+  body.hts-print-mode .printable-page-root *,
+  body.hts-print-mode .hts-print-root,
+  body.hts-print-mode .hts-print-root * {
+    visibility: visible !important;
+  }
+
+  body.print-mode .printable-page-root,
+  body.print-mode .hts-print-root,
+  body.hts-print-mode .printable-page-root,
+  body.hts-print-mode .hts-print-root {
+    display: block !important;
+    position: static !important;
+    width: 100% !important;
+  }
+
+  /* Hide action controls in print area */
+  body.print-mode .no-print,
+  body.print-mode .no-print *,
+  body.print-mode button,
+  body.print-mode .fixed,
+  body.hts-print-mode .no-print,
+  body.hts-print-mode .no-print *,
+  body.hts-print-mode button,
+  body.hts-print-mode .fixed {
+    display: none !important;
+  }
+
+  .printable-page-root,
+  .hts-print-root {
+    background: #fff !important;
+    padding: 0 !important;
+    margin: 0 !important;
+    min-height: 0 !important;
+    max-width: none !important;
+    width: 100% !important;
+  }
+
+  .printable-page-root > div,
+  .hts-print-root > div {
+    max-width: none !important;
+    padding: 0 !important;
+    margin: 0 !important;
+  }
+
+  .print-header {
+    display: flex !important;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    margin: 0 0 12mm 0;
+    padding-bottom: 3mm;
+    border-bottom: 2px solid #111;
+  }
+
+  .print-header img {
+    width: 140px;
+    height: auto;
+    margin-bottom: 4mm;
+  }
+
+  .print-title {
+    font-size: 20px;
+    font-weight: 700;
+    margin: 0 0 1mm 0;
+  }
+
+  .print-subtitle {
+    font-size: 12px;
+    margin: 0;
+  }
+
+  .print-repeat-header {
+    display: flex !important;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    margin: 0 0 8mm 0;
+    padding-bottom: 3mm;
+    border-bottom: 1px solid #999;
+  }
+
+  .print-repeat-header img {
+    width: 90px;
+    height: auto;
+    margin-bottom: 2mm;
+  }
+
+  .print-section {
+    /* Allow long sections to flow naturally across pages */
+    break-inside: auto;
+    page-break-inside: auto;
+    margin-bottom: 8mm !important;
+    box-shadow: none !important;
+    border: 1px solid #d4d4d4 !important;
+    padding: 4mm !important;
+  }
+
+  .page-break-before {
+    break-before: page;
+    page-break-before: always;
+  }
+
+  .page-break-after {
+    break-after: page;
+    page-break-after: always;
+  }
+
+  /* Readability tuning for printed medical records */
+  h1 { font-size: 18pt !important; }
+  h2 { font-size: 14pt !important; }
+  h3 { font-size: 12pt !important; }
+  p, div, span { font-size: 10pt; }
+  small, .text-sm, .text-xs { font-size: 8pt !important; }
+
+  .grid {
+    display: grid !important;
+  }
+
+  .shadow,
+  .shadow-sm,
+  .shadow-md,
+  .shadow-lg {
+    box-shadow: none !important;
+  }
+
+  .rounded,
+  .rounded-lg,
+  .rounded-xl {
+    border-radius: 2mm !important;
+  }
+
+  /* Fallback page number (browser support varies) */
+  .print-footer {
+    display: block !important;
+    position: fixed;
+    right: 0;
+    bottom: 0;
+    font-size: 9pt;
+    color: #444;
+  }
+  .print-footer::after {
+    content: "Page " counter(page);
+  }
+}

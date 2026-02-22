@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { ChevronLeft, ChevronRight, Save, CheckCircle } from "lucide-react";
 import { htsApi, HtsInitialRequest, HtsPreTestRequest, HtsTestingRequest, HtsPostTestRequest, HtsReferralRequest } from "@/lib/hts";
 
@@ -24,6 +24,8 @@ const STEPS = [
 
 export default function NewHtsPage() {
   const router = useRouter();
+  const searchParams = useSearchParams();
+  const preselectedPatientId = searchParams.get("patient_id");
   const [currentStep, setCurrentStep] = useState(1);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -148,6 +150,7 @@ export default function NewHtsPage() {
         return (
           <HtsInitialForm
             initialData={initialData}
+            preselectedPatientId={preselectedPatientId}
             onSave={(data) => handleSaveStep(1, data)}
             loading={loading}
           />

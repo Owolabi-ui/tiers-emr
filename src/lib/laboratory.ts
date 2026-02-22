@@ -14,7 +14,7 @@ export type LabTestCategory =
   | 'Urinalysis'
   | 'Other';
 
-export type LabTestPriority = 'Routine' | 'Urgent' | 'STAT' | 'ASAP';
+export type LabTestPriority = 'Routine' | 'Urgent' | 'STAT';
 
 export type SampleType =
   | 'Blood'
@@ -42,7 +42,33 @@ export type ResultInterpretation =
   | 'Abnormal'
   | 'Critical'
   | 'Indeterminate'
+  | 'Inconclusive'
+  | 'Not Applicable'
   | 'Pending';
+
+export interface CategoricalResult {
+  result: string;
+}
+
+export interface GlucoseResult {
+  value: number;
+  test_type: 'FBS' | 'RBS';
+}
+
+export interface UrinalysisResult {
+  sg?: string;
+  ph?: string;
+  leucocytes?: string;
+  nitrite?: string;
+  protein?: string;
+  glucose?: string;
+  ketone?: string;
+  urobilinogen?: string;
+  bilirubin?: string;
+  blood?: string;
+}
+
+export type LabResultData = CategoricalResult | GlucoseResult | UrinalysisResult;
 
 // ============================================================================
 // INTERFACES - Lab Test Catalog
@@ -119,9 +145,13 @@ export interface LabTestOrder {
   sample_collected_at: string | null;
   sample_id: string | null;
   result_value: string | null;
+  result_data?: LabResultData | null;
   result_unit: string | null;
   result_interpretation: ResultInterpretation | null;
   result_notes: string | null;
+  requires_repeat: boolean;
+  parent_order_id?: string | null;
+  repeat_reason?: string | null;
   resulted_at: string | null;
   reviewed_at: string | null;
   started_at: string | null;
@@ -150,7 +180,9 @@ export interface CollectSampleRequest {
 }
 
 export interface EnterResultRequest {
-  result_value: string;
+  result_value?: string | null;
+  result_data?: LabResultData | null;
+  result_unit?: string | null;
   result_interpretation: ResultInterpretation;
   result_notes?: string | null;
 }
@@ -238,6 +270,7 @@ export interface LabStatisticsResponse {
   completed_today: number;
   critical_results_pending: number;
   stat_orders_pending: number;
+  repeat_tests_pending?: number;
   average_turnaround_time_hours: number;
   this_month_orders: number;
   completion_rate: number;
@@ -341,6 +374,12 @@ export const laboratoryApi = {
     return response.data;
   },
 
+  // Get repeat/confirmatory orders generated from an original order
+  getRepeatTests: async (orderId: string): Promise<LabTestOrder[]> => {
+    const response = await api.get<LabTestOrder[]>(`/api/v1/lab/orders/${orderId}/repeats`);
+    return response.data;
+  },
+
   // Review result
   reviewResult: async (orderId: string, data: ReviewResultRequest = {}): Promise<LabTestOrder> => {
     const response = await api.put<LabTestOrder>(`/api/v1/lab/orders/${orderId}/review`, data);
@@ -400,7 +439,6 @@ export const labTestCategoryOptions: LabTestCategory[] = [
 export const labTestPriorityOptions: LabTestPriority[] = [
   'Routine',
   'Urgent',
-  'ASAP',
   'STAT',
 ];
 
@@ -432,6 +470,8 @@ export const resultInterpretationOptions: ResultInterpretation[] = [
   'Abnormal',
   'Critical',
   'Indeterminate',
+  'Inconclusive',
+  'Not Applicable',
   'Pending',
 ];
 
@@ -464,8 +504,6 @@ export const getPriorityColor = (priority: LabTestPriority): string => {
   switch (priority) {
     case 'STAT':
       return 'bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-400';
-    case 'ASAP':
-      return 'bg-orange-100 text-orange-700 dark:bg-orange-900/30 dark:text-orange-400';
     case 'Urgent':
       return 'bg-yellow-100 text-yellow-700 dark:bg-yellow-900/30 dark:text-yellow-400';
     case 'Routine':
@@ -485,6 +523,10 @@ export const getInterpretationColor = (interpretation: ResultInterpretation): st
       return 'bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-400';
     case 'Indeterminate':
       return 'bg-gray-100 text-gray-700 dark:bg-gray-900/30 dark:text-gray-400';
+    case 'Inconclusive':
+      return 'bg-orange-100 text-orange-700 dark:bg-orange-900/30 dark:text-orange-400';
+    case 'Not Applicable':
+      return 'bg-slate-100 text-slate-700 dark:bg-slate-900/30 dark:text-slate-400';
     case 'Pending':
       return 'bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-400';
     default:
@@ -530,8 +572,9 @@ export const getTestByCode = async (testCode: string): Promise<LabTestCatalog | 
   try {
     const response = await api.get(`/api/v1/lab/catalog/${testCode}`);
     return response.data;
-  } catch (error: any) {
-    if (error.response?.status === 404) {
+  } catch (error: unknown) {
+    const status = (error as { response?: { status?: number } })?.response?.status;
+    if (status === 404) {
       console.warn(`Lab test '${testCode}' not found in catalog`);
       return null;
     }
@@ -726,6 +769,7 @@ export const getResultsByService = async (
  * Determine if a test is qualitative (dropdown) or quantitative (numeric input)
  */
 export const isQualitativeTest = (testCode: string): boolean => {
+  const normalizedCode = testCode.toUpperCase();
   const qualitativeTests = [
     'HIV_RAPID',
     'HIV_DNA',
@@ -742,40 +786,74 @@ export const isQualitativeTest = (testCode: string): boolean => {
     'URINE_PROTEIN',
     'URINE_GLUCOSE',
     'BLOOD_GROUP',
+    'HBV_RAPID',
+    'HCV_RAPID',
+    'SYPHILIS_RAPID',
+    'MALARIA_RAPID',
+    'GONORRHEA_RAPID',
+    'CHLAMYDIA_RAPID',
+    'HERPES_I_II',
+    'H_PYLORI',
   ];
-  return qualitativeTests.includes(testCode);
+  return qualitativeTests.map((code) => code.toUpperCase()).includes(normalizedCode);
 };
 
 /**
  * Get options for qualitative test results
  */
 export const getQualitativeOptions = (testCode: string): string[] => {
+  return getCategoricalOptions(testCode);
+};
+
+export const getTestResultType = (
+  testCode: string
+): 'categorical' | 'glucose' | 'urinalysis' | 'numeric' => {
+  const code = testCode.toUpperCase();
+
+  if (code === 'URINALYSIS') return 'urinalysis';
+  if (code === 'GLUCOSE') return 'glucose';
+  if (isQualitativeTest(code)) return 'categorical';
+  return 'numeric';
+};
+
+export const getCategoricalOptions = (testCode: string): string[] => {
+  const code = testCode.toUpperCase();
+
+  if (['HIV_RAPID', 'SYPHILIS_RAPID'].includes(code)) {
+    return ['REACTIVE', 'NON-REACTIVE', 'INCONCLUSIVE'];
+  }
+
+  if (
+    ['HBV_RAPID', 'HCV_RAPID', 'MALARIA_RAPID', 'GONORRHEA_RAPID', 'CHLAMYDIA_RAPID', 'HERPES_I_II', 'H_PYLORI']
+      .includes(code)
+  ) {
+    return ['POSITIVE', 'NEGATIVE', 'INCONCLUSIVE'];
+  }
+
   // HIV and most rapid tests (including STI screening tests)
   if (
-    testCode.includes('HIV') || 
-    testCode.includes('HBsAg') || 
-    testCode.includes('HCV') || 
-    testCode === 'HBSAG' || 
-    testCode === 'HCVAB' || 
-    testCode === 'TPHA' ||
-    testCode === 'VDRL' ||
-    testCode === 'RPR'
+    code.includes('HIV') ||
+    code.includes('HBSAG') ||
+    code.includes('HCV') ||
+    code === 'TPHA' ||
+    code === 'VDRL' ||
+    code === 'RPR'
   ) {
-    return ['Reactive', 'Non-reactive', 'Indeterminate'];
+    return ['REACTIVE', 'NON-REACTIVE', 'INDETERMINATE'];
   }
-  
+
   // Pregnancy, malaria
-  if (testCode === 'PREGNANCY' || testCode === 'MALARIA') {
-    return ['Positive', 'Negative', 'Invalid'];
+  if (code === 'PREGNANCY' || code === 'MALARIA') {
+    return ['POSITIVE', 'NEGATIVE', 'INVALID'];
   }
-  
+
   // Urine tests
-  if (testCode.startsWith('URINE_')) {
-    return ['Positive', 'Negative', 'Trace'];
+  if (code.startsWith('URINE_')) {
+    return ['POSITIVE', 'NEGATIVE', 'TRACE'];
   }
-  
+
   // Default qualitative
-  return ['Positive', 'Negative', 'Indeterminate'];
+  return ['POSITIVE', 'NEGATIVE', 'INDETERMINATE'];
 };
 
 // ============================================================================

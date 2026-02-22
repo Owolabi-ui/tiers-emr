@@ -11,6 +11,7 @@ import {
   FlaskConical,
   Pill,
   Package,
+  PackageOpen,
   FileText,
   MessageSquare,
   Settings,
@@ -30,19 +31,25 @@ const navigation = [
     name: 'Dashboard',
     href: '/dashboard',
     icon: LayoutDashboard,
-    roles: ['Admin', 'Doctor', 'Nurse', 'Pharmacist', 'LabTech', 'Psychologist'],
+    roles: ['Admin', 'Doctor', 'Nurse', 'Pharmacist', 'LabTech', 'Psychologist', 'ProgramAssociate'],
   },
   {
     name: 'Patients',
     href: '/dashboard/patients',
     icon: Users,
-    roles: ['Admin', 'Doctor', 'Nurse', 'Pharmacist', 'LabTech', 'Psychologist'],
+    roles: ['Admin', 'Doctor', 'Nurse', 'Pharmacist', 'LabTech', 'Psychologist', 'ProgramAssociate'],
+  },
+  {
+    name: 'Programs',
+    href: '/dashboard/programs',
+    icon: PackageOpen,
+    roles: ['Admin', 'ProgramAssociate'],
   },
   {
     name: 'Appointments',
     href: '/dashboard/appointments',
     icon: Calendar,
-    roles: ['Admin', 'Doctor', 'Nurse', 'Pharmacist', 'LabTech', 'Psychologist'],
+    roles: ['Admin', 'Doctor', 'Nurse', 'Pharmacist', 'LabTech', 'Psychologist', 'ProgramAssociate'],
   },
   {
     name: 'HTS',
@@ -73,6 +80,12 @@ const navigation = [
     href: '/dashboard/laboratory',
     icon: FlaskConical,
     roles: ['Admin', 'Doctor', 'Nurse', 'LabTech'],
+  },
+  {
+    name: 'Lab Inventory',
+    href: '/dashboard/lab-inventory',
+    icon: Package,
+    roles: ['Admin', 'LabTech'],
   },
   {
     name: 'Pharmacy',
@@ -108,7 +121,7 @@ const navigation = [
     name: 'Reports',
     href: '/dashboard/reports',
     icon: FileText,
-    roles: ['Admin', 'Doctor', 'Nurse', 'Pharmacist', 'LabTech', 'Psychologist'],
+    roles: ['Admin', 'Doctor', 'Nurse', 'Pharmacist', 'LabTech', 'Psychologist', 'ProgramAssociate'],
   },
   {
     name: 'Messages',

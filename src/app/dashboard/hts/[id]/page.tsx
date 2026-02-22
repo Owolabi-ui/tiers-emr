@@ -4,6 +4,11 @@ import { useState, useEffect, use } from "react";
 import { useRouter } from "next/navigation";
 import { ChevronLeft, FileText, User, CheckCircle, XCircle, Edit } from "lucide-react";
 import { htsApi, CompleteHtsWorkflow } from "@/lib/hts";
+import { getOrdersByService, LabTestOrderWithDetails, LabResultData } from "@/lib/laboratory";
+import PrintablePageWrapper from "@/components/common/PrintablePageWrapper";
+import PrintButton from "@/components/common/PrintButton";
+import PrintHeader from "@/components/common/PrintHeader";
+import PrintSection from "@/components/common/PrintSection";
 
 // Type helper for dynamic property access
 type PreTestRecord = Record<string, any>;
@@ -15,12 +20,30 @@ export default function HtsDetailPage({ params }: { params: Promise<{ id: string
   const [htsData, setHtsData] = useState<CompleteHtsWorkflow | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [labOrders, setLabOrders] = useState<LabTestOrderWithDetails[]>([]);
+  const [navigating, setNavigating] = useState<"prep" | "pep" | null>(null);
 
   useEffect(() => {
     const fetchHtsData = async () => {
       try {
-        const data = await htsApi.getComplete(id);
+        const [htsResponse, ordersResponse] = await Promise.allSettled([
+          htsApi.getComplete(id),
+          getOrdersByService("HTS", id),
+        ]);
+
+        if (htsResponse.status === "rejected") {
+          throw htsResponse.reason;
+        }
+
+        const data = htsResponse.value;
         setHtsData(data);
+
+        if (ordersResponse.status === "fulfilled") {
+          setLabOrders(ordersResponse.value || []);
+        } else {
+          // Do not fail HTS details page if lab orders cannot be fetched
+          console.warn("Failed to load HTS-linked lab orders:", ordersResponse.reason);
+        }
       } catch (err: any) {
         console.error("Error fetching HTS data:", err);
         setError(err.message || "Failed to load HTS record");
@@ -150,11 +173,54 @@ export default function HtsDetailPage({ params }: { params: Promise<{ id: string
       return total + (isTrue((preTest as PreTestRecord)?.[item.key]) ? 1 : 0);
     }, 0);
 
+  const extractOrderResultText = (order: LabTestOrderWithDetails): string => {
+    if (order.result_value) return order.result_value;
+    const data = order.result_data as LabResultData | null | undefined;
+    if (data && typeof data === "object" && "result" in data && data.result) {
+      return data.result;
+    }
+    if (data && typeof data === "object" && "value" in data && typeof data.value === "number") {
+      return `${data.value}${order.result_unit ? ` ${order.result_unit}` : ""}`;
+    }
+    return "Pending";
+  };
+
+  const additionalTestOrders = labOrders.filter((order) => {
+    const code = order.test_info?.test_code?.toUpperCase();
+    return code !== "HIV_RAPID" && code !== "HIV-RAPID" && code !== "HIV_DNA" && code !== "HIV-DNA";
+  });
+
+  const visitDateDisplay = new Date(htsData.initial.date_of_visit).toLocaleDateString();
+  const printedDateDisplay = new Date().toLocaleDateString();
+  const normalizedFinalResult = htsData.testing?.final_result?.trim().toLowerCase();
+  const canInitiatePrep =
+    htsData.initial.status === "completed" &&
+    (normalizedFinalResult === "non-reactive" || normalizedFinalResult === "non reactive");
+  const canInitiatePep =
+    htsData.initial.status === "completed" &&
+    (normalizedFinalResult === "reactive" || normalizedFinalResult === "positive");
+  const handleInitiatePrep = () => {
+    setNavigating("prep");
+    router.push(`/dashboard/prep/new?patient_id=${htsData.initial.patient_id}&from_hts=${id}`);
+  };
+  const handleInitiatePep = () => {
+    setNavigating("pep");
+    router.push(`/dashboard/pep/new?patient_id=${htsData.initial.patient_id}&from_hts=${id}`);
+  };
+
   return (
+    <PrintablePageWrapper
+      printHeader={
+        <PrintHeader
+          title="HTS Session Details"
+          subtitle={`Client Code: ${htsData.initial.client_code} | Date: ${visitDateDisplay} | Printed: ${printedDateDisplay}`}
+        />
+      }
+    >
     <div className="min-h-screen bg-gray-50 py-8">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Header */}
-        <div className="mb-8">
+        <div className="mb-8 no-print">
           <button
             onClick={() => router.back()}
             className="flex items-center text-sm text-gray-600 hover:text-gray-900 mb-4"
@@ -170,6 +236,33 @@ export default function HtsDetailPage({ params }: { params: Promise<{ id: string
               </p>
             </div>
             <div className="flex items-center gap-3">
+              <PrintButton label="Print Record" />
+              {canInitiatePrep && (
+                <button
+                  onClick={handleInitiatePrep}
+                  disabled={navigating !== null}
+                  title="Enroll patient in Pre-Exposure Prophylaxis program"
+                  className="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-green-600 text-white text-sm font-medium hover:bg-green-700 disabled:opacity-60 disabled:cursor-not-allowed transition-colors"
+                >
+                  <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                  </svg>
+                  {navigating === "prep" ? "Opening..." : "Initiate PrEP"}
+                </button>
+              )}
+              {canInitiatePep && (
+                <button
+                  onClick={handleInitiatePep}
+                  disabled={navigating !== null}
+                  title="Start PEP workflow or link patient to HIV care"
+                  className="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-red-600 text-white text-sm font-medium hover:bg-red-700 disabled:opacity-60 disabled:cursor-not-allowed transition-colors"
+                >
+                  <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+                  </svg>
+                  {navigating === "pep" ? "Opening..." : "Initiate PEP / Link to Care"}
+                </button>
+              )}
               {htsData.initial.status !== "completed" && (
                 <button
                   onClick={() => router.push(`/dashboard/hts/${id}/continue`)}
@@ -196,7 +289,7 @@ export default function HtsDetailPage({ params }: { params: Promise<{ id: string
         </div>
 
         {/* Initial Information */}
-        <div className="bg-white shadow rounded-lg p-6 mb-6">
+        <PrintSection className="bg-white shadow rounded-lg p-6 mb-6">
           <h2 className="text-xl font-semibold text-gray-900 mb-4 flex items-center">
             <User className="h-5 w-5 mr-2 text-blue-600" />
             Initial Information
@@ -239,11 +332,15 @@ export default function HtsDetailPage({ params }: { params: Promise<{ id: string
               <dd className="mt-1 text-sm text-gray-900">{htsData.initial.source_of_referral}</dd>
             </div>
           </dl>
-        </div>
+        </PrintSection>
 
         {/* Pre-Test Counseling */}
         {htsData.pre_test && (
-          <div className="bg-white shadow rounded-lg p-6 mb-6">
+          <PrintSection pageBreakBefore className="bg-white shadow rounded-lg p-6 mb-6">
+            <div className="print-repeat-header">
+              <img src="/images/TIERs-Logo-good.png" alt="TIERS Logo" />
+              <p className="print-subtitle">Client Code: {htsData.initial.client_code}</p>
+            </div>
             <h2 className="text-xl font-semibold text-gray-900 mb-4">Pre-Test Counseling</h2>
             <div className="space-y-4">
               <div>
@@ -419,12 +516,16 @@ export default function HtsDetailPage({ params }: { params: Promise<{ id: string
                 </div>
               </div>
             </div>
-          </div>
+          </PrintSection>
         )}
 
         {/* Testing Results */}
         {htsData.testing && (
-          <div className="bg-white shadow rounded-lg p-6 mb-6">
+          <PrintSection pageBreakBefore className="bg-white shadow rounded-lg p-6 mb-6">
+            <div className="print-repeat-header">
+              <img src="/images/TIERs-Logo-good.png" alt="TIERS Logo" />
+              <p className="print-subtitle">Client Code: {htsData.initial.client_code}</p>
+            </div>
             <h2 className="text-xl font-semibold text-gray-900 mb-4 flex items-center">
               <FileText className="h-5 w-5 mr-2 text-blue-600" />
               HIV Testing Results
@@ -461,12 +562,16 @@ export default function HtsDetailPage({ params }: { params: Promise<{ id: string
                 </p>
               </div>
             </div>
-          </div>
+          </PrintSection>
         )}
 
         {/* PrEP Eligibility */}
         {htsData.prep_eligibility && (
-          <div className="bg-white shadow rounded-lg p-6 mb-6">
+          <PrintSection pageBreakBefore className="bg-white shadow rounded-lg p-6 mb-6">
+            <div className="print-repeat-header">
+              <img src="/images/TIERs-Logo-good.png" alt="TIERS Logo" />
+              <p className="print-subtitle">Client Code: {htsData.initial.client_code}</p>
+            </div>
             <h2 className="text-xl font-semibold text-gray-900 mb-4">PrEP Eligibility Assessment</h2>
             <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
               <div className="flex items-center">
@@ -494,30 +599,35 @@ export default function HtsDetailPage({ params }: { params: Promise<{ id: string
                 <span className="text-sm text-gray-700 font-medium">PrEP Offered</span>
               </div>
             </div>
-          </div>
+          </PrintSection>
         )}
 
         {/* Post-Test Counseling */}
         {htsData.post_test && (
-          <div className="bg-white shadow rounded-lg p-6 mb-6">
+          <PrintSection pageBreakBefore className="bg-white shadow rounded-lg p-6 mb-6">
+            <div className="print-repeat-header">
+              <img src="/images/TIERs-Logo-good.png" alt="TIERS Logo" />
+              <p className="print-subtitle">Client Code: {htsData.initial.client_code}</p>
+            </div>
             <h2 className="text-xl font-semibold text-gray-900 mb-4">Post-Test Counseling</h2>
             <div className="space-y-4">
               <div>
                 <h3 className="text-sm font-medium text-gray-700 mb-2">Additional Test Results</h3>
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                  <div className="bg-gray-50 p-3 rounded">
-                    <p className="text-xs text-gray-500">Syphilis</p>
-                    <p className="text-sm font-semibold text-gray-900">{htsData.post_test.syphilis_test_result}</p>
+                {additionalTestOrders.length > 0 ? (
+                  <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                    {additionalTestOrders.map((order) => (
+                      <div key={order.id} className="bg-gray-50 p-3 rounded">
+                        <p className="text-xs text-gray-500">{order.test_info.test_name}</p>
+                        <p className="text-sm font-semibold text-gray-900">{extractOrderResultText(order)}</p>
+                        <p className="text-xs text-gray-500 mt-1">Status: {order.status}</p>
+                      </div>
+                    ))}
                   </div>
-                  <div className="bg-gray-50 p-3 rounded">
-                    <p className="text-xs text-gray-500">Hepatitis B</p>
-                    <p className="text-sm font-semibold text-gray-900">{htsData.post_test.hepatitis_b_test_result}</p>
-                  </div>
-                  <div className="bg-gray-50 p-3 rounded">
-                    <p className="text-xs text-gray-500">Hepatitis C</p>
-                    <p className="text-sm font-semibold text-gray-900">{htsData.post_test.hepatitis_c_test_result}</p>
-                  </div>
-                </div>
+                ) : (
+                  <p className="text-sm text-gray-500 bg-gray-50 p-3 rounded">
+                    No additional lab tests linked to this HTS session.
+                  </p>
+                )}
               </div>
               {htsData.post_test.comments && (
                 <div>
@@ -526,12 +636,16 @@ export default function HtsDetailPage({ params }: { params: Promise<{ id: string
                 </div>
               )}
             </div>
-          </div>
+          </PrintSection>
         )}
 
         {/* Referral */}
         {htsData.referral && (
-          <div className="bg-white shadow rounded-lg p-6">
+          <PrintSection pageBreakBefore className="bg-white shadow rounded-lg p-6">
+            <div className="print-repeat-header">
+              <img src="/images/TIERs-Logo-good.png" alt="TIERS Logo" />
+              <p className="print-subtitle">Client Code: {htsData.initial.client_code}</p>
+            </div>
             <h2 className="text-xl font-semibold text-gray-900 mb-4">Referral Information</h2>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               {htsData.referral.referred_org_name && (
@@ -552,9 +666,11 @@ export default function HtsDetailPage({ params }: { params: Promise<{ id: string
                 </>
               )}
             </div>
-          </div>
+          </PrintSection>
         )}
+        <div className="print-footer" />
       </div>
     </div>
+    </PrintablePageWrapper>
   );
 }

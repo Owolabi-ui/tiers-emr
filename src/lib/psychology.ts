@@ -66,14 +66,23 @@ export interface CounselingSession {
   patient_id: string;
   session_date: string;
   session_type: SessionType;
+  session_number?: number | null;
   duration_minutes: number;
+  modality?: string | null;
+  setting?: string | null;
   presenting_concerns: string[];
   interventions_used: string[];
-  session_notes: string;
+  goals_addressed?: string[] | null;
+  subjective?: string | null;
+  objective?: string | null;
+  assessment?: string | null;
+  plan?: string | null;
+  session_notes?: string | null;
   progress_notes?: string | null;
   risk_assessment?: string | null;
   safety_plan?: string | null;
   homework_assigned?: string | null;
+  next_session_scheduled?: string | null;
   next_session_date?: string | null;
   counselor_id: string;
   created_at: string;
@@ -214,15 +223,76 @@ export interface CreateDiagnosisRequest {
 // ============================================
 
 export const psychologyApi = {
+  toInt(value: unknown, fallback = 0): number {
+    if (typeof value === 'number' && Number.isFinite(value)) {
+      return Math.trunc(value);
+    }
+    if (typeof value === 'string') {
+      const parsed = Number(value);
+      if (Number.isFinite(parsed)) {
+        return Math.trunc(parsed);
+      }
+    }
+    return fallback;
+  },
+
+  difficultyToRating(value?: string | null): number | null {
+    if (!value) return null;
+    const difficultyMap: Record<string, number> = {
+      'Not difficult at all': 0,
+      'Somewhat difficult': 1,
+      'Very difficult': 2,
+      'Extremely difficult': 3,
+    };
+    if (value in difficultyMap) {
+      return difficultyMap[value];
+    }
+    const parsed = Number(value);
+    return Number.isFinite(parsed) ? Math.trunc(parsed) : null;
+  },
+
+  // Normalize date/datetime strings to backend-friendly UTC ISO format.
+  normalizeToUtcIso(input?: string | null): string | null {
+    if (!input) return null;
+    const value = input.trim();
+    if (!value) return null;
+    if (/[zZ]$|[+-]\d{2}:\d{2}$/.test(value)) return value;
+    if (/^\d{4}-\d{2}-\d{2}$/.test(value)) return `${value}T00:00:00Z`;
+    if (/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}$/.test(value)) return `${value}:00Z`;
+    return value;
+  },
+
   // PHQ-9 Depression Assessments
   async createPHQ9(data: CreatePHQ9Request): Promise<PHQ9Assessment> {
-    const response = await api.post('/api/v1/psychology/phq9', data);
+    const payload = {
+      patient_id: data.patient_id,
+      assessment_date: psychologyApi.normalizeToUtcIso(data.assessment_date),
+      session_id: null,
+      little_interest: psychologyApi.toInt(data.little_interest),
+      feeling_down: psychologyApi.toInt(data.feeling_down),
+      sleep_problems: psychologyApi.toInt(data.sleep_problems),
+      feeling_tired: psychologyApi.toInt(data.feeling_tired),
+      appetite_changes: psychologyApi.toInt(data.appetite_problems),
+      feeling_bad: psychologyApi.toInt(data.feeling_bad),
+      trouble_concentrating: psychologyApi.toInt(data.concentration_problems),
+      moving_slowly: psychologyApi.toInt(data.moving_speaking),
+      self_harm_thoughts: psychologyApi.toInt(data.self_harm_thoughts),
+      difficulty_rating: psychologyApi.difficultyToRating(data.difficulty_level),
+      notes: data.notes || null,
+    };
+
+    const response = await api.post('/api/v1/psychology/phq9', payload);
     return response.data;
   },
 
   async getLatestPHQ9(patientId: string): Promise<PHQ9Assessment | null> {
-    const response = await api.get(`/api/v1/psychology/patients/${patientId}/phq9/latest`);
-    return response.data;
+    try {
+      const response = await api.get(`/api/v1/psychology/patients/${patientId}/phq9/latest`);
+      return response.data;
+    } catch (err: any) {
+      if (err?.response?.status === 404) return null;
+      throw err;
+    }
   },
 
   async getPHQ9History(patientId: string): Promise<PHQ9Assessment[]> {
@@ -232,13 +302,33 @@ export const psychologyApi = {
 
   // GAD-7 Anxiety Assessments
   async createGAD7(data: CreateGAD7Request): Promise<GAD7Assessment> {
-    const response = await api.post('/api/v1/psychology/gad7', data);
+    const payload = {
+      patient_id: data.patient_id,
+      assessment_date: psychologyApi.normalizeToUtcIso(data.assessment_date),
+      session_id: null,
+      feeling_nervous: psychologyApi.toInt(data.feeling_nervous),
+      not_stop_worrying: psychologyApi.toInt(data.cant_stop_worrying),
+      worrying_too_much: psychologyApi.toInt(data.worrying_too_much),
+      trouble_relaxing: psychologyApi.toInt(data.trouble_relaxing),
+      restless: psychologyApi.toInt(data.restless),
+      easily_annoyed: psychologyApi.toInt(data.easily_annoyed),
+      feeling_afraid: psychologyApi.toInt(data.feeling_afraid),
+      difficulty_rating: psychologyApi.difficultyToRating(data.difficulty_level),
+      notes: data.notes || null,
+    };
+
+    const response = await api.post('/api/v1/psychology/gad7', payload);
     return response.data;
   },
 
   async getLatestGAD7(patientId: string): Promise<GAD7Assessment | null> {
-    const response = await api.get(`/api/v1/psychology/patients/${patientId}/gad7/latest`);
-    return response.data;
+    try {
+      const response = await api.get(`/api/v1/psychology/patients/${patientId}/gad7/latest`);
+      return response.data;
+    } catch (err: any) {
+      if (err?.response?.status === 404) return null;
+      throw err;
+    }
   },
 
   async getGAD7History(patientId: string): Promise<GAD7Assessment[]> {
@@ -248,28 +338,36 @@ export const psychologyApi = {
 
   // AUDIT-C Alcohol Assessments
   async createAUDITC(data: CreateAUDITCRequest): Promise<AUDITCAssessment> {
-    const response = await api.post('/api/v1/psychology/audit-c', data);
+    const payload = {
+      patient_id: data.patient_id,
+      assessment_date: psychologyApi.normalizeToUtcIso(data.assessment_date),
+      session_id: null,
+      frequency: psychologyApi.toInt(data.drinking_frequency),
+      quantity: psychologyApi.toInt(data.typical_drinks),
+      binge_frequency: psychologyApi.toInt(data.binge_frequency),
+      notes: data.notes || null,
+    };
+
+    const response = await api.post('/api/v1/psychology/audit-c', payload);
     return response.data;
   },
 
   async getLatestAUDITC(patientId: string): Promise<AUDITCAssessment | null> {
-    const response = await api.get(`/api/v1/psychology/patients/${patientId}/audit-c/latest`);
-    return response.data;
+    try {
+      const response = await api.get(`/api/v1/psychology/patients/${patientId}/audit-c/latest`);
+      return response.data;
+    } catch (err: any) {
+      if (err?.response?.status === 404) return null;
+      throw err;
+    }
   },
 
   // Counseling Sessions
   async createSession(data: CreateSessionRequest): Promise<CounselingSession> {
     // Transform frontend data to match backend expectations
     // Convert date strings to ISO 8601 datetime format for backend
-    const sessionDate = data.session_date.includes('T') 
-      ? data.session_date 
-      : `${data.session_date}T00:00:00Z`;
-    
-    const nextSessionScheduled = data.next_session_scheduled 
-      ? (data.next_session_scheduled.includes('T') 
-          ? data.next_session_scheduled 
-          : `${data.next_session_scheduled}T00:00:00Z`)
-      : null;
+    const sessionDate = psychologyApi.normalizeToUtcIso(data.session_date) || `${data.session_date}T00:00:00Z`;
+    const nextSessionScheduled = psychologyApi.normalizeToUtcIso(data.next_session_scheduled || null);
     
     // Map frontend session types to backend Rust enum variants (PascalCase)
     const sessionTypeMap: Record<string, string> = {

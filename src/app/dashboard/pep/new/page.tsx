@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { useRouter } from 'next/navigation';
+import { useRouter, useSearchParams } from 'next/navigation';
 import { useForm } from 'react-hook-form';
 import { 
   pepApi, 
@@ -26,6 +26,8 @@ type FormData = Omit<CreatePepInformationRequest, 'hts_initial_id'>;
 
 export default function NewPepPage() {
   const router = useRouter();
+  const searchParams = useSearchParams();
+  const preselectedPatientId = searchParams.get('patient_id');
   const [currentStep, setCurrentStep] = useState(1);
   const [selectedHtsRecord, setSelectedHtsRecord] = useState<HtsInitialResponse | null>(null);
   const [htsDetails, setHtsDetails] = useState<any>(null);
@@ -68,7 +70,16 @@ export default function NewPepPage() {
     fetchEligibleRecords();
   }, []);
 
+  useEffect(() => {
+    if (!preselectedPatientId || selectedHtsRecord) return;
+    const patientRecords = eligibleRecords.filter((record) => record.patient_id === preselectedPatientId);
+    if (patientRecords.length === 1) {
+      handleSelectHtsRecord(patientRecords[0]);
+    }
+  }, [preselectedPatientId, eligibleRecords, selectedHtsRecord]);
+
   const filteredRecords = eligibleRecords.filter((record) => {
+    if (preselectedPatientId && record.patient_id !== preselectedPatientId) return false;
     if (!searchTerm) return true;
     const search = searchTerm.toLowerCase();
     return (
@@ -162,6 +173,11 @@ export default function NewPepPage() {
 
   const renderStep1 = () => (
     <div className="space-y-6">
+      {preselectedPatientId && (
+        <div className="bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-lg p-3 text-sm text-blue-800 dark:text-blue-300">
+          Showing HTS records for the pre-selected patient from registration.
+        </div>
+      )}
       <div>
         <h2 className="text-xl font-semibold text-gray-900 dark:text-white mb-2">
           Select HTS Record
