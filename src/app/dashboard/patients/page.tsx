@@ -35,6 +35,7 @@ import {
   Fingerprint,
   FlaskConical,
   X,
+  ExternalLink,
 } from 'lucide-react';
 import PatientFingerprintIdentification from '@/components/PatientFingerprintIdentification';
 
@@ -559,7 +560,11 @@ export default function PatientsPage() {
                     {drawerLabOrders.map((order) => (
                       <div
                         key={order.id}
-                        className="rounded-lg border border-gray-100 dark:border-gray-800 p-3"
+                        onClick={() => {
+                          setSelectedPatient(null);
+                          router.push(`/dashboard/laboratory/${order.id}`);
+                        }}
+                        className="rounded-lg border border-gray-100 dark:border-gray-800 p-3 cursor-pointer hover:border-[#5b21b6]/40 hover:bg-purple-50/40 dark:hover:bg-[#5b21b6]/5 transition-colors"
                       >
                         <div className="flex items-start justify-between gap-2">
                           <div>
@@ -575,6 +580,7 @@ export default function PatientsPage() {
                           >
                             {order.status}
                           </span>
+                          <ExternalLink className="h-3.5 w-3.5 text-gray-400" />
                         </div>
 
                         {order.result_value && (

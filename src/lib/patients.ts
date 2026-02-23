@@ -269,8 +269,10 @@ export const patientsApi = {
 
   // Get patient services
   getServices: async (id: string): Promise<ServiceType[]> => {
-    const response = await api.get<ServiceType[]>(`/api/v1/patients/${id}/services`);
-    return response.data;
+    const response = await api.get<Array<{ service_type: ServiceType; is_active: boolean }>>(
+      `/api/v1/patients/${id}/services`
+    );
+    return response.data.filter((e) => e.is_active).map((e) => e.service_type);
   },
 
   // Enroll patient in service
