@@ -15,6 +15,7 @@ import {
   SexType,
 } from '@/lib/patients';
 import { getErrorMessage } from '@/lib/api';
+import { laboratoryApi, LabTestOrderWithDetails } from '@/lib/laboratory';
 import {
   Search,
   Plus,
@@ -32,6 +33,8 @@ import {
   Heart,
   Brain,
   Fingerprint,
+  FlaskConical,
+  X,
 } from 'lucide-react';
 import PatientFingerprintIdentification from '@/components/PatientFingerprintIdentification';
 
@@ -51,6 +54,17 @@ const serviceLabels: Record<ServiceType, string> = {
   'Mental Health': 'MH',
 };
 
+const labStatusColors: Record<string, string> = {
+  Ordered: 'bg-gray-100 text-gray-700',
+  'Sample Collected': 'bg-blue-100 text-blue-700',
+  'In Progress': 'bg-yellow-100 text-yellow-800',
+  Completed: 'bg-green-100 text-green-700',
+  Reviewed: 'bg-teal-100 text-teal-700',
+  Communicated: 'bg-green-100 text-green-700',
+  Cancelled: 'bg-red-100 text-red-700',
+  Rejected: 'bg-red-100 text-red-700',
+};
+
 export default function PatientsPage() {
   const router = useRouter();
   const [patients, setPatients] = useState<Patient[]>([]);
@@ -62,6 +76,9 @@ export default function PatientsPage() {
   const [sexFilter, setSexFilter] = useState<SexType | ''>('');
   const [showFilters, setShowFilters] = useState(false);
   const [showFingerprintScan, setShowFingerprintScan] = useState(false);
+  const [selectedPatient, setSelectedPatient] = useState<Patient | null>(null);
+  const [drawerLabOrders, setDrawerLabOrders] = useState<LabTestOrderWithDetails[]>([]);
+  const [loadingDrawer, setLoadingDrawer] = useState(false);
 
   // Pagination
   const [page, setPage] = useState(1);
@@ -135,6 +152,19 @@ export default function PatientsPage() {
     e.preventDefault();
     setPage(1);
     fetchPatients();
+  };
+
+  const openPatientDrawer = async (patient: Patient) => {
+    setSelectedPatient(patient);
+    setLoadingDrawer(true);
+    try {
+      const orders = await laboratoryApi.getOrdersByPatient(patient.id);
+      setDrawerLabOrders(orders);
+    } catch {
+      setDrawerLabOrders([]);
+    } finally {
+      setLoadingDrawer(false);
+    }
   };
 
   return (
@@ -372,23 +402,32 @@ export default function PatientsPage() {
                     {formatPatientAge(patient)}
                   </td>
                   <td className="px-4 py-3">
-                    {loadingServices ? (
-                      <span className="text-xs text-gray-400">...</span>
-                    ) : patientServices[patient.id]?.length > 0 ? (
-                      <div className="flex flex-wrap gap-1">
-                        {patientServices[patient.id].map((service) => (
-                          <span
-                            key={service}
-                            className={`inline-flex items-center rounded-full px-1.5 py-0.5 text-xs font-medium ${serviceColors[service]}`}
-                            title={service}
-                          >
-                            {serviceLabels[service]}
-                          </span>
-                        ))}
-                      </div>
-                    ) : (
-                      <span className="text-xs text-gray-400 italic">Not enrolled</span>
-                    )}
+                    <button
+                      type="button"
+                      onClick={() => openPatientDrawer(patient)}
+                      className="text-left w-full"
+                      title="View services and lab tests"
+                    >
+                      {loadingServices ? (
+                        <span className="text-xs text-gray-400">...</span>
+                      ) : patientServices[patient.id]?.length > 0 ? (
+                        <div className="flex flex-wrap gap-1">
+                          {patientServices[patient.id].map((service) => (
+                            <span
+                              key={service}
+                              className={`inline-flex items-center rounded-full px-1.5 py-0.5 text-xs font-medium ${serviceColors[service]}`}
+                              title={service}
+                            >
+                              {serviceLabels[service]}
+                            </span>
+                          ))}
+                        </div>
+                      ) : (
+                        <span className="text-xs text-gray-400 italic hover:text-[#5b21b6] transition-colors">
+                          Not enrolled
+                        </span>
+                      )}
+                    </button>
                   </td>
                   <td className="px-4 py-3 text-gray-600 dark:text-gray-400">
                     {patient.phone_number || '-'}
@@ -461,6 +500,126 @@ export default function PatientsPage() {
       )}
 
       {/* Fingerprint Quick Check-in Modal */}
+      {selectedPatient && (
+        <div className="fixed inset-0 z-50 overflow-hidden">
+          <div className="absolute inset-0 bg-black/40" onClick={() => setSelectedPatient(null)} />
+
+          <div className="absolute right-0 top-0 h-full w-full max-w-lg bg-white dark:bg-neutral-900 shadow-xl flex flex-col">
+            <div className="flex items-start justify-between px-6 py-4 border-b">
+              <div>
+                <h2 className="font-semibold text-gray-900 dark:text-white">
+                  {getPatientFullName(selectedPatient)}
+                </h2>
+                <p className="text-xs text-gray-500 font-mono mt-0.5">{selectedPatient.hospital_no}</p>
+              </div>
+              <button
+                onClick={() => setSelectedPatient(null)}
+                className="p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 text-gray-500"
+              >
+                <X className="h-5 w-5" />
+              </button>
+            </div>
+
+            <div className="flex-1 overflow-y-auto p-6 space-y-6">
+              <div>
+                <h3 className="text-sm font-semibold text-gray-900 dark:text-white mb-3">
+                  Enrolled Services
+                </h3>
+                {patientServices[selectedPatient.id]?.length > 0 ? (
+                  <div className="flex flex-wrap gap-2">
+                    {patientServices[selectedPatient.id].map((service) => (
+                      <span
+                        key={service}
+                        className={`inline-flex items-center rounded-full px-3 py-1 text-sm font-medium ${serviceColors[service]}`}
+                      >
+                        {service}
+                      </span>
+                    ))}
+                  </div>
+                ) : (
+                  <p className="text-sm text-gray-400 italic">Not enrolled in any service</p>
+                )}
+              </div>
+
+              <div>
+                <div className="flex items-center gap-2 mb-3">
+                  <FlaskConical className="h-4 w-4 text-[#5b21b6]" />
+                  <h3 className="text-sm font-semibold text-gray-900 dark:text-white">Lab Tests</h3>
+                </div>
+
+                {loadingDrawer ? (
+                  <div className="flex items-center gap-2 text-sm text-gray-500">
+                    <Loader2 className="h-4 w-4 animate-spin" />
+                    Loading tests...
+                  </div>
+                ) : drawerLabOrders.length === 0 ? (
+                  <p className="text-sm text-gray-400 italic">No lab tests ordered</p>
+                ) : (
+                  <div className="space-y-2">
+                    {drawerLabOrders.map((order) => (
+                      <div
+                        key={order.id}
+                        className="rounded-lg border border-gray-100 dark:border-gray-800 p-3"
+                      >
+                        <div className="flex items-start justify-between gap-2">
+                          <div>
+                            <p className="text-sm font-medium text-gray-900 dark:text-white">
+                              {order.test_info?.test_name ?? 'Unknown Test'}
+                            </p>
+                            <p className="text-xs text-gray-500 font-mono">{order.order_number}</p>
+                          </div>
+                          <span
+                            className={`inline-flex items-center rounded-full px-2 py-0.5 text-xs font-medium whitespace-nowrap ${
+                              labStatusColors[order.status] ?? 'bg-gray-100 text-gray-700'
+                            }`}
+                          >
+                            {order.status}
+                          </span>
+                        </div>
+
+                        {order.result_value && (
+                          <div className="mt-2 pt-2 border-t border-gray-100 dark:border-gray-800">
+                            <p className="text-xs text-gray-600 dark:text-gray-400">
+                              Result:{' '}
+                              <span className="font-medium">
+                                {order.result_value} {order.result_unit ?? ''}
+                              </span>
+                              {order.result_interpretation && (
+                                <span
+                                  className={`ml-2 font-medium ${
+                                    order.result_interpretation === 'Normal'
+                                      ? 'text-green-600'
+                                      : 'text-red-600'
+                                  }`}
+                                >
+                                  ({order.result_interpretation})
+                                </span>
+                              )}
+                            </p>
+                          </div>
+                        )}
+                      </div>
+                    ))}
+                  </div>
+                )}
+              </div>
+            </div>
+
+            <div className="px-6 py-4 border-t">
+              <button
+                onClick={() => {
+                  setSelectedPatient(null);
+                  router.push(`/dashboard/patients/${selectedPatient.id}`);
+                }}
+                className="w-full py-2 rounded-lg bg-[#5b21b6] text-white text-sm font-medium hover:bg-[#4c1d95] transition-colors"
+              >
+                View Full Record
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
       {showFingerprintScan && (
         <PatientFingerprintIdentification
           onPatientIdentified={(patientId) => {

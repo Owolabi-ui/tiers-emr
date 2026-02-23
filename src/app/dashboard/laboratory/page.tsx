@@ -76,6 +76,9 @@ export default function LaboratoryPage() {
     );
   });
 
+  const completedOrders =
+    statistics?.by_status?.find(([status]) => status === 'Completed')?.[1] ?? 0;
+
   if (loading) {
     return (
       <div className="flex items-center justify-center min-h-[400px]">
@@ -156,7 +159,7 @@ export default function LaboratoryPage() {
               <div className="flex-1">
                 <p className="text-sm text-gray-500 dark:text-gray-400">Completed</p>
                 <p className="text-2xl font-bold text-green-600 dark:text-green-400 mt-1">
-                  {statistics.completed_orders || 0}
+                  {completedOrders}
                 </p>
                 <p className="text-xs text-gray-400 dark:text-gray-500 mt-1">
                   {statistics.completed_today || 0} today
