@@ -40,6 +40,9 @@ import {
   Info,
 } from 'lucide-react';
 import Link from 'next/link';
+import PrintablePageWrapper from '@/components/common/PrintablePageWrapper';
+import PrintHeader from '@/components/common/PrintHeader';
+import PrintButton from '@/components/common/PrintButton';
 
 // ============================================================================
 // FORM SCHEMAS
@@ -339,13 +342,23 @@ export default function LabOrderDetailPage() {
   };
 
   return (
+    <PrintablePageWrapper
+      printHeader={
+        <PrintHeader
+          title="Laboratory Order Details"
+          subtitle={`Order: ${formatOrderNumber(order.order_number)} | Patient: ${
+            order.patient_name || 'N/A'
+          } | Printed: ${new Date().toLocaleDateString()}`}
+        />
+      }
+    >
     <div className="space-y-6">
       {/* Header */}
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-4">
           <Link
             href="/dashboard/laboratory"
-            className="p-2 hover:bg-gray-100 dark:hover:bg-neutral-800 rounded-lg transition-colors"
+            className="p-2 hover:bg-gray-100 dark:hover:bg-neutral-800 rounded-lg transition-colors no-print"
           >
             <ArrowLeft className="h-5 w-5 text-gray-500" />
           </Link>
@@ -355,6 +368,7 @@ export default function LabOrderDetailPage() {
           </div>
         </div>
         <div className="flex items-center gap-2">
+          <PrintButton label="Print Order" />
           <span className={`px-3 py-1 rounded-full text-sm font-medium ${getPriorityColor(order.priority)}`}>
             {order.priority}
           </span>
@@ -710,7 +724,7 @@ export default function LabOrderDetailPage() {
 
       {/* Enter Result Modal */}
       {showResultModal && (
-        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4 no-print">
           <div className="bg-white dark:bg-neutral-900 rounded-xl max-w-md w-full border border-black/10 dark:border-white/15">
             <div className="bg-[#5b21b6] px-5 py-3 flex items-center justify-between rounded-t-xl">
               <h3 className="font-semibold text-white">Enter Test Result</h3>
@@ -893,7 +907,7 @@ export default function LabOrderDetailPage() {
 
       {/* Cancel Order Modal */}
       {showCancelModal && (
-        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4 no-print">
           <div className="bg-white dark:bg-neutral-900 rounded-xl max-w-md w-full border border-black/10 dark:border-white/15">
             <div className="bg-red-600 px-5 py-3 flex items-center justify-between rounded-t-xl">
               <h3 className="font-semibold text-white">Cancel Lab Order</h3>
@@ -944,5 +958,6 @@ export default function LabOrderDetailPage() {
         </div>
       )}
     </div>
+    </PrintablePageWrapper>
   );
 }
