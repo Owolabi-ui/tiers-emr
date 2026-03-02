@@ -10,6 +10,8 @@ import {
 import { patientsApi, Patient } from '@/lib/patients';
 import { createARTViralLoadOrder } from '@/lib/laboratory';
 import { getErrorMessage } from '@/lib/api';
+import { useFormConfig } from '@/hooks/useFormConfig';
+import { FORM_SCHEMAS } from '@/lib/form-schemas';
 import {
   ArrowLeft,
   ArrowRight,
@@ -39,6 +41,19 @@ export default function NewArtPage() {
   const [prefillLoading, setPrefillLoading] = useState(false);
   const [searchTerm, setSearchTerm] = useState('');
   const [generatedArtNo, setGeneratedArtNo] = useState<string>('');
+  const { isVisible, isRequired, getLabel, getOptions } = useFormConfig('art', FORM_SCHEMAS.art);
+  const showArtClientInfoSection =
+    isVisible('art_no') ||
+    isVisible('date_confirmed_hiv_positive') ||
+    isVisible('date_enrolled_into_hiv_care') ||
+    isVisible('mode_of_hiv_test') ||
+    isVisible('entry_point') ||
+    isVisible('where_test_was_done') ||
+    isVisible('prior_art');
+  const showNextOfKinSection =
+    isVisible('name_of_next_of_kin') ||
+    isVisible('relationship_with_next_of_kin') ||
+    isVisible('phone_no_of_next_of_kin');
 
   const {
     register,
@@ -407,6 +422,7 @@ export default function NewArtPage() {
 
       <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
         {/* Basic ART Information */}
+        {showArtClientInfoSection && (
         <div className="border border-gray-200 dark:border-gray-700 rounded-lg p-6 space-y-4">
           <h3 className="font-medium text-gray-900 dark:text-white flex items-center gap-2">
             <Heart className="h-5 w-5 text-[#5b21b6]" />
@@ -414,13 +430,16 @@ export default function NewArtPage() {
           </h3>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <div>
+            {isVisible('art_no') && (
+              <div>
               <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-                ART Number <span className="text-red-500">*</span>
+                {getLabel('art_no')} {isRequired('art_no') && <span className="text-red-500">*</span>}
               </label>
               <input
                 type="text"
-                {...register('art_no', { required: 'ART number is required' })}
+                {...register('art_no', {
+                  required: isRequired('art_no') ? `${getLabel('art_no')} is required` : false,
+                })}
                 readOnly
                 className="w-full h-10 px-3 rounded-lg border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-neutral-700 text-sm text-gray-900 dark:text-white focus:outline-none cursor-not-allowed"
                 placeholder="Auto-generated"
@@ -431,15 +450,21 @@ export default function NewArtPage() {
               {errors.art_no && (
                 <p className="text-sm text-red-600 mt-1">{errors.art_no.message}</p>
               )}
-            </div>
+              </div>
+            )}
 
-            <div>
+            {isVisible('date_confirmed_hiv_positive') && (
+              <div>
               <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-                Date Confirmed HIV Positive <span className="text-red-500">*</span>
+                {getLabel('date_confirmed_hiv_positive')} {isRequired('date_confirmed_hiv_positive') && <span className="text-red-500">*</span>}
               </label>
               <input
                 type="date"
-                {...register('date_confirmed_hiv_positive', { required: 'Date is required' })}
+                {...register('date_confirmed_hiv_positive', {
+                  required: isRequired('date_confirmed_hiv_positive')
+                    ? `${getLabel('date_confirmed_hiv_positive')} is required`
+                    : false,
+                })}
                 className="w-full h-10 px-3 rounded-lg border border-gray-200 dark:border-gray-700 bg-white dark:bg-neutral-800 text-sm text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-[#5b21b6]/50"
               />
               <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">
@@ -448,15 +473,21 @@ export default function NewArtPage() {
               {errors.date_confirmed_hiv_positive && (
                 <p className="text-sm text-red-600 mt-1">{errors.date_confirmed_hiv_positive.message}</p>
               )}
-            </div>
+              </div>
+            )}
 
-            <div>
+            {isVisible('date_enrolled_into_hiv_care') && (
+              <div>
               <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-                Date Enrolled into HIV Care <span className="text-red-500">*</span>
+                {getLabel('date_enrolled_into_hiv_care')} {isRequired('date_enrolled_into_hiv_care') && <span className="text-red-500">*</span>}
               </label>
               <input
                 type="date"
-                {...register('date_enrolled_into_hiv_care', { required: 'Date is required' })}
+                {...register('date_enrolled_into_hiv_care', {
+                  required: isRequired('date_enrolled_into_hiv_care')
+                    ? `${getLabel('date_enrolled_into_hiv_care')} is required`
+                    : false,
+                })}
                 className="w-full h-10 px-3 rounded-lg border border-gray-200 dark:border-gray-700 bg-white dark:bg-neutral-800 text-sm text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-[#5b21b6]/50"
               />
               <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">
@@ -465,43 +496,58 @@ export default function NewArtPage() {
               {errors.date_enrolled_into_hiv_care && (
                 <p className="text-sm text-red-600 mt-1">{errors.date_enrolled_into_hiv_care.message}</p>
               )}
-            </div>
+              </div>
+            )}
 
-            <div>
+            {isVisible('mode_of_hiv_test') && (
+              <div>
               <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-                Mode of HIV Test
+                {getLabel('mode_of_hiv_test')}
               </label>
               <select
                 {...register('mode_of_hiv_test')}
                 className="w-full h-10 px-3 rounded-lg border border-gray-200 dark:border-gray-700 bg-white dark:bg-neutral-800 text-sm text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-[#5b21b6]/50"
               >
                 <option value="">Select test mode</option>
-                <option value="HIV-AB">HIV-AB (Antibody test)</option>
-                <option value="PCR">PCR (DNA/RNA test)</option>
+                {getOptions('mode_of_hiv_test', ['HIV-AB', 'PCR']).map((option) => (
+                  <option key={option} value={option}>
+                    {option === 'HIV-AB' ? 'HIV-AB (Antibody test)' : 'PCR (DNA/RNA test)'}
+                  </option>
+                ))}
               </select>
               <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">
                 Type of test used for HIV diagnosis
               </p>
-            </div>
+              </div>
+            )}
 
-            <div>
+            {isVisible('entry_point') && (
+              <div>
               <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-                Entry Point <span className="text-red-500">*</span>
+                {getLabel('entry_point')} {isRequired('entry_point') && <span className="text-red-500">*</span>}
               </label>
               <select
-                {...register('entry_point', { required: 'Entry point is required' })}
+                {...register('entry_point', {
+                  required: isRequired('entry_point') ? `${getLabel('entry_point')} is required` : false,
+                })}
                 className="w-full h-10 px-3 rounded-lg border border-gray-200 dark:border-gray-700 bg-white dark:bg-neutral-800 text-sm text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-[#5b21b6]/50"
               >
-                <option value="VCT">VCT (Voluntary Counseling & Testing)</option>
-                <option value="ANC/PMTCT">ANC/PMTCT (Antenatal Care/Prevention)</option>
-                <option value="Index testing">Index testing</option>
-                <option value="Inpatient">Inpatient</option>
-                <option value="OPD">OPD (Outpatient Department)</option>
-                <option value="Outreach">Outreach</option>
-                <option value="STI clinic">STI clinic</option>
-                <option value="TB-DOT">TB-DOT (TB Directly Observed Therapy)</option>
-                <option value="Transferred in">Transferred in</option>
-                <option value="Others">Others</option>
+                {getOptions('entry_point', [
+                  'VCT',
+                  'ANC/PMTCT',
+                  'Index testing',
+                  'Inpatient',
+                  'OPD',
+                  'Outreach',
+                  'STI clinic',
+                  'TB-DOT',
+                  'Transferred in',
+                  'Others',
+                ]).map((option) => (
+                  <option key={option} value={option}>
+                    {option}
+                  </option>
+                ))}
               </select>
               <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">
                 How the patient entered HIV care services
@@ -509,11 +555,13 @@ export default function NewArtPage() {
               {errors.entry_point && (
                 <p className="text-sm text-red-600 mt-1">{errors.entry_point.message}</p>
               )}
-            </div>
+              </div>
+            )}
 
-            <div>
+            {isVisible('where_test_was_done') && (
+              <div>
               <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-                Where Test Was Done
+                {getLabel('where_test_was_done')}
               </label>
               <input
                 type="text"
@@ -524,30 +572,41 @@ export default function NewArtPage() {
               <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">
                 Name of facility where HIV test was conducted
               </p>
-            </div>
+              </div>
+            )}
 
-            <div>
+            {isVisible('prior_art') && (
+              <div>
               <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-                Prior ART
+                {getLabel('prior_art')}
               </label>
               <select
                 {...register('prior_art')}
                 className="w-full h-10 px-3 rounded-lg border border-gray-200 dark:border-gray-700 bg-white dark:bg-neutral-800 text-sm text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-[#5b21b6]/50"
               >
                 <option value="">None</option>
-                <option value="PEP">PEP (Post-Exposure Prophylaxis)</option>
-                <option value="PMTCT only">PMTCT only (Prevention of Mother-to-Child)</option>
-                <option value="Transfer in with records">Transfer in with records</option>
-                <option value="Transfer in without records">Transfer in without records</option>
+                {getOptions('prior_art', [
+                  'PEP',
+                  'PMTCT only',
+                  'Transfer in with records',
+                  'Transfer in without records',
+                ]).map((option) => (
+                  <option key={option} value={option}>
+                    {option}
+                  </option>
+                ))}
               </select>
               <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">
                 Previous antiretroviral treatment history
               </p>
-            </div>
+              </div>
+            )}
           </div>
         </div>
+        )}
 
         {/* Next of Kin Information */}
+        {showNextOfKinSection && (
         <div className="border border-gray-200 dark:border-gray-700 rounded-lg p-6 space-y-4">
           <h3 className="font-medium text-gray-900 dark:text-white flex items-center gap-2">
             <User className="h-5 w-5 text-[#5b21b6]" />
@@ -555,9 +614,10 @@ export default function NewArtPage() {
           </h3>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <div>
+            {isVisible('name_of_next_of_kin') && (
+              <div>
               <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-                Name of Next of Kin
+                {getLabel('name_of_next_of_kin')}
               </label>
               <input
                 type="text"
@@ -565,11 +625,13 @@ export default function NewArtPage() {
                 className="w-full h-10 px-3 rounded-lg border border-gray-200 dark:border-gray-700 bg-white dark:bg-neutral-800 text-sm text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-[#5b21b6]/50"
                 placeholder="Enter name"
               />
-            </div>
+              </div>
+            )}
 
-            <div>
+            {isVisible('relationship_with_next_of_kin') && (
+              <div>
               <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-                Relationship
+                {getLabel('relationship_with_next_of_kin')}
               </label>
               <input
                 type="text"
@@ -577,11 +639,13 @@ export default function NewArtPage() {
                 className="w-full h-10 px-3 rounded-lg border border-gray-200 dark:border-gray-700 bg-white dark:bg-neutral-800 text-sm text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-[#5b21b6]/50"
                 placeholder="e.g., Spouse, Parent, Sibling"
               />
-            </div>
+              </div>
+            )}
 
-            <div>
+            {isVisible('phone_no_of_next_of_kin') && (
+              <div>
               <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-                Phone Number
+                {getLabel('phone_no_of_next_of_kin')}
               </label>
               <input
                 type="tel"
@@ -589,9 +653,11 @@ export default function NewArtPage() {
                 className="w-full h-10 px-3 rounded-lg border border-gray-200 dark:border-gray-700 bg-white dark:bg-neutral-800 text-sm text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-[#5b21b6]/50"
                 placeholder="Enter phone number"
               />
-            </div>
+              </div>
+            )}
           </div>
         </div>
+        )}
 
         {/* Error Message */}
         {error && (

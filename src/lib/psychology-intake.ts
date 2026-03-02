@@ -1,5 +1,13 @@
 // Psychology Intake API
+import axios from 'axios';
 import { api } from './api';
+
+const publicApi = axios.create({
+  baseURL: process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8080',
+  headers: {
+    'Content-Type': 'application/json',
+  },
+});
 
 // Enums
 export type ScreeningFrequency = 'Not at all' | 'Several days' | 'More than half the days' | 'Nearly every day';
@@ -115,13 +123,13 @@ export const psychologyIntakeApi = {
 
   // Public: Get intake form (validate token)
   getPublicForm: async (token: string): Promise<PublicIntakeFormData> => {
-    const response = await api.get(`/api/v1/public/psychology/intake/${token}`);
+    const response = await publicApi.get(`/api/v1/public/psychology/intake/${token}`);
     return response.data;
   },
 
   // Public: Submit intake form
   submitPublicForm: async (token: string, data: SubmitPublicIntakeRequest): Promise<PsychologyIntake> => {
-    const response = await api.post(`/api/v1/public/psychology/intake/${token}`, data);
+    const response = await publicApi.post(`/api/v1/public/psychology/intake/${token}`, data);
     return response.data;
   },
 

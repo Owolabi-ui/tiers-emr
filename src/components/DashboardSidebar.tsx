@@ -139,6 +139,12 @@ const adminNavigation = [
     roles: ['Admin'],
   },
   {
+    name: 'Form Settings',
+    href: '/dashboard/admin/form-configs',
+    icon: FileText,
+    roles: ['Admin'],
+  },
+  {
     name: 'Settings',
     href: '/dashboard/settings',
     icon: Settings,

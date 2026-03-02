@@ -5,6 +5,8 @@ import { useForm } from "react-hook-form";
 import { Save } from "lucide-react";
 import { HtsPostTestRequest, PREVIOUS_HIV_TEST_STATUSES } from "@/lib/hts";
 import { getOrdersByService } from "@/lib/laboratory";
+import { useFormConfig } from "@/hooks/useFormConfig";
+import { FORM_SCHEMAS } from "@/lib/form-schemas";
 
 interface HtsPostTestFormProps {
   initialData?: Partial<HtsPostTestRequest>;
@@ -14,6 +16,7 @@ interface HtsPostTestFormProps {
 }
 
 export default function HtsPostTestForm({ initialData, onSave, loading, htsInitialId }: HtsPostTestFormProps) {
+  const { isVisible, isRequired, getLabel, getOptions } = useFormConfig("hts", FORM_SCHEMAS.hts);
   const [labResultsLoaded, setLabResultsLoaded] = useState(false);
   const [availableTests, setAvailableTests] = useState({
     syphilis: false,
@@ -53,17 +56,13 @@ export default function HtsPostTestForm({ initialData, onSave, loading, htsIniti
       try {
         // First, check which tests were ordered
         const orders = await getOrdersByService("HTS", htsInitialId);
-        
-        console.log('Lab orders:', orders);
-        
+
         const orderedTests = {
           syphilis: orders.some(o => o.test_info.test_code === 'TPHA'),
           hepatitisB: orders.some(o => o.test_info.test_code === 'HBSAG'),
           hepatitisC: orders.some(o => o.test_info.test_code === 'HCVAB'),
         };
-        
-        console.log('Ordered tests:', orderedTests);
-        
+
         setAvailableTests(orderedTests);
 
         let hasAnyCompletedTest = false;
@@ -108,6 +107,43 @@ export default function HtsPostTestForm({ initialData, onSave, loading, htsIniti
     onSave(cleanedData);
   };
 
+  const checkboxField = (name: keyof HtsPostTestRequest, fallbackLabel: string, id: string) => {
+    if (!isVisible(name)) return null;
+    return (
+      <div className="flex items-center">
+        <input
+          id={id}
+          type="checkbox"
+          {...register(name)}
+          className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
+        />
+        <label htmlFor={id} className="ml-3 text-sm text-gray-700">
+          {getLabel(name) || fallbackLabel}
+        </label>
+      </div>
+    );
+  };
+
+  const showResultDocumentationSection =
+    isVisible("result_form_signed") ||
+    isVisible("result_form_filled") ||
+    isVisible("client_received_result");
+  const showPartnerInfoSection =
+    isVisible("partner_uses_fp_method") ||
+    isVisible("partner_uses_condom");
+  const showPostTestCounselingSection =
+    isVisible("post_test_counseling_done") ||
+    isVisible("client_referred_to_services") ||
+    isVisible("risk_reduction_plan_developed") ||
+    isVisible("disclosure_plan_developed");
+  const showPartnerChildSection =
+    isVisible("will_bring_partners") ||
+    isVisible("will_bring_children");
+  const showPreventionSection =
+    isVisible("provided_fp_info") ||
+    isVisible("condom_use_demonstrated") ||
+    isVisible("condoms_provided");
+
   return (
     <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
       {/* Waiting for Lab Results - Only show if STI tests were ordered but not completed */}
@@ -134,16 +170,21 @@ export default function HtsPostTestForm({ initialData, onSave, loading, htsIniti
       )}
 
       {/* Previous HIV Test Status */}
+      {isVisible("previous_hiv_test_status") && (
       <div>
         <label className="block text-sm font-medium text-gray-700 mb-2">
-          Previous HIV Test Status <span className="text-red-500">*</span>
+          {getLabel("previous_hiv_test_status")} {isRequired("previous_hiv_test_status") && <span className="text-red-500">*</span>}
         </label>
         <select
-          {...register("previous_hiv_test_status", { required: "Previous test status is required" })}
+          {...register("previous_hiv_test_status", {
+            required: isRequired("previous_hiv_test_status")
+              ? `${getLabel("previous_hiv_test_status")} is required`
+              : false,
+          })}
           className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm"
         >
           <option value="">Select previous test status</option>
-          {PREVIOUS_HIV_TEST_STATUSES.map((status) => (
+          {getOptions("previous_hiv_test_status", PREVIOUS_HIV_TEST_STATUSES as string[]).map((status) => (
             <option key={status} value={status}>
               {status}
             </option>
@@ -153,200 +194,72 @@ export default function HtsPostTestForm({ initialData, onSave, loading, htsIniti
           <p className="mt-1 text-sm text-red-600">{errors.previous_hiv_test_status.message}</p>
         )}
       </div>
+      )}
 
       {/* Result Documentation */}
+      {showResultDocumentationSection && (
       <div className="bg-gray-50 p-6 rounded-lg">
         <h3 className="text-lg font-medium text-gray-900 mb-4">Result Documentation</h3>
         <div className="space-y-3">
-          <div className="flex items-center">
-            <input
-              id="result_form_signed"
-              type="checkbox"
-              {...register("result_form_signed")}
-              className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
-            />
-            <label htmlFor="result_form_signed" className="ml-3 text-sm text-gray-700">
-              Result form signed by client
-            </label>
-          </div>
-          <div className="flex items-center">
-            <input
-              id="result_form_filled"
-              type="checkbox"
-              {...register("result_form_filled")}
-              className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
-            />
-            <label htmlFor="result_form_filled" className="ml-3 text-sm text-gray-700">
-              Result form completely filled
-            </label>
-          </div>
-          <div className="flex items-center">
-            <input
-              id="client_received_result"
-              type="checkbox"
-              {...register("client_received_result")}
-              className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
-            />
-            <label htmlFor="client_received_result" className="ml-3 text-sm text-gray-700">
-              Client received test result
-            </label>
-          </div>
+          {checkboxField("result_form_signed", "Result form signed by client", "result_form_signed")}
+          {checkboxField("result_form_filled", "Result form completely filled", "result_form_filled")}
+          {checkboxField("client_received_result", "Client received test result", "client_received_result")}
         </div>
       </div>
+      )}
 
       {/* Partner Information */}
+      {showPartnerInfoSection && (
       <div className="bg-gray-50 p-6 rounded-lg">
         <h3 className="text-lg font-medium text-gray-900 mb-4">Partner Information</h3>
         <div className="space-y-3">
-          <div className="flex items-center">
-            <input
-              id="partner_uses_fp_method"
-              type="checkbox"
-              {...register("partner_uses_fp_method")}
-              className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
-            />
-            <label htmlFor="partner_uses_fp_method" className="ml-3 text-sm text-gray-700">
-              Partner uses family planning method
-            </label>
-          </div>
-          <div className="flex items-center">
-            <input
-              id="partner_uses_condom"
-              type="checkbox"
-              {...register("partner_uses_condom")}
-              className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
-            />
-            <label htmlFor="partner_uses_condom" className="ml-3 text-sm text-gray-700">
-              Partner uses condoms
-            </label>
-          </div>
+          {checkboxField("partner_uses_fp_method", "Partner uses family planning method", "partner_uses_fp_method")}
+          {checkboxField("partner_uses_condom", "Partner uses condoms", "partner_uses_condom")}
         </div>
       </div>
+      )}
 
       {/* Post-Test Counseling */}
+      {showPostTestCounselingSection && (
       <div className="bg-gray-50 p-6 rounded-lg">
         <h3 className="text-lg font-medium text-gray-900 mb-4">Post-Test Counseling</h3>
         <div className="space-y-3">
-          <div className="flex items-center">
-            <input
-              id="post_test_counseling_done"
-              type="checkbox"
-              {...register("post_test_counseling_done")}
-              className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
-            />
-            <label htmlFor="post_test_counseling_done" className="ml-3 text-sm text-gray-700">
-              Post-test counseling completed
-            </label>
-          </div>
-          <div className="flex items-center">
-            <input
-              id="client_referred_to_services"
-              type="checkbox"
-              {...register("client_referred_to_services")}
-              className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
-            />
-            <label htmlFor="client_referred_to_services" className="ml-3 text-sm text-gray-700">
-              Client referred to appropriate services
-            </label>
-          </div>
-          <div className="flex items-center">
-            <input
-              id="risk_reduction_plan_developed"
-              type="checkbox"
-              {...register("risk_reduction_plan_developed")}
-              className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
-            />
-            <label htmlFor="risk_reduction_plan_developed" className="ml-3 text-sm text-gray-700">
-              Risk reduction plan developed
-            </label>
-          </div>
-          <div className="flex items-center">
-            <input
-              id="disclosure_plan_developed"
-              type="checkbox"
-              {...register("disclosure_plan_developed")}
-              className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
-            />
-            <label htmlFor="disclosure_plan_developed" className="ml-3 text-sm text-gray-700">
-              Disclosure plan developed
-            </label>
-          </div>
+          {checkboxField("post_test_counseling_done", "Post-test counseling completed", "post_test_counseling_done")}
+          {checkboxField("client_referred_to_services", "Client referred to appropriate services", "client_referred_to_services")}
+          {checkboxField("risk_reduction_plan_developed", "Risk reduction plan developed", "risk_reduction_plan_developed")}
+          {checkboxField("disclosure_plan_developed", "Disclosure plan developed", "disclosure_plan_developed")}
         </div>
       </div>
+      )}
 
       {/* Partner/Child Testing */}
+      {showPartnerChildSection && (
       <div className="bg-gray-50 p-6 rounded-lg">
         <h3 className="text-lg font-medium text-gray-900 mb-4">Partner & Child Testing</h3>
         <div className="space-y-3">
-          <div className="flex items-center">
-            <input
-              id="will_bring_partners"
-              type="checkbox"
-              {...register("will_bring_partners")}
-              className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
-            />
-            <label htmlFor="will_bring_partners" className="ml-3 text-sm text-gray-700">
-              Client will bring partner(s) for testing
-            </label>
-          </div>
-          <div className="flex items-center">
-            <input
-              id="will_bring_children"
-              type="checkbox"
-              {...register("will_bring_children")}
-              className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
-            />
-            <label htmlFor="will_bring_children" className="ml-3 text-sm text-gray-700">
-              Client will bring children for testing
-            </label>
-          </div>
+          {checkboxField("will_bring_partners", "Client will bring partner(s) for testing", "will_bring_partners")}
+          {checkboxField("will_bring_children", "Client will bring children for testing", "will_bring_children")}
         </div>
       </div>
+      )}
 
       {/* Prevention Services */}
+      {showPreventionSection && (
       <div className="bg-gray-50 p-6 rounded-lg">
         <h3 className="text-lg font-medium text-gray-900 mb-4">Prevention Services Provided</h3>
         <div className="space-y-3">
-          <div className="flex items-center">
-            <input
-              id="provided_fp_info"
-              type="checkbox"
-              {...register("provided_fp_info")}
-              className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
-            />
-            <label htmlFor="provided_fp_info" className="ml-3 text-sm text-gray-700">
-              Family planning information provided
-            </label>
-          </div>
-          <div className="flex items-center">
-            <input
-              id="condom_use_demonstrated"
-              type="checkbox"
-              {...register("condom_use_demonstrated")}
-              className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
-            />
-            <label htmlFor="condom_use_demonstrated" className="ml-3 text-sm text-gray-700">
-              Condom use demonstrated
-            </label>
-          </div>
-          <div className="flex items-center">
-            <input
-              id="condoms_provided"
-              type="checkbox"
-              {...register("condoms_provided")}
-              className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
-            />
-            <label htmlFor="condoms_provided" className="ml-3 text-sm text-gray-700">
-              Condoms provided to client
-            </label>
-          </div>
+          {checkboxField("provided_fp_info", "Family planning information provided", "provided_fp_info")}
+          {checkboxField("condom_use_demonstrated", "Condom use demonstrated", "condom_use_demonstrated")}
+          {checkboxField("condoms_provided", "Condoms provided to client", "condoms_provided")}
         </div>
       </div>
+      )}
 
       {/* Comments */}
+      {isVisible("comments") && (
       <div>
         <label className="block text-sm font-medium text-gray-700 mb-2">
-          Additional Comments/Notes
+          {getLabel("comments")}
         </label>
         <textarea
           {...register("comments")}
@@ -355,6 +268,7 @@ export default function HtsPostTestForm({ initialData, onSave, loading, htsIniti
           placeholder="Enter any additional notes or observations..."
         />
       </div>
+      )}
 
       {/* Submit Button */}
       <div className="flex justify-end pt-6 border-t">

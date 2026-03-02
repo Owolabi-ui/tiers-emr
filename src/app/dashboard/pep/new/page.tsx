@@ -9,6 +9,8 @@ import {
 } from '@/lib/pep';
 import { HtsInitialResponse, htsApi } from '@/lib/hts';
 import { getErrorMessage } from '@/lib/api';
+import { useFormConfig } from '@/hooks/useFormConfig';
+import { FORM_SCHEMAS } from '@/lib/form-schemas';
 import {
   ArrowLeft,
   ArrowRight,
@@ -36,6 +38,9 @@ export default function NewPepPage() {
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [searchTerm, setSearchTerm] = useState('');
+  const { isVisible, isRequired, getLabel, getOptions } = useFormConfig('pep', FORM_SCHEMAS.pep);
+  const showSupporterSection =
+    isVisible('pep_supporter') || isVisible('supporter_relationship') || isVisible('supporter_telephone');
 
   const {
     register,
@@ -301,6 +306,7 @@ export default function NewPepPage() {
 
       <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
         {/* Exposure Information */}
+        {showSupporterSection && (
         <div className="border border-gray-200 dark:border-gray-700 rounded-lg p-6 space-y-4">
           <h3 className="font-medium text-gray-900 dark:text-white flex items-center gap-2">
             <AlertCircle className="h-5 w-5 text-[#5b21b6]" />
@@ -308,16 +314,22 @@ export default function NewPepPage() {
           </h3>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <div>
+            {isVisible('mode_of_exposure') && (
+              <div>
               <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-                Mode of Exposure <span className="text-red-500">*</span>
+                {getLabel('mode_of_exposure')} {isRequired('mode_of_exposure') && <span className="text-red-500">*</span>}
               </label>
               <select
-                {...register('mode_of_exposure', { required: 'Mode of exposure is required' })}
+                {...register('mode_of_exposure', {
+                  required: isRequired('mode_of_exposure') ? `${getLabel('mode_of_exposure')} is required` : false,
+                })}
                 className="w-full h-10 px-3 rounded-lg border border-gray-200 dark:border-gray-700 bg-white dark:bg-neutral-800 text-sm text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-[#5b21b6]/50"
               >
-                <option value="Non-occupational">Non-occupational</option>
-                <option value="Occupational">Occupational</option>
+                {getOptions('mode_of_exposure', ['Non-occupational', 'Occupational']).map((option) => (
+                  <option key={option} value={option}>
+                    {option}
+                  </option>
+                ))}
               </select>
               <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">
                 Non-occupational: sexual assault, unprotected sex. Occupational: needlestick injury, healthcare exposure.
@@ -325,20 +337,25 @@ export default function NewPepPage() {
               {errors.mode_of_exposure && (
                 <p className="text-sm text-red-600 mt-1">{errors.mode_of_exposure.message}</p>
               )}
-            </div>
+              </div>
+            )}
 
-            <div>
+            {isVisible('duration_before_pep') && (
+              <div>
               <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-                Duration Before PEP <span className="text-red-500">*</span>
+                {getLabel('duration_before_pep')} {isRequired('duration_before_pep') && <span className="text-red-500">*</span>}
               </label>
               <select
-                {...register('duration_before_pep', { required: 'Duration is required' })}
+                {...register('duration_before_pep', {
+                  required: isRequired('duration_before_pep') ? `${getLabel('duration_before_pep')} is required` : false,
+                })}
                 className="w-full h-10 px-3 rounded-lg border border-gray-200 dark:border-gray-700 bg-white dark:bg-neutral-800 text-sm text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-[#5b21b6]/50"
               >
-                <option value="<24hrs">&lt;24 hours (Critical)</option>
-                <option value="<48hrs">&lt;48 hours (Urgent)</option>
-                <option value="<72hrs">&lt;72 hours (Time-Sensitive)</option>
-                <option value=">72hrs">&gt;72 hours</option>
+                {getOptions('duration_before_pep', ['<24hrs', '<48hrs', '<72hrs', '>72hrs']).map((option) => (
+                  <option key={option} value={option}>
+                    {option === '<24hrs' ? '<24 hours (Critical)' : option === '<48hrs' ? '<48 hours (Urgent)' : option === '<72hrs' ? '<72 hours (Time-Sensitive)' : '>72 hours'}
+                  </option>
+                ))}
               </select>
               <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">
                 Time elapsed between HIV exposure and starting PEP. Must start within 72 hours for effectiveness.
@@ -346,7 +363,8 @@ export default function NewPepPage() {
               {errors.duration_before_pep && (
                 <p className="text-sm text-red-600 mt-1">{errors.duration_before_pep.message}</p>
               )}
-            </div>
+              </div>
+            )}
 
             <div>
               <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
@@ -375,6 +393,7 @@ export default function NewPepPage() {
             </div>
           </div>
         </div>
+        )}
 
         {/* Supporter Information */}
         <div className="border border-gray-200 dark:border-gray-700 rounded-lg p-6 space-y-4">
@@ -389,13 +408,16 @@ export default function NewPepPage() {
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <div>
+            {isVisible('pep_supporter') && (
+              <div>
               <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-                Supporter Name <span className="text-red-500">*</span>
+                {getLabel('pep_supporter')} {isRequired('pep_supporter') && <span className="text-red-500">*</span>}
               </label>
               <input
                 type="text"
-                {...register('pep_supporter', { required: 'Supporter name is required' })}
+                {...register('pep_supporter', {
+                  required: isRequired('pep_supporter') ? `${getLabel('pep_supporter')} is required` : false,
+                })}
                 className="w-full h-10 px-3 rounded-lg border border-gray-200 dark:border-gray-700 bg-white dark:bg-neutral-800 text-sm text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-[#5b21b6]/50"
                 placeholder="Enter supporter name"
               />
@@ -405,23 +427,35 @@ export default function NewPepPage() {
               {errors.pep_supporter && (
                 <p className="text-sm text-red-600 mt-1">{errors.pep_supporter.message}</p>
               )}
-            </div>
+              </div>
+            )}
 
-            <div>
+            {isVisible('supporter_relationship') && (
+              <div>
               <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-                Relationship <span className="text-red-500">*</span>
+                {getLabel('supporter_relationship')} {isRequired('supporter_relationship') && <span className="text-red-500">*</span>}
               </label>
               <select
-                {...register('supporter_relationship', { required: 'Relationship is required' })}
+                {...register('supporter_relationship', {
+                  required: isRequired('supporter_relationship')
+                    ? `${getLabel('supporter_relationship')} is required`
+                    : false,
+                })}
                 className="w-full h-10 px-3 rounded-lg border border-gray-200 dark:border-gray-700 bg-white dark:bg-neutral-800 text-sm text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-[#5b21b6]/50"
               >
-                <option value="Caregiver">Caregiver</option>
-                <option value="Child">Child</option>
-                <option value="Father">Father</option>
-                <option value="Mother">Mother</option>
-                <option value="Sibling">Sibling</option>
-                <option value="Guardian">Guardian</option>
-                <option value="Other">Other</option>
+                {getOptions('supporter_relationship', [
+                  'Caregiver',
+                  'Child',
+                  'Father',
+                  'Mother',
+                  'Sibling',
+                  'Guardian',
+                  'Other',
+                ]).map((option) => (
+                  <option key={option} value={option}>
+                    {option}
+                  </option>
+                ))}
               </select>
               <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">
                 How the supporter is related to the patient.
@@ -429,15 +463,21 @@ export default function NewPepPage() {
               {errors.supporter_relationship && (
                 <p className="text-sm text-red-600 mt-1">{errors.supporter_relationship.message}</p>
               )}
-            </div>
+              </div>
+            )}
 
-            <div>
+            {isVisible('supporter_telephone') && (
+              <div>
               <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-                Phone Number <span className="text-red-500">*</span>
+                {getLabel('supporter_telephone')} {isRequired('supporter_telephone') && <span className="text-red-500">*</span>}
               </label>
               <input
                 type="tel"
-                {...register('supporter_telephone', { required: 'Phone number is required' })}
+                {...register('supporter_telephone', {
+                  required: isRequired('supporter_telephone')
+                    ? `${getLabel('supporter_telephone')} is required`
+                    : false,
+                })}
                 className="w-full h-10 px-3 rounded-lg border border-gray-200 dark:border-gray-700 bg-white dark:bg-neutral-800 text-sm text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-[#5b21b6]/50"
                 placeholder="Enter phone number"
               />
@@ -447,7 +487,8 @@ export default function NewPepPage() {
               {errors.supporter_telephone && (
                 <p className="text-sm text-red-600 mt-1">{errors.supporter_telephone.message}</p>
               )}
-            </div>
+              </div>
+            )}
 
           </div>
         </div>

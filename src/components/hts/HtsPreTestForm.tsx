@@ -4,6 +4,8 @@ import { useForm } from "react-hook-form";
 import { Save, AlertTriangle } from "lucide-react";
 import { HtsPreTestRequest } from "@/lib/hts";
 import { useEffect, useState } from "react";
+import { useFormConfig } from "@/hooks/useFormConfig";
+import { FORM_SCHEMAS } from "@/lib/form-schemas";
 
 interface HtsPreTestFormProps {
   initialData?: Partial<HtsPreTestRequest>;
@@ -60,6 +62,7 @@ function calculatePartnerRiskScore(data: Partial<HtsPreTestRequest>): number {
 }
 
 export default function HtsPreTestForm({ initialData, onSave, loading }: HtsPreTestFormProps) {
+  const { isVisible, getLabel } = useFormConfig("hts", FORM_SCHEMAS.hts);
   const {
     register,
     handleSubmit,
@@ -153,6 +156,80 @@ export default function HtsPreTestForm({ initialData, onSave, loading }: HtsPreT
     setPartnerRiskScore(partnerScore);
   }, [formValues]);
 
+  useEffect(() => {
+    const checkboxFieldIds: Array<keyof HtsPreTestRequest> = [
+      "previously_tested_negative",
+      "informed_hiv_transmission",
+      "informed_risk_factors",
+      "informed_prevention_methods",
+      "informed_test_results",
+      "consent_given",
+      "used_drugs_sexual_performance",
+      "transmission_sexual_intercourse",
+      "transmission_blood_transfusion",
+      "transmission_mother_to_child",
+      "transmission_sharing_toilet",
+      "transmission_sharp_objects",
+      "transmission_eating_utensils",
+      "transmission_mosquito_bites",
+      "transmission_kissing",
+      "transmission_hugging",
+      "prevention_faithful_partner",
+      "prevention_condom_use",
+      "prevention_abstinence",
+      "prevention_delay_sexual_debut",
+      "prevention_reduce_partners",
+      "prevention_avoid_risky_partners",
+      "prevention_avoid_sharp_objects",
+      "prevention_healthy_looking_can_have_hiv",
+      "risk_blood_transfusion",
+      "risk_unprotected_vaginal_sex",
+      "risk_unprotected_anal_sex",
+      "risk_sharing_needles",
+      "risk_sti",
+      "risk_multiple_partners",
+      "risk_sex_under_influence",
+      "risk_anal_sex",
+      "risk_vaginal_sex",
+      "risk_paid_for_sex",
+      "risk_been_paid_for_sex",
+      "risk_condom_breakage",
+      "risk_sexual_orgy",
+      "partner_newly_diagnosed_on_treatment",
+      "partner_on_arv_suppressed_vl",
+      "partner_pregnant_on_arv",
+      "partner_returned_after_ltfu",
+      "partner_adolescent_hiv_positive",
+      "partner_hiv_positive",
+      "partner_injects_drugs",
+      "partner_has_sex_with_men",
+      "partner_transgender",
+      "sti_urethral_discharge",
+      "sti_scrotal_swelling",
+      "sti_genital_sore",
+      "sti_anal_pain",
+      "sti_anal_discharge",
+      "sti_anal_itching",
+      "experiencing_violence",
+    ];
+
+    checkboxFieldIds.forEach((fieldId) => {
+      const input = document.getElementById(fieldId);
+      if (!input) return;
+      const row = input.closest("div.flex.items-center") as HTMLElement | null;
+      if (row) {
+        row.style.display = isVisible(fieldId) ? "" : "none";
+      }
+      const label = document.querySelector(`label[for='${fieldId}']`) as HTMLLabelElement | null;
+      if (label) {
+        const configuredLabel = getLabel(fieldId);
+        if (configuredLabel !== fieldId) {
+          label.textContent = configuredLabel;
+        }
+      }
+    });
+  }, [getLabel, isVisible]);
+
   const onSubmit = (data: HtsPreTestRequest) => {
     // Ensure drug_use and drug_route are always arrays (even if empty)
     if (!data.drug_use) data.drug_use = [];
@@ -164,6 +241,66 @@ export default function HtsPreTestForm({ initialData, onSave, loading }: HtsPreT
 
     onSave(data);
   };
+
+  const showKnowledge1Section =
+    isVisible("previously_tested_negative") ||
+    isVisible("informed_hiv_transmission") ||
+    isVisible("informed_risk_factors") ||
+    isVisible("informed_prevention_methods") ||
+    isVisible("informed_test_results") ||
+    isVisible("consent_given") ||
+    isVisible("used_drugs_sexual_performance");
+  const showKnowledge2Section =
+    isVisible("transmission_sexual_intercourse") ||
+    isVisible("transmission_blood_transfusion") ||
+    isVisible("transmission_mother_to_child") ||
+    isVisible("transmission_sharing_toilet") ||
+    isVisible("transmission_sharp_objects") ||
+    isVisible("transmission_eating_utensils") ||
+    isVisible("transmission_mosquito_bites") ||
+    isVisible("transmission_kissing") ||
+    isVisible("transmission_hugging");
+  const showKnowledge3Section =
+    isVisible("prevention_faithful_partner") ||
+    isVisible("prevention_condom_use") ||
+    isVisible("prevention_abstinence") ||
+    isVisible("prevention_delay_sexual_debut") ||
+    isVisible("prevention_reduce_partners") ||
+    isVisible("prevention_avoid_risky_partners") ||
+    isVisible("prevention_avoid_sharp_objects") ||
+    isVisible("prevention_healthy_looking_can_have_hiv");
+  const showHivRiskSection =
+    isVisible("risk_blood_transfusion") ||
+    isVisible("risk_unprotected_vaginal_sex") ||
+    isVisible("risk_unprotected_anal_sex") ||
+    isVisible("risk_sharing_needles") ||
+    isVisible("risk_sti") ||
+    isVisible("risk_multiple_partners") ||
+    isVisible("risk_sex_under_influence") ||
+    isVisible("risk_anal_sex") ||
+    isVisible("risk_vaginal_sex") ||
+    isVisible("risk_paid_for_sex") ||
+    isVisible("risk_been_paid_for_sex") ||
+    isVisible("risk_condom_breakage") ||
+    isVisible("risk_sexual_orgy");
+  const showPartnerRiskSection =
+    isVisible("partner_newly_diagnosed_on_treatment") ||
+    isVisible("partner_on_arv_suppressed_vl") ||
+    isVisible("partner_pregnant_on_arv") ||
+    isVisible("partner_returned_after_ltfu") ||
+    isVisible("partner_adolescent_hiv_positive") ||
+    isVisible("partner_hiv_positive") ||
+    isVisible("partner_injects_drugs") ||
+    isVisible("partner_has_sex_with_men") ||
+    isVisible("partner_transgender");
+  const showStiSection =
+    isVisible("sti_urethral_discharge") ||
+    isVisible("sti_scrotal_swelling") ||
+    isVisible("sti_genital_sore") ||
+    isVisible("sti_anal_pain") ||
+    isVisible("sti_anal_discharge") ||
+    isVisible("sti_anal_itching");
+  const showGbvSection = isVisible("experiencing_violence");
 
   return (
     <form onSubmit={handleSubmit(onSubmit)} className="space-y-8">
@@ -203,6 +340,7 @@ export default function HtsPreTestForm({ initialData, onSave, loading }: HtsPreT
       </div>
 
       {/* Knowledge Assessment 1 */}
+      {showKnowledge1Section && (
       <div className="bg-gray-50 p-6 rounded-lg">
         <h3 className="text-lg font-medium text-gray-900 mb-4">Knowledge Assessment 1: HIV Testing History & Awareness</h3>
         <div className="space-y-3">
@@ -285,8 +423,10 @@ export default function HtsPreTestForm({ initialData, onSave, loading }: HtsPreT
           </div>
         </div>
       </div>
+      )}
 
       {/* Knowledge Assessment 2 - HIV Transmission */}
+      {showKnowledge2Section && (
       <div className="bg-gray-50 p-6 rounded-lg">
         <h3 className="text-lg font-medium text-gray-900 mb-4">Knowledge Assessment 2: HIV Transmission</h3>
         <p className="text-sm text-gray-600 mb-4">Select all that client knows are ways HIV can be transmitted:</p>
@@ -392,8 +532,10 @@ export default function HtsPreTestForm({ initialData, onSave, loading }: HtsPreT
           </div>
         </div>
       </div>
+      )}
 
       {/* Knowledge Assessment 3 - HIV Prevention */}
+      {showKnowledge3Section && (
       <div className="bg-gray-50 p-6 rounded-lg">
         <h3 className="text-lg font-medium text-gray-900 mb-4">Knowledge Assessment 3: HIV Prevention</h3>
         <p className="text-sm text-gray-600 mb-4">Select all that client knows are ways to prevent HIV:</p>
@@ -488,8 +630,10 @@ export default function HtsPreTestForm({ initialData, onSave, loading }: HtsPreT
           </div>
         </div>
       </div>
+      )}
 
       {/* HIV Risk Assessment */}
+      {showHivRiskSection && (
       <div className="bg-gray-50 p-6 rounded-lg">
         <h3 className="text-lg font-medium text-gray-900 mb-4">HIV Risk Assessment</h3>
         <p className="text-sm text-gray-600 mb-4">Select all risk behaviors present:</p>
@@ -639,8 +783,10 @@ export default function HtsPreTestForm({ initialData, onSave, loading }: HtsPreT
           </div>
         </div>
       </div>
+      )}
 
       {/* Partner Risk Assessment */}
+      {showPartnerRiskSection && (
       <div className="bg-gray-50 p-6 rounded-lg">
         <h3 className="text-lg font-medium text-gray-900 mb-4">Partner Risk Assessment</h3>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
@@ -745,8 +891,10 @@ export default function HtsPreTestForm({ initialData, onSave, loading }: HtsPreT
           </div>
         </div>
       </div>
+      )}
 
       {/* STI Screening */}
+      {showStiSection && (
       <div className="bg-gray-50 p-6 rounded-lg">
         <h3 className="text-lg font-medium text-gray-900 mb-4">STI Screening</h3>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
@@ -818,8 +966,10 @@ export default function HtsPreTestForm({ initialData, onSave, loading }: HtsPreT
           </div>
         </div>
       </div>
+      )}
 
       {/* GBV */}
+      {showGbvSection && (
       <div className="bg-gray-50 p-6 rounded-lg">
         <h3 className="text-lg font-medium text-gray-900 mb-4">Gender-Based Violence (GBV)</h3>
         <div className="flex items-center">
@@ -834,6 +984,7 @@ export default function HtsPreTestForm({ initialData, onSave, loading }: HtsPreT
           </label>
         </div>
       </div>
+      )}
 
       {/* Submit Button */}
       <div className="flex justify-end pt-6 border-t">

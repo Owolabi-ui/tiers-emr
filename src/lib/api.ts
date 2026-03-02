@@ -23,15 +23,8 @@ api.interceptors.request.use(
     // Get token from localStorage (client-side only)
     if (typeof window !== 'undefined') {
       const token = localStorage.getItem('access_token');
-      console.log(`[API] Request to ${config.url}`);
-      console.log('[API] localStorage keys:', Object.keys(localStorage));
-      console.log('[API] Token from localStorage:', token ? token.substring(0, 30) + '...' : 'NULL');
-      
       if (token && config.headers) {
         config.headers.Authorization = `Bearer ${token}`;
-        console.log(`[API] ✓ Token attached to request`);
-      } else {
-        console.warn(`[API] ✗ NO TOKEN - Request will fail with 401`);
       }
     }
     return config;

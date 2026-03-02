@@ -3,6 +3,8 @@
 import { useForm } from "react-hook-form";
 import { Save, SkipForward } from "lucide-react";
 import { HtsReferralRequest } from "@/lib/hts";
+import { useFormConfig } from "@/hooks/useFormConfig";
+import { FORM_SCHEMAS } from "@/lib/form-schemas";
 
 interface HtsReferralFormProps {
   initialData?: Partial<HtsReferralRequest>;
@@ -12,6 +14,7 @@ interface HtsReferralFormProps {
 }
 
 export default function HtsReferralForm({ initialData, onSave, onSkip, loading }: HtsReferralFormProps) {
+  const { isVisible, getLabel, getOptions } = useFormConfig("hts", FORM_SCHEMAS.hts);
   const {
     register,
     handleSubmit,
@@ -31,6 +34,20 @@ export default function HtsReferralForm({ initialData, onSave, onSkip, loading }
     onSave(data);
   };
 
+  const showReferringSection =
+    isVisible("referring_org_unit") ||
+    isVisible("referring_org_name") ||
+    isVisible("referring_org_address") ||
+    isVisible("referring_org_phone") ||
+    isVisible("referring_org_contact_person");
+
+  const showReferredSection =
+    isVisible("referred_org_unit") ||
+    isVisible("referred_org_name") ||
+    isVisible("referred_org_address") ||
+    isVisible("referred_org_phone") ||
+    isVisible("referred_org_contact_person");
+
   return (
     <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
       <div className="bg-blue-50 p-4 rounded-lg mb-6">
@@ -41,24 +58,28 @@ export default function HtsReferralForm({ initialData, onSave, onSkip, loading }
       </div>
 
       {/* Referring Organization */}
+      {showReferringSection && (
       <div className="bg-gray-50 p-6 rounded-lg">
         <h3 className="text-lg font-medium text-gray-900 mb-4">Referring Organization (From)</h3>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          {isVisible("referring_org_unit") && (
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-2">
-              Referring Unit
+              {getLabel("referring_org_unit")}
             </label>
             <input
               type="text"
-              {...register("referring_unit")}
+              {...register("referring_org_unit")}
               className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm"
               placeholder="e.g., HTS Unit"
             />
           </div>
+          )}
 
+          {isVisible("referring_org_name") && (
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-2">
-              Organization Name
+              {getLabel("referring_org_name")}
             </label>
             <input
               type="text"
@@ -67,10 +88,12 @@ export default function HtsReferralForm({ initialData, onSave, onSkip, loading }
               placeholder="e.g., City Health Center"
             />
           </div>
+          )}
 
+          {isVisible("referring_org_address") && (
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-2">
-              Address
+              {getLabel("referring_org_address")}
             </label>
             <input
               type="text"
@@ -79,10 +102,12 @@ export default function HtsReferralForm({ initialData, onSave, onSkip, loading }
               placeholder="Organization address"
             />
           </div>
+          )}
 
+          {isVisible("referring_org_phone") && (
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-2">
-              Phone Number
+              {getLabel("referring_org_phone")}
             </label>
             <input
               type="tel"
@@ -91,40 +116,48 @@ export default function HtsReferralForm({ initialData, onSave, onSkip, loading }
               placeholder="+234 XXX XXX XXXX"
             />
           </div>
+          )}
 
+          {isVisible("referring_org_contact_person") && (
           <div className="md:col-span-2">
             <label className="block text-sm font-medium text-gray-700 mb-2">
-              Contact Person
+              {getLabel("referring_org_contact_person")}
             </label>
             <input
               type="text"
-              {...register("referring_contact_person")}
+              {...register("referring_org_contact_person")}
               className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm"
               placeholder="Name of referring staff member"
             />
           </div>
+          )}
         </div>
       </div>
+      )}
 
       {/* Referred To Organization */}
+      {showReferredSection && (
       <div className="bg-gray-50 p-6 rounded-lg">
         <h3 className="text-lg font-medium text-gray-900 mb-4">Referred To Organization</h3>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          {isVisible("referred_org_unit") && (
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-2">
-              Referred Unit
+              {getLabel("referred_org_unit")}
             </label>
             <input
               type="text"
-              {...register("referred_unit")}
+              {...register("referred_org_unit")}
               className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm"
               placeholder="e.g., ART Clinic"
             />
           </div>
+          )}
 
+          {isVisible("referred_org_name") && (
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-2">
-              Organization Name
+              {getLabel("referred_org_name")}
             </label>
             <input
               type="text"
@@ -133,10 +166,12 @@ export default function HtsReferralForm({ initialData, onSave, onSkip, loading }
               placeholder="e.g., Regional Hospital"
             />
           </div>
+          )}
 
+          {isVisible("referred_org_address") && (
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-2">
-              Address
+              {getLabel("referred_org_address")}
             </label>
             <input
               type="text"
@@ -145,10 +180,12 @@ export default function HtsReferralForm({ initialData, onSave, onSkip, loading }
               placeholder="Organization address"
             />
           </div>
+          )}
 
+          {isVisible("referred_org_phone") && (
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-2">
-              Phone Number
+              {getLabel("referred_org_phone")}
             </label>
             <input
               type="tel"
@@ -157,30 +194,35 @@ export default function HtsReferralForm({ initialData, onSave, onSkip, loading }
               placeholder="+234 XXX XXX XXXX"
             />
           </div>
+          )}
 
+          {isVisible("referred_org_contact_person") && (
           <div className="md:col-span-2">
             <label className="block text-sm font-medium text-gray-700 mb-2">
-              Contact Person
+              {getLabel("referred_org_contact_person")}
             </label>
             <input
               type="text"
-              {...register("referred_contact_person")}
+              {...register("referred_org_contact_person")}
               className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm"
               placeholder="Name of receiving staff member"
             />
           </div>
+          )}
         </div>
       </div>
+      )}
 
       {/* Referral Services */}
+      {isVisible("referral_services") && (
       <div>
         <label className="block text-sm font-medium text-gray-700 mb-2">
-          Services Referred For
+          {getLabel("referral_services")}
         </label>
         <div className="bg-gray-50 p-4 rounded-lg">
           <p className="text-xs text-gray-600 mb-3">Select all services the client is being referred for:</p>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-            {[
+            {getOptions("referral_services", [
               "ART Treatment",
               "PrEP Services",
               "TB Screening",
@@ -190,7 +232,7 @@ export default function HtsReferralForm({ initialData, onSave, onSkip, loading }
               "Nutrition Services",
               "PMTCT Services",
               "Other Medical Services",
-            ].map((service) => (
+            ]).map((service) => (
               <div key={service} className="flex items-center">
                 <input
                   id={`service-${service}`}
@@ -207,11 +249,13 @@ export default function HtsReferralForm({ initialData, onSave, onSkip, loading }
           </div>
         </div>
       </div>
+      )}
 
       {/* Comments */}
+      {isVisible("comments") && (
       <div>
         <label className="block text-sm font-medium text-gray-700 mb-2">
-          Referral Notes/Comments
+          {getLabel("comments")}
         </label>
         <textarea
           {...register("comments")}
@@ -220,6 +264,7 @@ export default function HtsReferralForm({ initialData, onSave, onSkip, loading }
           placeholder="Enter any additional information about the referral..."
         />
       </div>
+      )}
 
       {/* Submit Buttons */}
       <div className="flex justify-between pt-6 border-t">

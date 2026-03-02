@@ -14,6 +14,8 @@ import {
   SEX_PARTNERS,
 } from "@/lib/hts";
 import { MARITAL_STATUSES, EDUCATIONAL_LEVELS, OCCUPATION_TYPES, patientsApi } from "@/lib/patients";
+import { useFormConfig } from "@/hooks/useFormConfig";
+import { FORM_SCHEMAS } from "@/lib/form-schemas";
 
 interface HtsInitialFormProps {
   initialData?: Partial<HtsInitialRequest>;
@@ -23,6 +25,7 @@ interface HtsInitialFormProps {
 }
 
 export default function HtsInitialForm({ initialData, onSave, loading, preselectedPatientId }: HtsInitialFormProps) {
+  const { isVisible, isRequired, getLabel, getOptions } = useFormConfig("hts", FORM_SCHEMAS.hts);
   const {
     register,
     handleSubmit,
@@ -331,11 +334,13 @@ export default function HtsInitialForm({ initialData, onSave, loading, preselect
       {/* Date of Visit */}
       <div>
         <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-          Date of Visit <span className="text-red-500">*</span>
+          {getLabel("date_of_visit")} {isRequired("date_of_visit") && <span className="text-red-500">*</span>}
         </label>
         <input
           type="date"
-          {...register("date_of_visit", { required: "Date of visit is required" })}
+          {...register("date_of_visit", {
+            required: isRequired("date_of_visit") ? `${getLabel("date_of_visit")} is required` : false,
+          })}
           className="block w-full px-4 py-2.5 text-sm border border-gray-300 dark:border-gray-600 rounded-lg
                    focus:ring-2 focus:ring-purple-500 focus:border-purple-500
                    dark:bg-gray-700 dark:text-white
@@ -355,12 +360,14 @@ export default function HtsInitialForm({ initialData, onSave, loading, preselect
       {/* Client Code */}
       <div>
         <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-          Client Code <span className="text-red-500">*</span>
+          {getLabel("client_code")} {isRequired("client_code") && <span className="text-red-500">*</span>}
           <span className="ml-2 text-xs text-gray-500 dark:text-gray-400">(Auto-generated)</span>
         </label>
         <input
           type="text"
-          {...register("client_code", { required: "Client code is required" })}
+          {...register("client_code", {
+            required: isRequired("client_code") ? `${getLabel("client_code")} is required` : false,
+          })}
           readOnly
           className="block w-full px-4 py-2.5 text-sm border border-gray-300 dark:border-gray-600 rounded-lg
                    bg-gray-50 dark:bg-gray-800 text-gray-600 dark:text-gray-400 cursor-not-allowed
@@ -382,10 +389,14 @@ export default function HtsInitialForm({ initialData, onSave, loading, preselect
         {/* Target Group Code */}
         <div>
           <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-            Target Group <span className="text-red-500">*</span>
+            {getLabel("target_group_code")} {isRequired("target_group_code") && <span className="text-red-500">*</span>}
           </label>
           <select
-            {...register("target_group_code", { required: "Target group is required" })}
+            {...register("target_group_code", {
+              required: isRequired("target_group_code")
+                ? `${getLabel("target_group_code")} is required`
+                : false,
+            })}
             className="block w-full px-4 py-2.5 text-sm border border-gray-300 dark:border-gray-600 rounded-lg
                      focus:ring-2 focus:ring-purple-500 focus:border-purple-500
                      dark:bg-gray-700 dark:text-white
@@ -393,7 +404,7 @@ export default function HtsInitialForm({ initialData, onSave, loading, preselect
                      hover:border-gray-400 dark:hover:border-gray-500 cursor-pointer"
           >
             <option value="">Select target group</option>
-            {TARGET_GROUP_CODES.map((group) => (
+            {getOptions("target_group_code", TARGET_GROUP_CODES as string[]).map((group) => (
               <option key={group} value={group}>
                 {group}
               </option>
@@ -412,10 +423,12 @@ export default function HtsInitialForm({ initialData, onSave, loading, preselect
         {/* Marital Status */}
         <div>
           <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-            Marital Status <span className="text-red-500">*</span>
+            {getLabel("marital_status")} {isRequired("marital_status") && <span className="text-red-500">*</span>}
           </label>
           <select
-            {...register("marital_status", { required: "Marital status is required" })}
+            {...register("marital_status", {
+              required: isRequired("marital_status") ? `${getLabel("marital_status")} is required` : false,
+            })}
             className="block w-full px-4 py-2.5 text-sm border border-gray-300 dark:border-gray-600 rounded-lg
                      focus:ring-2 focus:ring-purple-500 focus:border-purple-500
                      dark:bg-gray-700 dark:text-white
@@ -423,7 +436,7 @@ export default function HtsInitialForm({ initialData, onSave, loading, preselect
                      hover:border-gray-400 dark:hover:border-gray-500 cursor-pointer"
           >
             <option value="">Select marital status</option>
-            {MARITAL_STATUSES.map((status) => (
+            {getOptions("marital_status", MARITAL_STATUSES as string[]).map((status) => (
               <option key={status} value={status}>
                 {status}
               </option>
@@ -442,10 +455,12 @@ export default function HtsInitialForm({ initialData, onSave, loading, preselect
         {/* Type of HTS */}
         <div>
           <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-            Type of HTS <span className="text-red-500">*</span>
+            {getLabel("type_of_hts")} {isRequired("type_of_hts") && <span className="text-red-500">*</span>}
           </label>
           <select
-            {...register("type_of_hts", { required: "HTS type is required" })}
+            {...register("type_of_hts", {
+              required: isRequired("type_of_hts") ? `${getLabel("type_of_hts")} is required` : false,
+            })}
             className="block w-full px-4 py-2.5 text-sm border border-gray-300 dark:border-gray-600 rounded-lg
                      focus:ring-2 focus:ring-purple-500 focus:border-purple-500
                      dark:bg-gray-700 dark:text-white
@@ -453,7 +468,7 @@ export default function HtsInitialForm({ initialData, onSave, loading, preselect
                      hover:border-gray-400 dark:hover:border-gray-500 cursor-pointer"
           >
             <option value="">Select HTS type</option>
-            {HTS_TYPES.map((type) => (
+            {getOptions("type_of_hts", HTS_TYPES as string[]).map((type) => (
               <option key={type} value={type}>
                 {type}
               </option>
@@ -472,10 +487,12 @@ export default function HtsInitialForm({ initialData, onSave, loading, preselect
         {/* Settings */}
         <div>
           <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-            Setting <span className="text-red-500">*</span>
+            {getLabel("settings")} {isRequired("settings") && <span className="text-red-500">*</span>}
           </label>
           <select
-            {...register("settings", { required: "Setting is required" })}
+            {...register("settings", {
+              required: isRequired("settings") ? `${getLabel("settings")} is required` : false,
+            })}
             className="block w-full px-4 py-2.5 text-sm border border-gray-300 dark:border-gray-600 rounded-lg
                      focus:ring-2 focus:ring-purple-500 focus:border-purple-500
                      dark:bg-gray-700 dark:text-white
@@ -483,7 +500,7 @@ export default function HtsInitialForm({ initialData, onSave, loading, preselect
                      hover:border-gray-400 dark:hover:border-gray-500 cursor-pointer"
           >
             <option value="">Select setting</option>
-            {HTS_SETTINGS.map((setting) => (
+            {getOptions("settings", HTS_SETTINGS as string[]).map((setting) => (
               <option key={setting} value={setting}>
                 {setting}
               </option>
@@ -502,10 +519,14 @@ export default function HtsInitialForm({ initialData, onSave, loading, preselect
         {/* Testing Modality */}
         <div>
           <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-            Testing Modality <span className="text-red-500">*</span>
+            {getLabel("testing_modality")} {isRequired("testing_modality") && <span className="text-red-500">*</span>}
           </label>
           <select
-            {...register("testing_modality", { required: "Testing modality is required" })}
+            {...register("testing_modality", {
+              required: isRequired("testing_modality")
+                ? `${getLabel("testing_modality")} is required`
+                : false,
+            })}
             className="block w-full px-4 py-2.5 text-sm border border-gray-300 dark:border-gray-600 rounded-lg
                      focus:ring-2 focus:ring-purple-500 focus:border-purple-500
                      dark:bg-gray-700 dark:text-white
@@ -513,7 +534,7 @@ export default function HtsInitialForm({ initialData, onSave, loading, preselect
                      hover:border-gray-400 dark:hover:border-gray-500 cursor-pointer"
           >
             <option value="">Select testing modality</option>
-            {TESTING_MODALITIES.map((modality) => (
+            {getOptions("testing_modality", TESTING_MODALITIES as string[]).map((modality) => (
               <option key={modality} value={modality}>
                 {modality}
               </option>
@@ -532,10 +553,12 @@ export default function HtsInitialForm({ initialData, onSave, loading, preselect
         {/* Type of Session */}
         <div>
           <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-            Type of Session <span className="text-red-500">*</span>
+            {getLabel("type_of_session")} {isRequired("type_of_session") && <span className="text-red-500">*</span>}
           </label>
           <select
-            {...register("type_of_session", { required: "Session type is required" })}
+            {...register("type_of_session", {
+              required: isRequired("type_of_session") ? `${getLabel("type_of_session")} is required` : false,
+            })}
             className="block w-full px-4 py-2.5 text-sm border border-gray-300 dark:border-gray-600 rounded-lg
                      focus:ring-2 focus:ring-purple-500 focus:border-purple-500
                      dark:bg-gray-700 dark:text-white
@@ -543,7 +566,7 @@ export default function HtsInitialForm({ initialData, onSave, loading, preselect
                      hover:border-gray-400 dark:hover:border-gray-500 cursor-pointer"
           >
             <option value="">Select session type</option>
-            {SESSION_TYPES.map((type) => (
+            {getOptions("type_of_session", SESSION_TYPES as string[]).map((type) => (
               <option key={type} value={type}>
                 {type}
               </option>
@@ -562,13 +585,15 @@ export default function HtsInitialForm({ initialData, onSave, loading, preselect
         {/* Number of Children Under 15 */}
         <div>
           <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-            Number of Children Under 15 <span className="text-red-500">*</span>
+            {getLabel("num_children_under_15")} {isRequired("num_children_under_15") && <span className="text-red-500">*</span>}
           </label>
           <input
             type="number"
             min="0"
             {...register("num_children_under_15", {
-              required: "Number of children is required",
+              required: isRequired("num_children_under_15")
+                ? `${getLabel("num_children_under_15")} is required`
+                : false,
               valueAsNumber: true,
             })}
             className="block w-full px-4 py-2.5 text-sm border border-gray-300 dark:border-gray-600 rounded-lg
@@ -590,10 +615,14 @@ export default function HtsInitialForm({ initialData, onSave, loading, preselect
         {/* Source of Referral */}
         <div>
           <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-            Source of Referral <span className="text-red-500">*</span>
+            {getLabel("source_of_referral")} {isRequired("source_of_referral") && <span className="text-red-500">*</span>}
           </label>
           <select
-            {...register("source_of_referral", { required: "Source of referral is required" })}
+            {...register("source_of_referral", {
+              required: isRequired("source_of_referral")
+                ? `${getLabel("source_of_referral")} is required`
+                : false,
+            })}
             className="block w-full px-4 py-2.5 text-sm border border-gray-300 dark:border-gray-600 rounded-lg
                      focus:ring-2 focus:ring-purple-500 focus:border-purple-500
                      dark:bg-gray-700 dark:text-white
@@ -601,7 +630,7 @@ export default function HtsInitialForm({ initialData, onSave, loading, preselect
                      hover:border-gray-400 dark:hover:border-gray-500 cursor-pointer"
           >
             <option value="">Select referral source</option>
-            {REFERRAL_SOURCES.map((source) => (
+            {getOptions("source_of_referral", REFERRAL_SOURCES as string[]).map((source) => (
               <option key={source} value={source}>
                 {source}
               </option>
@@ -620,10 +649,12 @@ export default function HtsInitialForm({ initialData, onSave, loading, preselect
         {/* Sex Partners */}
         <div>
           <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-            Sex Partners <span className="text-red-500">*</span>
+            {getLabel("sex_partners")} {isRequired("sex_partners") && <span className="text-red-500">*</span>}
           </label>
           <select
-            {...register("sex_partners", { required: "Sex partners is required" })}
+            {...register("sex_partners", {
+              required: isRequired("sex_partners") ? `${getLabel("sex_partners")} is required` : false,
+            })}
             className="block w-full px-4 py-2.5 text-sm border border-gray-300 dark:border-gray-600 rounded-lg
                      focus:ring-2 focus:ring-purple-500 focus:border-purple-500
                      dark:bg-gray-700 dark:text-white
@@ -631,7 +662,7 @@ export default function HtsInitialForm({ initialData, onSave, loading, preselect
                      hover:border-gray-400 dark:hover:border-gray-500 cursor-pointer"
           >
             <option value="">Select sex partners</option>
-            {SEX_PARTNERS.map((partner) => (
+            {getOptions("sex_partners", SEX_PARTNERS as string[]).map((partner) => (
               <option key={partner} value={partner}>
                 {partner}
               </option>
@@ -650,10 +681,14 @@ export default function HtsInitialForm({ initialData, onSave, loading, preselect
         {/* Educational Level */}
         <div>
           <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-            Educational Level <span className="text-red-500">*</span>
+            {getLabel("educational_level")} {isRequired("educational_level") && <span className="text-red-500">*</span>}
           </label>
           <select
-            {...register("educational_level", { required: "Educational level is required" })}
+            {...register("educational_level", {
+              required: isRequired("educational_level")
+                ? `${getLabel("educational_level")} is required`
+                : false,
+            })}
             className="block w-full px-4 py-2.5 text-sm border border-gray-300 dark:border-gray-600 rounded-lg
                      focus:ring-2 focus:ring-purple-500 focus:border-purple-500
                      dark:bg-gray-700 dark:text-white
@@ -661,7 +696,7 @@ export default function HtsInitialForm({ initialData, onSave, loading, preselect
                      hover:border-gray-400 dark:hover:border-gray-500 cursor-pointer"
           >
             <option value="">Select educational level</option>
-            {EDUCATIONAL_LEVELS.map((level) => (
+            {getOptions("educational_level", EDUCATIONAL_LEVELS as string[]).map((level) => (
               <option key={level} value={level}>
                 {level}
               </option>
@@ -680,10 +715,12 @@ export default function HtsInitialForm({ initialData, onSave, loading, preselect
         {/* Occupation */}
         <div>
           <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-            Occupation <span className="text-red-500">*</span>
+            {getLabel("occupation")} {isRequired("occupation") && <span className="text-red-500">*</span>}
           </label>
           <select
-            {...register("occupation", { required: "Occupation is required" })}
+            {...register("occupation", {
+              required: isRequired("occupation") ? `${getLabel("occupation")} is required` : false,
+            })}
             className="block w-full px-4 py-2.5 text-sm border border-gray-300 dark:border-gray-600 rounded-lg
                      focus:ring-2 focus:ring-purple-500 focus:border-purple-500
                      dark:bg-gray-700 dark:text-white
@@ -691,7 +728,7 @@ export default function HtsInitialForm({ initialData, onSave, loading, preselect
                      hover:border-gray-400 dark:hover:border-gray-500 cursor-pointer"
           >
             <option value="">Select occupation</option>
-            {OCCUPATION_TYPES.map((occupation) => (
+            {getOptions("occupation", OCCUPATION_TYPES as string[]).map((occupation) => (
               <option key={occupation} value={occupation}>
                 {occupation}
               </option>
@@ -717,7 +754,7 @@ export default function HtsInitialForm({ initialData, onSave, loading, preselect
           className="h-5 w-5 text-purple-600 focus:ring-2 focus:ring-purple-500 focus:ring-offset-2 border-gray-300 dark:border-gray-600 rounded cursor-pointer transition-all duration-150"
         />
         <label htmlFor="first_time_visit" className="ml-3 block text-sm font-medium text-gray-700 dark:text-gray-300 cursor-pointer select-none">
-          First Time Visit
+          {getLabel("first_time_visit")}
         </label>
       </div>
 

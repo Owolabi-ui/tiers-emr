@@ -5,6 +5,8 @@ import { Save, CheckCircle, Lock } from "lucide-react";
 import { HtsTestingRequest, TEST_RESULTS } from "@/lib/hts";
 import { getOrdersByService, getResultsByService, LabTestOrderWithDetails } from "@/lib/laboratory";
 import { useEffect, useState } from "react";
+import { useFormConfig } from "@/hooks/useFormConfig";
+import { FORM_SCHEMAS } from "@/lib/form-schemas";
 
 interface HtsTestingFormProps {
   initialData?: Partial<HtsTestingRequest>;
@@ -51,6 +53,7 @@ const getResultColor = (value?: string | null): string => {
 };
 
 export default function HtsTestingForm({ initialData, onSave, loading, htsInitialId }: HtsTestingFormProps) {
+  const { isVisible, isRequired, getLabel, getOptions } = useFormConfig("hts", FORM_SCHEMAS.hts);
   const [labResultsLoaded, setLabResultsLoaded] = useState(false);
   const [loadingLabResults, setLoadingLabResults] = useState(false);
   const [serviceLabResults, setServiceLabResults] = useState<ServiceLabResultsMap>({});
@@ -163,6 +166,11 @@ export default function HtsTestingForm({ initialData, onSave, loading, htsInitia
     onSave(data);
   };
 
+  const showScreeningSection = isVisible("screening_test_result") || isVisible("screening_test_date");
+  const showConfirmatorySection =
+    screeningResult === "Reactive" &&
+    (isVisible("confirmatory_test_result") || isVisible("confirmatory_test_date"));
+
   return (
     <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
       {/* Lab Results Auto-Fill Badge */}
@@ -204,16 +212,20 @@ export default function HtsTestingForm({ initialData, onSave, loading, htsInitia
       )}
 
       {/* Screening Test */}
+      {showScreeningSection && (
       <div className="bg-gray-50 p-6 rounded-lg">
         <h3 className="text-lg font-medium text-gray-900 mb-4">Screening Test Results</h3>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          {isVisible("screening_test_result") && (
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-2">
-              Screening Test Result <span className="text-red-500">*</span>
+              {getLabel("screening_test_result")} {isRequired("screening_test_result") && <span className="text-red-500">*</span>}
               {labResultsLoaded && <Lock className="inline h-4 w-4 ml-2 text-green-600" />}
             </label>
             <select
-              {...register("screening_test_result", { required: "Screening result is required" })}
+              {...register("screening_test_result", {
+                required: isRequired("screening_test_result") ? `${getLabel("screening_test_result")} is required` : false,
+              })}
               disabled={true}
               className={`mt-1 block w-full rounded-md shadow-sm sm:text-sm cursor-not-allowed ${
                 labResultsLoaded 
@@ -222,7 +234,7 @@ export default function HtsTestingForm({ initialData, onSave, loading, htsInitia
               }`}
             >
               <option value="">Waiting for lab results...</option>
-              {TEST_RESULTS.map((result) => (
+              {getOptions("test_results", TEST_RESULTS as string[]).map((result) => (
                 <option key={result} value={result}>
                   {result}
                 </option>
@@ -235,15 +247,19 @@ export default function HtsTestingForm({ initialData, onSave, loading, htsInitia
               <p className="mt-1 text-xs text-gray-500">Results will auto-populate from laboratory</p>
             )}
           </div>
+          )}
 
+          {isVisible("screening_test_date") && (
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-2">
-              Screening Test Date <span className="text-red-500">*</span>
+              {getLabel("screening_test_date")} {isRequired("screening_test_date") && <span className="text-red-500">*</span>}
               {labResultsLoaded && <Lock className="inline h-4 w-4 ml-2 text-green-600" />}
             </label>
             <input
               type="date"
-              {...register("screening_test_date", { required: "Screening date is required" })}
+              {...register("screening_test_date", {
+                required: isRequired("screening_test_date") ? `${getLabel("screening_test_date")} is required` : false,
+              })}
               disabled={true}
               className={`mt-1 block w-full rounded-md shadow-sm sm:text-sm cursor-not-allowed ${
                 labResultsLoaded 
@@ -258,17 +274,20 @@ export default function HtsTestingForm({ initialData, onSave, loading, htsInitia
               <p className="mt-1 text-xs text-gray-500">Date will auto-populate from laboratory</p>
             )}
           </div>
+          )}
         </div>
       </div>
+      )}
 
       {/* Confirmatory Test (conditional) */}
-      {screeningResult === "Reactive" && (
+      {showConfirmatorySection && (
         <div className="bg-blue-50 p-6 rounded-lg border border-blue-200">
           <h3 className="text-lg font-medium text-gray-900 mb-4">Confirmatory Test Results (Required for Reactive Screening)</h3>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            {isVisible("confirmatory_test_result") && (
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-2">
-                Confirmatory Test Result
+                {getLabel("confirmatory_test_result")}
                 {labResultsLoaded && <Lock className="inline h-4 w-4 ml-2 text-green-600" />}
               </label>
               <select
@@ -281,7 +300,7 @@ export default function HtsTestingForm({ initialData, onSave, loading, htsInitia
                 }`}
               >
                 <option value="">Waiting for confirmatory test...</option>
-                {TEST_RESULTS.map((result) => (
+                {getOptions("test_results", TEST_RESULTS as string[]).map((result) => (
                   <option key={result} value={result}>
                     {result}
                   </option>
@@ -291,10 +310,12 @@ export default function HtsTestingForm({ initialData, onSave, loading, htsInitia
                 <p className="mt-1 text-xs text-gray-500">Confirmatory test must be ordered and completed in lab</p>
               )}
             </div>
+            )}
 
+            {isVisible("confirmatory_test_date") && (
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-2">
-                Confirmatory Test Date
+                {getLabel("confirmatory_test_date")}
                 {labResultsLoaded && <Lock className="inline h-4 w-4 ml-2 text-green-600" />}
               </label>
               <input
@@ -308,20 +329,24 @@ export default function HtsTestingForm({ initialData, onSave, loading, htsInitia
                 }`}
               />
             </div>
+            )}
           </div>
         </div>
       )}
 
       {/* Final Result */}
+      {isVisible("final_result") && (
       <div className="bg-gray-50 p-6 rounded-lg">
         <h3 className="text-lg font-medium text-gray-900 mb-4">Final Result</h3>
         <div>
           <label className="block text-sm font-medium text-gray-700 mb-2">
-            Final HIV Test Result <span className="text-red-500">*</span>
+            {getLabel("final_result")} {isRequired("final_result") && <span className="text-red-500">*</span>}
             {labResultsLoaded && <Lock className="inline h-4 w-4 ml-2 text-green-600" />}
           </label>
           <select
-            {...register("final_result", { required: "Final result is required" })}
+            {...register("final_result", {
+              required: isRequired("final_result") ? `${getLabel("final_result")} is required` : false,
+            })}
             disabled={true}
             className={`mt-1 block w-full rounded-md shadow-sm sm:text-sm cursor-not-allowed ${
               labResultsLoaded 
@@ -330,7 +355,7 @@ export default function HtsTestingForm({ initialData, onSave, loading, htsInitia
             }`}
           >
             <option value="">Waiting for lab results...</option>
-            {TEST_RESULTS.map((result) => (
+            {getOptions("test_results", TEST_RESULTS as string[]).map((result) => (
               <option key={result} value={result}>
                 {result}
               </option>
@@ -354,6 +379,7 @@ export default function HtsTestingForm({ initialData, onSave, loading, htsInitia
           )}
         </div>
       </div>
+      )}
 
       {/* STI Screening Results (Read-only display) */}
       {labResultsLoaded && (

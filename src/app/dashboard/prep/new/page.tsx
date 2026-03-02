@@ -5,6 +5,8 @@ import { useRouter, useSearchParams } from 'next/navigation';
 import { prepApi, CreatePrepCommencementRequest, PrepType } from '@/lib/prep';
 import { HtsInitialResponse } from '@/lib/hts';
 import { getErrorMessage } from '@/lib/api';
+import { useFormConfig } from '@/hooks/useFormConfig';
+import { FORM_SCHEMAS } from '@/lib/form-schemas';
 import {
   ChevronLeft,
   ChevronRight,
@@ -47,6 +49,11 @@ export default function NewPrepPage() {
     previous_enrollment_id: null,
     transferred_from_facility: null,
   });
+  const { isVisible, isRequired, getLabel, getOptions } = useFormConfig('prep', FORM_SCHEMAS.prep);
+  const showPrepInitiationSection = isVisible('date_prep_initiated') || isVisible('prep_type_at_start');
+  const showDrugAllergySection = isVisible('history_of_drug_allergies') || isVisible('allergy_details');
+  const showTransferSection =
+    isVisible('transferred_in') || isVisible('previous_enrollment_id') || isVisible('transferred_from_facility');
 
   // Load eligible HTS records
   useEffect(() => {
@@ -222,56 +229,66 @@ export default function NewPrepPage() {
         return (
           <form onSubmit={handleSubmit} className="space-y-6">
             {/* Counseling Date */}
-            <div>
-              <label htmlFor="date_initial_adherence_counseling" className="block text-sm font-medium text-gray-700 mb-2">
-                Date of Initial Adherence Counseling <span className="text-red-500">*</span>
-              </label>
-              <input
-                type="date"
-                id="date_initial_adherence_counseling"
-                required
-                value={formData.date_initial_adherence_counseling}
-                onChange={(e) => setFormData({ ...formData, date_initial_adherence_counseling: e.target.value })}
-                className="w-full px-3 py-2 border border-gray-300 rounded-md bg-white text-gray-900 focus:outline-none focus:ring-2 focus:ring-[#5b21b6]"
-              />
-            </div>
-
-            {/* PrEP Initiation */}
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            {isVisible('date_initial_adherence_counseling') && (
               <div>
-                <label htmlFor="date_prep_initiated" className="block text-sm font-medium text-gray-700 mb-2">
-                  Date PrEP Initiated
+                <label htmlFor="date_initial_adherence_counseling" className="block text-sm font-medium text-gray-700 mb-2">
+                  {getLabel('date_initial_adherence_counseling')} {isRequired('date_initial_adherence_counseling') && <span className="text-red-500">*</span>}
                 </label>
                 <input
                   type="date"
-                  id="date_prep_initiated"
-                  value={formData.date_prep_initiated || ''}
-                  onChange={(e) => setFormData({ ...formData, date_prep_initiated: e.target.value || null })}
+                  id="date_initial_adherence_counseling"
+                  required={isRequired('date_initial_adherence_counseling')}
+                  value={formData.date_initial_adherence_counseling}
+                  onChange={(e) => setFormData({ ...formData, date_initial_adherence_counseling: e.target.value })}
                   className="w-full px-3 py-2 border border-gray-300 rounded-md bg-white text-gray-900 focus:outline-none focus:ring-2 focus:ring-[#5b21b6]"
                 />
               </div>
+            )}
 
-              <div>
-                <label htmlFor="prep_type_at_start" className="block text-sm font-medium text-gray-700 mb-2">
-                  PrEP Type at Start
-                </label>
-                <select
-                  id="prep_type_at_start"
-                  value={formData.prep_type_at_start || ''}
-                  onChange={(e) => setFormData({ ...formData, prep_type_at_start: (e.target.value as PrepType) || null })}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-md bg-white text-gray-900 focus:outline-none focus:ring-2 focus:ring-[#5b21b6]"
-                >
-                  <option value="">Select PrEP type...</option>
-                  <option value="ED PrEP">ED PrEP</option>
-                  <option value="Injectable / CAB-LA">Injectable / CAB-LA</option>
-                  <option value="ORAL">Oral</option>
-                  <option value="RING">Ring</option>
-                </select>
-              </div>
+            {/* PrEP Initiation */}
+            {showPrepInitiationSection && (
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              {isVisible('date_prep_initiated') && (
+                <div>
+                  <label htmlFor="date_prep_initiated" className="block text-sm font-medium text-gray-700 mb-2">
+                    {getLabel('date_prep_initiated')}
+                  </label>
+                  <input
+                    type="date"
+                    id="date_prep_initiated"
+                    value={formData.date_prep_initiated || ''}
+                    onChange={(e) => setFormData({ ...formData, date_prep_initiated: e.target.value || null })}
+                    className="w-full px-3 py-2 border border-gray-300 rounded-md bg-white text-gray-900 focus:outline-none focus:ring-2 focus:ring-[#5b21b6]"
+                  />
+                </div>
+              )}
+
+              {isVisible('prep_type_at_start') && (
+                <div>
+                  <label htmlFor="prep_type_at_start" className="block text-sm font-medium text-gray-700 mb-2">
+                    {getLabel('prep_type_at_start')}
+                  </label>
+                  <select
+                    id="prep_type_at_start"
+                    value={formData.prep_type_at_start || ''}
+                    onChange={(e) => setFormData({ ...formData, prep_type_at_start: (e.target.value as PrepType) || null })}
+                    className="w-full px-3 py-2 border border-gray-300 rounded-md bg-white text-gray-900 focus:outline-none focus:ring-2 focus:ring-[#5b21b6]"
+                  >
+                    <option value="">Select PrEP type...</option>
+                    {getOptions('prep_type_at_start', ['ED PrEP', 'Injectable / CAB-LA', 'ORAL', 'RING']).map((option) => (
+                      <option key={option} value={option}>
+                        {option === 'ORAL' ? 'Oral' : option}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+              )}
             </div>
+            )}
 
             {/* Drug Allergies */}
-            <div className="space-y-3">
+            {showDrugAllergySection && isVisible('history_of_drug_allergies') && (
+              <div className="space-y-3">
               <div className="flex items-center">
                 <input
                   type="checkbox"
@@ -281,14 +298,14 @@ export default function NewPrepPage() {
                   className="h-4 w-4 text-[#5b21b6] focus:ring-[#5b21b6] border-gray-300 rounded"
                 />
                 <label htmlFor="history_of_drug_allergies" className="ml-3 text-sm text-gray-700">
-                  Patient has history of drug allergies
+                  {getLabel('history_of_drug_allergies')}
                 </label>
               </div>
 
-              {formData.history_of_drug_allergies && (
+              {formData.history_of_drug_allergies && isVisible('allergy_details') && (
                 <div>
                   <label htmlFor="allergy_details" className="block text-sm font-medium text-gray-700 mb-2">
-                    Allergy Details
+                    {getLabel('allergy_details')}
                   </label>
                   <textarea
                     id="allergy_details"
@@ -300,10 +317,12 @@ export default function NewPrepPage() {
                   />
                 </div>
               )}
-            </div>
+              </div>
+            )}
 
             {/* Transfer Information */}
-            <div className="space-y-4">
+            {showTransferSection && isVisible('transferred_in') && (
+              <div className="space-y-4">
               <div className="flex items-center">
                 <input
                   type="checkbox"
@@ -313,15 +332,16 @@ export default function NewPrepPage() {
                   className="h-4 w-4 text-[#5b21b6] focus:ring-[#5b21b6] border-gray-300 rounded"
                 />
                 <label htmlFor="transferred_in" className="ml-3 text-sm text-gray-700">
-                  Patient transferred in from another facility
+                  {getLabel('transferred_in')}
                 </label>
               </div>
 
               {formData.transferred_in && (
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4 ml-7">
-                  <div>
+                  {isVisible('previous_enrollment_id') && (
+                    <div>
                     <label htmlFor="previous_enrollment_id" className="block text-sm font-medium text-gray-700 mb-2">
-                      Previous Enrollment ID
+                      {getLabel('previous_enrollment_id')}
                     </label>
                     <input
                       type="text"
@@ -331,11 +351,13 @@ export default function NewPrepPage() {
                       placeholder="Enter previous ID..."
                       className="w-full px-3 py-2 border border-gray-300 rounded-md bg-white text-gray-900 focus:outline-none focus:ring-2 focus:ring-[#5b21b6]"
                     />
-                  </div>
+                    </div>
+                  )}
 
-                  <div>
+                  {isVisible('transferred_from_facility') && (
+                    <div>
                     <label htmlFor="transferred_from_facility" className="block text-sm font-medium text-gray-700 mb-2">
-                      Transferred From Facility
+                      {getLabel('transferred_from_facility')}
                     </label>
                     <input
                       type="text"
@@ -345,10 +367,12 @@ export default function NewPrepPage() {
                       placeholder="Enter facility name..."
                       className="w-full px-3 py-2 border border-gray-300 rounded-md bg-white text-gray-900 focus:outline-none focus:ring-2 focus:ring-[#5b21b6]"
                     />
-                  </div>
+                    </div>
+                  )}
                 </div>
               )}
-            </div>
+              </div>
+            )}
 
             {/* Submit Button */}
             <div className="flex justify-end pt-6 border-t border-gray-200">

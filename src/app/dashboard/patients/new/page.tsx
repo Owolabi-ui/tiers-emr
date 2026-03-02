@@ -39,6 +39,8 @@ import {
   getStatusLabel,
 } from '@/lib/vital-signs-ranges';
 import { getErrorMessage } from '@/lib/api';
+import { useFormConfig } from '@/hooks/useFormConfig';
+import { FORM_SCHEMAS } from '@/lib/form-schemas';
 import { useToast } from '@/components/toast-provider';
 import {
   ArrowLeft,
@@ -202,6 +204,26 @@ export default function NewPatientPage() {
   const [vitalSignsExpanded, setVitalSignsExpanded] = useState(false);
   const [createdPatient, setCreatedPatient] = useState<Patient | null>(null);
   const [referringServiceKey, setReferringServiceKey] = useState<string | null>(null);
+  const { isVisible, isRequired, getLabel, getOptions } = useFormConfig('patient', FORM_SCHEMAS.patient);
+  const showPersonalSection =
+    isVisible('first_name') ||
+    isVisible('middle_name') ||
+    isVisible('last_name') ||
+    isVisible('preferred_name') ||
+    isVisible('sex') ||
+    isVisible('gender') ||
+    isVisible('date_of_birth') ||
+    isVisible('current_clinic_id') ||
+    isVisible('marital_status');
+  const showContactSection = isVisible('phone') || isVisible('email');
+  const showAddressSection =
+    isVisible('address') || isVisible('state_id') || isVisible('lga_id') || isVisible('city');
+  const showEducationOccupationSection =
+    isVisible('educational_level') || isVisible('occupation') || isVisible('occupation_specify');
+  const showEmergencySection =
+    isVisible('emergency_contact_name') ||
+    isVisible('emergency_contact_relationship') ||
+    isVisible('emergency_contact_phone');
   const notificationRefreshTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   const {
@@ -527,15 +549,17 @@ export default function NewPatientPage() {
 
       <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
         {/* Personal Information */}
+        {showPersonalSection && (
         <div className="rounded-xl border border-black/10 dark:border-white/15 bg-white dark:bg-neutral-900 overflow-hidden">
           <div className="bg-[#5b21b6] px-5 py-3 flex items-center gap-2">
             <User className="h-5 w-5 text-white" />
             <h2 className="font-semibold text-white">Personal Information</h2>
           </div>
           <div className="p-5 grid grid-cols-1 sm:grid-cols-2 gap-4">
+            {isVisible('first_name') && (
             <div>
               <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-                First Name <span className="text-red-500">*</span>
+                {getLabel('first_name')} {isRequired('first_name') && <span className="text-red-500">*</span>}
               </label>
               <input
                 {...register('first_name')}
@@ -546,9 +570,11 @@ export default function NewPatientPage() {
                 <p className="mt-1 text-sm text-red-600">{errors.first_name.message}</p>
               )}
             </div>
+            )}
+            {isVisible('middle_name') && (
             <div>
               <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-                Middle Name
+                {getLabel('middle_name')}
               </label>
               <input
                 {...register('middle_name')}
@@ -556,9 +582,11 @@ export default function NewPatientPage() {
                 placeholder="Enter middle name"
               />
             </div>
+            )}
+            {isVisible('last_name') && (
             <div>
               <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-                Last Name <span className="text-red-500">*</span>
+                {getLabel('last_name')} {isRequired('last_name') && <span className="text-red-500">*</span>}
               </label>
               <input
                 {...register('last_name')}
@@ -569,9 +597,11 @@ export default function NewPatientPage() {
                 <p className="mt-1 text-sm text-red-600">{errors.last_name.message}</p>
               )}
             </div>
+            )}
+            {isVisible('preferred_name') && (
             <div>
               <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-                Preferred Name
+                {getLabel('preferred_name')}
               </label>
               <input
                 {...register('preferred_name')}
@@ -579,24 +609,28 @@ export default function NewPatientPage() {
                 placeholder="Nickname or preferred name"
               />
             </div>
+            )}
+            {isVisible('sex') && (
             <div>
               <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-                Sex <span className="text-red-500">*</span>
+                {getLabel('sex')} {isRequired('sex') && <span className="text-red-500">*</span>}
               </label>
               <select
                 {...register('sex')}
                 className="w-full h-10 rounded-lg border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-neutral-800 px-3 text-sm focus:outline-none focus:ring-2 focus:ring-[#5b21b6]/50"
               >
-                {sexOptions.map((sex) => (
+                {getOptions('sex', sexOptions as string[]).map((sex) => (
                   <option key={sex} value={sex}>
                     {sex}
                   </option>
                 ))}
               </select>
             </div>
+            )}
+            {isVisible('gender') && (
             <div>
               <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-                Gender Identity
+                {getLabel('gender')}
               </label>
               <select
                 {...register('gender')}
@@ -610,9 +644,11 @@ export default function NewPatientPage() {
                 ))}
               </select>
             </div>
+            )}
+            {isVisible('date_of_birth') && (
             <div>
               <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-                Date of Birth <span className="text-red-500">*</span>
+                {getLabel('date_of_birth')} {isRequired('date_of_birth') && <span className="text-red-500">*</span>}
               </label>
               <input
                 {...register('date_of_birth')}
@@ -623,9 +659,11 @@ export default function NewPatientPage() {
                 <p className="mt-1 text-sm text-red-600">{errors.date_of_birth.message}</p>
               )}
             </div>
+            )}
+            {isVisible('current_clinic_id') && (
             <div>
               <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-                Registered at Clinic <span className="text-red-500">*</span>
+                {getLabel('current_clinic_id')} {isRequired('current_clinic_id') && <span className="text-red-500">*</span>}
               </label>
               <select
                 {...register('current_clinic_id')}
@@ -642,35 +680,41 @@ export default function NewPatientPage() {
                 <p className="mt-1 text-sm text-red-600">{errors.current_clinic_id.message}</p>
               )}
             </div>
+            )}
+            {isVisible('marital_status') && (
             <div>
               <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-                Marital Status
+                {getLabel('marital_status')}
               </label>
               <select
                 {...register('marital_status')}
                 className="w-full h-10 rounded-lg border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-neutral-800 px-3 text-sm focus:outline-none focus:ring-2 focus:ring-[#5b21b6]/50"
               >
                 <option value="">Select status</option>
-                {maritalStatusOptions.map((status) => (
+                {getOptions('marital_status', maritalStatusOptions as string[]).map((status) => (
                   <option key={status} value={status}>
                     {status}
                   </option>
                 ))}
               </select>
             </div>
+            )}
           </div>
         </div>
+        )}
 
         {/* Contact Information */}
+        {showContactSection && (
         <div className="rounded-xl border border-black/10 dark:border-white/15 bg-white dark:bg-neutral-900 overflow-hidden">
           <div className="bg-[#5b21b6] px-5 py-3 flex items-center gap-2">
             <Phone className="h-5 w-5 text-white" />
             <h2 className="font-semibold text-white">Contact Information</h2>
           </div>
           <div className="p-5 grid grid-cols-1 sm:grid-cols-2 gap-4">
+            {isVisible('phone') && (
             <div>
               <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-                Phone Number
+                {getLabel('phone')}
               </label>
               <input
                 {...register('phone')}
@@ -679,9 +723,11 @@ export default function NewPatientPage() {
                 placeholder="e.g., 08012345678"
               />
             </div>
+            )}
+            {isVisible('email') && (
             <div>
               <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-                Email Address
+                {getLabel('email')}
               </label>
               <input
                 {...register('email')}
@@ -690,19 +736,23 @@ export default function NewPatientPage() {
                 placeholder="patient@example.com"
               />
             </div>
+            )}
           </div>
         </div>
+        )}
 
         {/* Address */}
+        {showAddressSection && (
         <div className="rounded-xl border border-black/10 dark:border-white/15 bg-white dark:bg-neutral-900 overflow-hidden">
           <div className="bg-[#5b21b6] px-5 py-3 flex items-center gap-2">
             <MapPin className="h-5 w-5 text-white" />
             <h2 className="font-semibold text-white">Address</h2>
           </div>
           <div className="p-5 grid grid-cols-1 sm:grid-cols-2 gap-4">
+            {isVisible('address') && (
             <div className="sm:col-span-2">
               <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-                Street Address
+                {getLabel('address')}
               </label>
               <input
                 {...register('address')}
@@ -710,9 +760,11 @@ export default function NewPatientPage() {
                 placeholder="Enter street address"
               />
             </div>
+            )}
+            {isVisible('state_id') && (
             <div>
               <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-                State
+                {getLabel('state_id')}
               </label>
               <select
                 {...register('state_id', { valueAsNumber: true })}
@@ -726,9 +778,11 @@ export default function NewPatientPage() {
                 ))}
               </select>
             </div>
+            )}
+            {isVisible('lga_id') && (
             <div>
               <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-                LGA
+                {getLabel('lga_id')}
               </label>
               <select
                 {...register('lga_id', { valueAsNumber: true })}
@@ -743,9 +797,11 @@ export default function NewPatientPage() {
                 ))}
               </select>
             </div>
+            )}
+            {isVisible('city') && (
             <div>
               <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-                City
+                {getLabel('city')}
               </label>
               <input
                 {...register('city')}
@@ -753,51 +809,59 @@ export default function NewPatientPage() {
                 placeholder="Enter city"
               />
             </div>
+            )}
           </div>
         </div>
+        )}
 
         {/* Education & Occupation */}
+        {showEducationOccupationSection && (
         <div className="rounded-xl border border-black/10 dark:border-white/15 bg-white dark:bg-neutral-900 overflow-hidden">
           <div className="bg-[#5b21b6] px-5 py-3 flex items-center gap-2">
             <Briefcase className="h-5 w-5 text-white" />
             <h2 className="font-semibold text-white">Education & Occupation</h2>
           </div>
           <div className="p-5 grid grid-cols-1 sm:grid-cols-2 gap-4">
+            {isVisible('educational_level') && (
             <div>
               <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-                Educational Level
+                {getLabel('educational_level')}
               </label>
               <select
                 {...register('educational_level')}
                 className="w-full h-10 rounded-lg border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-neutral-800 px-3 text-sm focus:outline-none focus:ring-2 focus:ring-[#5b21b6]/50"
               >
                 <option value="">Select level</option>
-                {educationalLevelOptions.map((level) => (
+                {getOptions('educational_level', educationalLevelOptions as string[]).map((level) => (
                   <option key={level} value={level}>
                     {level}
                   </option>
                 ))}
               </select>
             </div>
+            )}
+            {isVisible('occupation') && (
             <div>
               <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-                Occupation
+                {getLabel('occupation')}
               </label>
               <select
                 {...register('occupation')}
                 className="w-full h-10 rounded-lg border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-neutral-800 px-3 text-sm focus:outline-none focus:ring-2 focus:ring-[#5b21b6]/50"
               >
                 <option value="">Select occupation</option>
-                {occupationOptions.map((occ) => (
+                {getOptions('occupation', occupationOptions as string[]).map((occ) => (
                   <option key={occ} value={occ}>
                     {occ}
                   </option>
                 ))}
               </select>
             </div>
+            )}
+            {isVisible('occupation_specify') && (
             <div className="sm:col-span-2">
               <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-                Occupation Details
+                {getLabel('occupation_specify')}
               </label>
               <input
                 {...register('occupation_specify')}
@@ -805,19 +869,23 @@ export default function NewPatientPage() {
                 placeholder="Specify job title or details"
               />
             </div>
+            )}
           </div>
         </div>
+        )}
 
         {/* Emergency Contact */}
+        {showEmergencySection && (
         <div className="rounded-xl border border-black/10 dark:border-white/15 bg-white dark:bg-neutral-900 overflow-hidden">
           <div className="bg-[#5b21b6] px-5 py-3 flex items-center gap-2">
             <UserPlus className="h-5 w-5 text-white" />
             <h2 className="font-semibold text-white">Emergency Contact</h2>
           </div>
           <div className="p-5 grid grid-cols-1 sm:grid-cols-3 gap-4">
+            {isVisible('emergency_contact_name') && (
             <div>
               <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-                Contact Name
+                {getLabel('emergency_contact_name')}
               </label>
               <input
                 {...register('emergency_contact_name')}
@@ -825,9 +893,11 @@ export default function NewPatientPage() {
                 placeholder="Full name"
               />
             </div>
+            )}
+            {isVisible('emergency_contact_relationship') && (
             <div>
               <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-                Relationship
+                {getLabel('emergency_contact_relationship')}
               </label>
               <input
                 {...register('emergency_contact_relationship')}
@@ -835,9 +905,11 @@ export default function NewPatientPage() {
                 placeholder="e.g., Spouse, Parent"
               />
             </div>
+            )}
+            {isVisible('emergency_contact_phone') && (
             <div>
               <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-                Phone Number
+                {getLabel('emergency_contact_phone')}
               </label>
               <input
                 {...register('emergency_contact_phone')}
@@ -846,8 +918,10 @@ export default function NewPatientPage() {
                 placeholder="e.g., 08012345678"
               />
             </div>
+            )}
           </div>
         </div>
+        )}
 
         {/* Vital Signs (Optional) */}
         <div className="rounded-xl border border-black/10 dark:border-white/15 bg-white dark:bg-neutral-900 overflow-hidden">
