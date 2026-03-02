@@ -129,7 +129,7 @@ export default function LaboratoryPage() {
           <div className="rounded-xl border border-black/10 dark:border-white/15 bg-white dark:bg-neutral-900 p-6">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm text-gray-500 dark:text-gray-400">Total Orders</p>
+                <p className="text-sm text-gray-500 dark:text-gray-400">Total orders</p>
                 <p className="text-2xl font-bold text-gray-900 dark:text-white mt-1">
                   {statistics.total_orders || 0}
                 </p>

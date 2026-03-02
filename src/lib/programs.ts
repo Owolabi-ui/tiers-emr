@@ -91,6 +91,18 @@ export interface ProgramStockRequest {
   notes?: string;
 }
 
+export interface BulkProgramDispenseLine {
+  item_id: string;
+  quantity: number;
+}
+
+export interface BulkProgramDispenseRequest {
+  lines: BulkProgramDispenseLine[];
+  client_id?: string;
+  transaction_date?: string;
+  notes?: string;
+}
+
 export const programsApi = {
   listClients: async (): Promise<ProgramClient[]> => {
     const response = await api.get<ProgramClient[]>('/api/v1/programs/clients');
@@ -131,6 +143,14 @@ export const programsApi = {
 
   dispense: async (data: ProgramStockRequest): Promise<ProgramStockTransaction> => {
     const response = await api.post<ProgramStockTransaction>('/api/v1/programs/stock/dispense', data);
+    return response.data;
+  },
+
+  dispenseBulk: async (data: BulkProgramDispenseRequest): Promise<ProgramStockTransaction[]> => {
+    const response = await api.post<ProgramStockTransaction[]>(
+      '/api/v1/programs/stock/dispense-bulk',
+      data
+    );
     return response.data;
   },
 

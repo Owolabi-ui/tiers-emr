@@ -2,7 +2,7 @@
 
 import { FormEvent, ReactNode, useMemo, useState } from 'react';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
-import { AlertTriangle, PackageOpen, TrendingDown, TrendingUp, Users } from 'lucide-react';
+import { AlertTriangle, PackageOpen, Plus, Trash2, TrendingDown, TrendingUp, Users } from 'lucide-react';
 import { getErrorMessage } from '@/lib/api';
 import {
   CreateProgramClientRequest,
@@ -54,15 +54,15 @@ export default function ProgramsPage() {
     notes: '',
   });
 
-  const [dispenseForm, setDispenseForm] = useState<ProgramStockRequest>({
-    item_id: '',
-    quantity: 1,
+  const [dispenseForm, setDispenseForm] = useState<Omit<ProgramStockRequest, 'item_id' | 'quantity'>>({
     client_id: '',
     transaction_date: today,
     notes: '',
   });
+  const [dispenseLines, setDispenseLines] = useState<Array<{ item_id: string; quantity: string }>>([
+    { item_id: '', quantity: '1' },
+  ]);
   const [addStockQtyStr, setAddStockQtyStr] = useState('1');
-  const [dispenseQtyStr, setDispenseQtyStr] = useState('1');
   const [clientSearchQuery, setClientSearchQuery] = useState('');
   const [clientSearchOpen, setClientSearchOpen] = useState(false);
 
@@ -135,19 +135,17 @@ export default function ProgramsPage() {
   });
 
   const dispenseMutation = useMutation({
-    mutationFn: programsApi.dispense,
+    mutationFn: programsApi.dispenseBulk,
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['program-items'] });
       queryClient.invalidateQueries({ queryKey: ['programs-stats'] });
       queryClient.invalidateQueries({ queryKey: ['program-client-summaries'] });
       setDispenseForm({
-        item_id: '',
-        quantity: 1,
         client_id: '',
         transaction_date: today,
         notes: '',
       });
-      setDispenseQtyStr('1');
+      setDispenseLines([{ item_id: '', quantity: '1' }]);
       setClientSearchQuery('');
       setClientSearchOpen(false);
       setError(null);
@@ -155,10 +153,6 @@ export default function ProgramsPage() {
     onError: (err) => setError(getErrorMessage(err)),
   });
 
-  const selectedDispenseItem = useMemo(
-    () => items.find((item) => item.id === dispenseForm.item_id),
-    [items, dispenseForm.item_id]
-  );
   const selectedClient = useMemo(
     () => clients.find((c) => c.id === dispenseForm.client_id),
     [clients, dispenseForm.client_id]
@@ -176,6 +170,16 @@ export default function ProgramsPage() {
       }),
     [clients, clientSearchQuery]
   );
+  const duplicateDispenseItems = useMemo(() => {
+    const counts = new Map<string, number>();
+    for (const line of dispenseLines) {
+      if (!line.item_id) continue;
+      counts.set(line.item_id, (counts.get(line.item_id) ?? 0) + 1);
+    }
+    return Array.from(counts.entries())
+      .filter(([, count]) => count > 1)
+      .map(([itemId]) => items.find((item) => item.id === itemId)?.item_name ?? 'Selected item');
+  }, [dispenseLines, items]);
 
   const handleCreateClient = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -233,9 +237,26 @@ export default function ProgramsPage() {
 
   const handleDispense = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+
+    const parsedLines = dispenseLines
+      .map((line) => ({
+        item_id: line.item_id,
+        quantity: parseInt(line.quantity, 10),
+      }))
+      .filter((line) => line.item_id);
+
+    if (parsedLines.length === 0) {
+      setError('Add at least one item to dispense.');
+      return;
+    }
+
+    if (parsedLines.some((line) => Number.isNaN(line.quantity) || line.quantity <= 0)) {
+      setError('Each dispensed item must have quantity greater than zero.');
+      return;
+    }
+
     dispenseMutation.mutate({
-      ...dispenseForm,
-      quantity: parseInt(dispenseQtyStr, 10) || 1,
+      lines: parsedLines,
       client_id: dispenseForm.client_id?.trim() || undefined,
       transaction_date: dispenseForm.transaction_date || today,
       notes: dispenseForm.notes?.trim() || undefined,
@@ -622,35 +643,90 @@ export default function ProgramsPage() {
       {activeTab === 'dispense' && (
         <div className="grid gap-6 lg:grid-cols-2">
           <div className="rounded-xl border bg-white dark:bg-neutral-900 p-4">
-            <h2 className="font-semibold mb-4">Dispense Item</h2>
+            <h2 className="font-semibold mb-4">Dispense Items</h2>
             <form className="space-y-3" onSubmit={handleDispense}>
-              <select
-                required
-                value={dispenseForm.item_id}
-                onChange={(e) => setDispenseForm((prev) => ({ ...prev, item_id: e.target.value }))}
-                className="w-full h-10 rounded-lg border px-3 text-sm"
-              >
-                <option value="">Select item</option>
-                {items.map((item: ProgramItem) => (
-                  <option key={item.id} value={item.id}>
-                    {item.item_code} - {item.item_name} ({item.current_stock} {item.unit_of_measure})
-                  </option>
-                ))}
-              </select>
-              {selectedDispenseItem && (
-                <p className="text-xs text-gray-600">
-                  Available stock: {selectedDispenseItem.current_stock} {selectedDispenseItem.unit_of_measure}
-                </p>
-              )}
-              <input
-                type="number"
-                min={1}
-                max={selectedDispenseItem?.current_stock ?? undefined}
-                value={dispenseQtyStr}
-                onChange={(e) => setDispenseQtyStr(e.target.value)}
-                className="w-full h-10 rounded-lg border px-3 text-sm"
-                placeholder="Quantity"
-              />
+              <div className="space-y-3">
+                {dispenseLines.map((line, index) => {
+                  const lineItem = items.find((item) => item.id === line.item_id);
+
+                  return (
+                    <div key={index} className="grid grid-cols-12 gap-2 items-center">
+                      <div className="col-span-7">
+                        <select
+                          required
+                          value={line.item_id}
+                          onChange={(e) =>
+                            setDispenseLines((prev) =>
+                              prev.map((entry, i) =>
+                                i === index ? { ...entry, item_id: e.target.value } : entry
+                              )
+                            )
+                          }
+                          className="w-full h-10 rounded-lg border px-3 text-sm"
+                        >
+                          <option value="">Select item</option>
+                          {items.map((item: ProgramItem) => (
+                            <option key={item.id} value={item.id}>
+                              {item.item_code} - {item.item_name} ({item.current_stock} {item.unit_of_measure})
+                            </option>
+                          ))}
+                        </select>
+                      </div>
+                      <div className="col-span-3">
+                        <input
+                          type="number"
+                          min={1}
+                          max={lineItem?.current_stock ?? undefined}
+                          value={line.quantity}
+                          onChange={(e) =>
+                            setDispenseLines((prev) =>
+                              prev.map((entry, i) =>
+                                i === index ? { ...entry, quantity: e.target.value } : entry
+                              )
+                            )
+                          }
+                          className="w-full h-10 rounded-lg border px-3 text-sm"
+                          placeholder="Qty"
+                        />
+                      </div>
+                      <div className="col-span-2 flex justify-end">
+                        <button
+                          type="button"
+                          onClick={() =>
+                            setDispenseLines((prev) =>
+                              prev.length > 1 ? prev.filter((_, i) => i !== index) : prev
+                            )
+                          }
+                          disabled={dispenseLines.length === 1}
+                          className="h-10 w-10 inline-flex items-center justify-center rounded-lg border text-gray-600 disabled:opacity-40"
+                          aria-label="Remove line"
+                        >
+                          <Trash2 className="h-4 w-4" />
+                        </button>
+                      </div>
+                      {lineItem && (
+                        <p className="col-span-12 text-xs text-gray-600">
+                          Available stock: {lineItem.current_stock} {lineItem.unit_of_measure}
+                        </p>
+                      )}
+                    </div>
+                  );
+                })}
+                <button
+                  type="button"
+                  onClick={() => setDispenseLines((prev) => [...prev, { item_id: '', quantity: '1' }])}
+                  className="inline-flex items-center gap-2 px-3 py-2 rounded-lg border text-sm text-[#5b21b6] border-[#d6c2ff]"
+                >
+                  <Plus className="h-4 w-4" />
+                  Add another item
+                </button>
+                {duplicateDispenseItems.length > 0 && (
+                  <p className="text-xs text-amber-700 bg-amber-50 border border-amber-200 rounded-lg px-3 py-2">
+                    Duplicate items selected: {duplicateDispenseItems.join(', ')}. They will be combined into one
+                    dispensed total per item.
+                  </p>
+                )}
+              </div>
               <div className="relative">
                 <input
                   value={selectedClient ? selectedClient.full_name : clientSearchQuery}
@@ -737,6 +813,7 @@ export default function ProgramsPage() {
           <div className="rounded-xl border bg-white dark:bg-neutral-900 p-4">
             <h2 className="font-semibold mb-4">Quick Guidance</h2>
             <ul className="space-y-2 text-sm text-gray-700">
+              <li>Multiple items can be dispensed in a single submission.</li>
               <li>Item stock is decremented automatically after dispense.</li>
               <li>Client selection is optional for walk-in anonymous distribution.</li>
               <li>Use notes for audit context (event, outreach location, team).</li>
