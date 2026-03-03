@@ -48,21 +48,13 @@ api.interceptors.response.use(
     }
     
     // Handle 401 - unauthorized (token invalid/expired)
-    if (status === 401) {
-      console.warn('[API] 401 Unauthorized - Token expired or invalid.');
-      console.warn('[API] TEMPORARILY NOT LOGGING OUT FOR DEBUGGING');
-      
-      // TEMPORARILY DISABLED FOR DEBUGGING
-      // if (typeof window !== 'undefined') {
-      //   localStorage.removeItem('access_token');
-      //   localStorage.removeItem('user');
-      //   // Set session expired flag in sessionStorage for login page to detect
-      //   sessionStorage.setItem('session_expired', 'true');
-      //   // Only redirect if not already on login page
-      //   if (!window.location.pathname.includes('/login')) {
-      //     window.location.href = '/login?session_expired=true';
-      //   }
-      // }
+    if (status === 401 && typeof window !== 'undefined') {
+      localStorage.removeItem('access_token');
+      localStorage.removeItem('user');
+      sessionStorage.setItem('session_expired', 'true');
+      if (!window.location.pathname.includes('/login')) {
+        window.location.href = '/login?session_expired=true';
+      }
     }
     
     // Other errors are now handled by ApiErrorHandler component with toast notifications
