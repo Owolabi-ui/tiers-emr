@@ -44,9 +44,9 @@ export default function ClinicsPage() {
       setClinics((prev) => prev.filter((clinic) => clinic.id !== deleteTarget.id));
       setDeleting(false);
       setDeleteTarget(null);
-    } catch (err) {
+    } catch (err: any) {
       console.error('Error deleting clinic:', err);
-      setDeleteError('Failed to delete clinic. Please try again.');
+      setDeleteError(err?.response?.data?.error || 'Failed to delete clinic. Please try again.');
       setDeleting(false);
     }
   };
