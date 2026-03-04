@@ -162,7 +162,8 @@ export const useAuthStore = create<AuthState>()(
 export function useHasRole(allowedRoles: string[]): boolean {
   const user = useAuthStore((state) => state.user);
   if (!user) return false;
-  return allowedRoles.includes(user.role);
+  const currentRole = user.role?.toLowerCase();
+  return allowedRoles.some((role) => role.toLowerCase() === currentRole);
 }
 
 // Helper to get role display name

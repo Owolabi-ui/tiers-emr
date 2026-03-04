@@ -103,6 +103,14 @@ export const usersApi = {
     const response = await api.put<{ message: string }>(`/api/v1/admin/users/${userId}/deactivate`, {});
     return response.data;
   },
+
+  /**
+   * Delete user permanently (admin only)
+   */
+  delete: async (userId: string): Promise<{ message: string }> => {
+    const response = await api.delete<{ message: string }>(`/api/v1/admin/users/${userId}`);
+    return response.data;
+  },
 };
 
 // ============================================================================

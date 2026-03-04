@@ -20,6 +20,7 @@ import {
   Filter,
   Edit,
   UserX,
+  Trash2,
   Mail,
   Phone,
   Building2,
@@ -27,6 +28,7 @@ import {
   CheckCircle2,
   XCircle,
   X,
+  Loader2,
 } from 'lucide-react';
 
 export default function UsersPage() {
@@ -250,6 +252,11 @@ export default function UsersPage() {
                           {u.is_active && (
                             <DeactivateUserButton userId={u.id} userName={u.full_name} />
                           )}
+                          <DeleteUserButton
+                            userId={u.id}
+                            userName={u.full_name}
+                            isCurrentUser={user?.id === u.id}
+                          />
                         </div>
                       </td>
                     </tr>
@@ -620,6 +627,75 @@ function DeactivateUserButton({ userId, userName }: { userId: string; userName: 
       title="Deactivate user"
     >
       <UserX className="w-4 h-4" />
+    </button>
+  );
+}
+
+// Delete User Button Component
+function DeleteUserButton({
+  userId,
+  userName,
+  isCurrentUser,
+}: {
+  userId: string;
+  userName: string;
+  isCurrentUser: boolean;
+}) {
+  const queryClient = useQueryClient();
+  const { showSuccess, showError } = useToast();
+  const [showConfirm, setShowConfirm] = useState(false);
+
+  const deleteMutation = useMutation({
+    mutationFn: () => usersApi.delete(userId),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['users'] });
+      showSuccess('User deleted', `${userName} has been deleted`);
+      setShowConfirm(false);
+    },
+    onError: (error: any) => {
+      showError('Failed to delete user', error.response?.data?.error || error.message);
+    },
+  });
+
+  if (showConfirm) {
+    return (
+      <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4">
+        <div className="bg-white dark:bg-gray-800 rounded-lg shadow-xl max-w-md w-full p-6">
+          <h3 className="text-lg font-bold text-gray-900 dark:text-white mb-2">
+            Delete User
+          </h3>
+          <p className="text-gray-600 dark:text-gray-400 mb-6">
+            This will permanently delete <strong>{userName}</strong> and cannot be undone.
+          </p>
+          <div className="flex gap-3">
+            <button
+              onClick={() => setShowConfirm(false)}
+              className="flex-1 px-4 py-2 border border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700"
+            >
+              Cancel
+            </button>
+            <button
+              onClick={() => deleteMutation.mutate()}
+              disabled={deleteMutation.isPending}
+              className="flex-1 inline-flex items-center justify-center gap-2 px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 disabled:opacity-50"
+            >
+              {deleteMutation.isPending && <Loader2 className="h-4 w-4 animate-spin" />}
+              {deleteMutation.isPending ? 'Deleting...' : 'Delete'}
+            </button>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  return (
+    <button
+      disabled={isCurrentUser}
+      onClick={() => setShowConfirm(true)}
+      className="p-2 text-red-700 hover:bg-red-50 dark:hover:bg-red-900/20 rounded-lg transition-colors disabled:opacity-40 disabled:cursor-not-allowed disabled:hover:bg-transparent"
+      title={isCurrentUser ? 'You cannot delete your own account' : 'Delete user permanently'}
+    >
+      <Trash2 className="w-4 h-4" />
     </button>
   );
 }

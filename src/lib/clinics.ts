@@ -107,6 +107,11 @@ export const clinicsApi = {
     const response = await api.post<Clinic>('/api/v1/clinics', clinic);
     return response.data;
   },
+
+  // Delete clinic (admin only)
+  delete: async (id: string): Promise<void> => {
+    await api.delete(`/api/v1/clinics/${id}`);
+  },
 };
 
 // ============================================
@@ -130,12 +135,12 @@ export const getFacilityTypeLabel = (type: FacilityType): string => {
 
 export const getLevelOfCareLabel = (level: LevelOfCare): string => {
   const labels: Record<LevelOfCare, string> = {
-    'Level1': 'Level 1 - Community Health',
-    'Level2': 'Level 2 - Dispensary',
-    'Level3': 'Level 3 - Health Center',
-    'Level4': 'Level 4 - Sub-County Hospital',
-    'Level5': 'Level 5 - County Referral Hospital',
-    'Level6': 'Level 6 - National Referral Hospital',
+    'Level_1': 'Level 1 - Community Health',
+    'Level_2': 'Level 2 - Dispensary',
+    'Level_3': 'Level 3 - Health Center',
+    'Level_4': 'Level 4 - Sub-County Hospital',
+    'Level_5': 'Level 5 - County Referral Hospital',
+    'Level_6': 'Level 6 - National Referral Hospital',
   };
   return labels[level] || level;
 };

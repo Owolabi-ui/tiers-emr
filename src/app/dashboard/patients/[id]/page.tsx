@@ -58,6 +58,7 @@ export default function PatientDetailPage() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [deleting, setDeleting] = useState(false);
+  const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
   const [showFingerprintCapture, setShowFingerprintCapture] = useState(false);
 
   useEffect(() => {
@@ -84,10 +85,6 @@ export default function PatientDetailPage() {
   }, [patientId]);
 
   const handleDelete = async () => {
-    if (!confirm('Are you sure you want to delete this patient? This action cannot be undone.')) {
-      return;
-    }
-
     try {
       setDeleting(true);
       await patientsApi.delete(patientId);
@@ -95,6 +92,7 @@ export default function PatientDetailPage() {
     } catch (err) {
       setError(getErrorMessage(err));
       setDeleting(false);
+      setShowDeleteConfirm(false);
     }
   };
 
@@ -183,7 +181,7 @@ export default function PatientDetailPage() {
             Edit
           </Link>
           <button
-            onClick={handleDelete}
+            onClick={() => setShowDeleteConfirm(true)}
             disabled={deleting}
             className="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-red-600 text-white text-sm font-medium hover:bg-red-700 disabled:opacity-50 transition-colors"
           >
@@ -388,6 +386,39 @@ export default function PatientDetailPage() {
           }}
           onCancel={() => setShowFingerprintCapture(false)}
         />
+      )}
+
+      {/* Delete Confirmation Modal */}
+      {showDeleteConfirm && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4">
+          <div className="w-full max-w-md rounded-lg bg-white dark:bg-neutral-900 p-6 shadow-xl">
+            <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-2">
+              Delete Patient
+            </h3>
+            <p className="text-sm text-gray-600 dark:text-gray-400 mb-5">
+              Are you sure you want to delete <strong>{getPatientFullName(patient)}</strong>? This action cannot be undone.
+            </p>
+            <div className="flex gap-3">
+              <button
+                type="button"
+                onClick={() => setShowDeleteConfirm(false)}
+                disabled={deleting}
+                className="flex-1 px-4 py-2 rounded-lg border border-gray-300 text-gray-700 hover:bg-gray-50 disabled:opacity-50 dark:border-gray-600 dark:text-gray-300 dark:hover:bg-neutral-800"
+              >
+                Cancel
+              </button>
+              <button
+                type="button"
+                onClick={handleDelete}
+                disabled={deleting}
+                className="flex-1 inline-flex items-center justify-center gap-2 px-4 py-2 rounded-lg bg-red-600 text-white hover:bg-red-700 disabled:opacity-50"
+              >
+                {deleting ? <Loader2 className="h-4 w-4 animate-spin" /> : <Trash2 className="h-4 w-4" />}
+                {deleting ? 'Deleting...' : 'Delete'}
+              </button>
+            </div>
+          </div>
+        </div>
       )}
     </div>
   );
