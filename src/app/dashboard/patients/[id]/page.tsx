@@ -12,6 +12,18 @@ import {
   formatDate,
   ServiceType,
 } from '@/lib/patients';
+import { vitalSignsApi, VitalSigns } from '@/lib/vital-signs';
+import {
+  getTemperatureStatus,
+  getPulseStatus,
+  getRespirationStatus,
+  getSystolicBpStatus,
+  getDiastolicBpStatus,
+  getSpO2Status,
+  getBmiStatus,
+  getStatusColor,
+  getStatusLabel,
+} from '@/lib/vital-signs-ranges';
 import { getErrorMessage } from '@/lib/api';
 import {
   ArrowLeft,
@@ -55,6 +67,7 @@ export default function PatientDetailPage() {
 
   const [patient, setPatient] = useState<Patient | null>(null);
   const [details, setDetails] = useState<PatientDetails | null>(null);
+  const [vitalSigns, setVitalSigns] = useState<VitalSigns[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [deleting, setDeleting] = useState(false);
@@ -72,6 +85,12 @@ export default function PatientDetailPage() {
         ]);
         setPatient(patientData);
         setDetails(detailsData);
+        try {
+          const vitalsData = await vitalSignsApi.getByPatient(patientId);
+          setVitalSigns(vitalsData);
+        } catch {
+          // Vital signs are supplementary; ignore failures
+        }
       } catch (err) {
         setError(getErrorMessage(err));
       } finally {
@@ -104,6 +123,12 @@ export default function PatientDetailPage() {
       ]);
       setPatient(patientData);
       setDetails(detailsData);
+      try {
+        const vitalsData = await vitalSignsApi.getByPatient(patientId);
+        setVitalSigns(vitalsData);
+      } catch {
+        console.error('Failed to refresh vital signs');
+      }
     } catch (err) {
       console.error('Failed to refresh patient details:', err);
     }
@@ -229,6 +254,15 @@ export default function PatientDetailPage() {
             {formatDate(patient.created_at)}
           </p>
         </div>
+        {patient.registered_by_name && (
+          <div className="rounded-xl border border-black/10 dark:border-white/15 bg-purple-50/40 dark:bg-[#5b21b6]/10 p-4">
+            <div className="flex items-center gap-2 text-gray-500 text-sm mb-1">
+              <UserPlus className="h-4 w-4" />
+              Registered By
+            </div>
+            <p className="font-semibold text-gray-900 dark:text-white">{patient.registered_by_name}</p>
+          </div>
+        )}
       </div>
 
       {/* Services Enrolled */}
@@ -253,6 +287,67 @@ export default function PatientDetailPage() {
                 );
               })}
             </div>
+          </div>
+        </div>
+      )}
+
+      {/* Vital Signs */}
+      {vitalSigns.length > 0 && (
+        <div className="rounded-xl border border-black/10 dark:border-white/15 bg-white dark:bg-neutral-900 overflow-hidden">
+          <div className="bg-[#5b21b6] px-5 py-3 flex items-center gap-2">
+            <Activity className="h-5 w-5 text-white" />
+            <h2 className="font-semibold text-white">Vital Signs</h2>
+            <span className="ml-auto text-xs text-purple-200">
+              Latest: {new Date(vitalSigns[0].recorded_at).toLocaleDateString()}
+            </span>
+          </div>
+          <div className="p-5">
+            {(() => {
+              const v = vitalSigns[0];
+              const rows: { label: string; value: string; status?: string }[] = [];
+
+              if (v.blood_pressure_systolic != null && v.blood_pressure_diastolic != null) {
+                const s = getSystolicBpStatus(v.blood_pressure_systolic);
+                rows.push({
+                  label: 'Blood Pressure',
+                  value: `${v.blood_pressure_systolic}/${v.blood_pressure_diastolic} mmHg`,
+                  status: getStatusColor(s),
+                });
+              }
+              if (v.temperature != null) {
+                const s = getTemperatureStatus(v.temperature);
+                rows.push({ label: 'Temperature', value: `${v.temperature} °C`, status: getStatusColor(s) });
+              }
+              if (v.pulse_rate != null) {
+                const s = getPulseStatus(v.pulse_rate);
+                rows.push({ label: 'Pulse Rate', value: `${v.pulse_rate} bpm`, status: getStatusColor(s) });
+              }
+              if (v.respiratory_rate != null) {
+                const s = getRespirationStatus(v.respiratory_rate);
+                rows.push({ label: 'Respiratory Rate', value: `${v.respiratory_rate} breaths/min`, status: getStatusColor(s) });
+              }
+              if (v.oxygen_saturation != null) {
+                const s = getSpO2Status(v.oxygen_saturation);
+                rows.push({ label: 'SpO₂', value: `${v.oxygen_saturation}%`, status: getStatusColor(s) });
+              }
+              if (v.weight != null) rows.push({ label: 'Weight', value: `${v.weight} kg` });
+              if (v.height != null) rows.push({ label: 'Height', value: `${v.height} cm` });
+              if (v.bmi != null) {
+                const s = getBmiStatus(v.bmi);
+                rows.push({ label: 'BMI', value: `${v.bmi.toFixed(1)} — ${getStatusLabel(s)}`, status: getStatusColor(s) });
+              }
+
+              return (
+                <div className="grid grid-cols-2 sm:grid-cols-3 gap-4">
+                  {rows.map(({ label, value, status }) => (
+                    <div key={label}>
+                      <p className="text-xs text-gray-500 dark:text-gray-400 mb-0.5">{label}</p>
+                      <p className={`text-sm font-semibold ${status ?? 'text-gray-900 dark:text-white'}`}>{value}</p>
+                    </div>
+                  ))}
+                </div>
+              );
+            })()}
           </div>
         </div>
       )}

@@ -102,6 +102,7 @@ export interface Patient {
   is_active: boolean;
   deleted_at: string | null;
   created_by: string | null;
+  registered_by_name: string | null;
   created_at: string;
   updated_at: string;
   updated_by: string | null;
