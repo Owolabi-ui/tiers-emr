@@ -398,6 +398,11 @@ export const laboratoryApi = {
     return response.data;
   },
 
+  // Delete order (repeat/confirmatory only)
+  deleteOrder: async (orderId: string): Promise<void> => {
+    await api.delete(`/api/v1/lab/orders/${orderId}`);
+  },
+
   // ========== Critical Results ==========
 
   // Get unacknowledged critical results

@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { useParams } from 'next/navigation';
+import { useParams, useRouter } from 'next/navigation';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
@@ -38,11 +38,13 @@ import {
   Send,
   History,
   Info,
+  Trash2,
 } from 'lucide-react';
 import Link from 'next/link';
 import PrintablePageWrapper from '@/components/common/PrintablePageWrapper';
 import PrintHeader from '@/components/common/PrintHeader';
 import PrintButton from '@/components/common/PrintButton';
+import { useAuthStore } from '@/lib/auth-store';
 
 // ============================================================================
 // FORM SCHEMAS
@@ -60,13 +62,17 @@ type CancelFormData = z.infer<typeof cancelFormSchema>;
 
 export default function LabOrderDetailPage() {
   const params = useParams();
+  const router = useRouter();
   const orderId = params.id as string;
+  const { user } = useAuthStore();
 
   const [data, setData] = useState<LabOrderDetailsResponse | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [actionLoading, setActionLoading] = useState(false);
   const [repeatTests, setRepeatTests] = useState<LabTestOrder[]>([]);
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
+  const [deleteError, setDeleteError] = useState<string | null>(null);
 
   // Modal states
   const [showResultModal, setShowResultModal] = useState(false);
@@ -253,6 +259,18 @@ export default function LabOrderDetailPage() {
     }
   };
 
+  const handleDelete = async () => {
+    try {
+      setActionLoading(true);
+      setDeleteError(null);
+      await laboratoryApi.deleteOrder(orderId);
+      router.push('/dashboard/laboratory');
+    } catch (err) {
+      setDeleteError(getErrorMessage(err));
+      setActionLoading(false);
+    }
+  };
+
   if (loading) {
     return (
       <div className="flex items-center justify-center min-h-[400px]">
@@ -296,6 +314,9 @@ export default function LabOrderDetailPage() {
   const canReview = order.status === 'Completed';
   const canCommunicate = order.status === 'Reviewed';
   const canCancel = !['Cancelled', 'Communicated'].includes(order.status);
+  const isRepeatOrder = !!order.parent_order_id;
+  const allowedRoles = ['admin', 'doctor', 'nurse', 'labtech'];
+  const canDelete = allowedRoles.includes(user?.role?.toLowerCase() ?? '') && isRepeatOrder;
 
   const renderResultValue = (currentOrder: LabTestOrder) => {
     if (currentOrder.result_data) {
@@ -475,6 +496,16 @@ export default function LabOrderDetailPage() {
             <XCircle className="h-4 w-4" />
             Cancel Order
           </button>
+          {canDelete && (
+            <button
+              onClick={() => setShowDeleteModal(true)}
+              disabled={actionLoading}
+              className="px-4 py-2 rounded-lg bg-red-600 text-white text-sm font-medium hover:bg-red-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
+            >
+              <Trash2 className="h-4 w-4" />
+              Delete Order
+            </button>
+          )}
         </div>
       )}
 
@@ -954,6 +985,43 @@ export default function LabOrderDetailPage() {
                 </button>
               </div>
             </form>
+          </div>
+        </div>
+      )}
+
+      {showDeleteModal && (
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4 no-print">
+          <div className="bg-white dark:bg-neutral-900 rounded-xl max-w-md w-full border border-black/10 dark:border-white/15 p-6">
+            <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-2">Delete Lab Order</h3>
+            <p className="text-sm text-gray-600 dark:text-gray-400 mb-4">
+              This will permanently delete this repeat/confirmatory order and all its data. This cannot be undone.
+            </p>
+            {deleteError && (
+              <div className="mb-4 rounded-md border border-red-200 bg-red-50 px-3 py-2 text-sm text-red-700">
+                {deleteError}
+              </div>
+            )}
+            <div className="flex gap-3">
+              <button
+                type="button"
+                onClick={() => {
+                  setShowDeleteModal(false);
+                  setDeleteError(null);
+                }}
+                className="flex-1 px-4 py-2 rounded-lg border border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-neutral-800"
+              >
+                Cancel
+              </button>
+              <button
+                type="button"
+                onClick={handleDelete}
+                disabled={actionLoading}
+                className="flex-1 inline-flex items-center justify-center gap-2 px-4 py-2 rounded-lg bg-red-600 text-white hover:bg-red-700 disabled:opacity-50"
+              >
+                {actionLoading ? <Loader2 className="h-4 w-4 animate-spin" /> : <Trash2 className="h-4 w-4" />}
+                {actionLoading ? 'Deleting...' : 'Delete'}
+              </button>
+            </div>
           </div>
         </div>
       )}
