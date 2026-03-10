@@ -39,7 +39,7 @@ export const FORM_SCHEMAS: Record<ConfigurableFormKey, DefaultSchema> = {
     options: {
       sex: ['Male', 'Female', 'Intersex'],
       marital_status: ['Single', 'Married', 'Divorced', 'Widowed', 'Separated', 'Cohabiting'],
-      educational_level: ['None', 'Primary', 'Secondary', 'Tertiary', 'Vocational', 'Postgraduate'],
+      educational_level: ['None', 'Primary', 'Secondary', 'SSCE', 'Tertiary Institution', 'Vocational', 'Postgraduate'],
       occupation: [
         'Student',
         'Employed',
@@ -182,7 +182,7 @@ export const FORM_SCHEMAS: Record<ConfigurableFormKey, DefaultSchema> = {
       type_of_session: ['Couple', 'Individual', 'Previously tested'],
       source_of_referral: ['Friend', 'KOL', 'Other', 'Social Media', 'Self'],
       sex_partners: ['Male', 'Female', 'Both'],
-      educational_level: ['None', 'Primary', 'Secondary', 'Tertiary', 'Vocational', 'Postgraduate'],
+      educational_level: ['None', 'Primary', 'Secondary', 'SSCE', 'Tertiary Institution', 'Vocational', 'Postgraduate'],
       occupation: [
         'Student',
         'Employed',
