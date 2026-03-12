@@ -315,8 +315,7 @@ export default function LabOrderDetailPage() {
   const canCommunicate = order.status === 'Reviewed';
   const canCancel = !['Cancelled', 'Communicated'].includes(order.status);
   const isRepeatOrder = !!order.parent_order_id;
-  const allowedRoles = ['admin', 'doctor', 'nurse', 'labtech'];
-  const canDelete = allowedRoles.includes(user?.role?.toLowerCase() ?? '') && isRepeatOrder;
+  const canDelete = user?.role?.toLowerCase() !== 'psychologist' && isRepeatOrder;
 
   const renderResultValue = (currentOrder: LabTestOrder) => {
     if (currentOrder.result_data) {
