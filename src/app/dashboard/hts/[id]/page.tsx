@@ -341,7 +341,7 @@ export default function HtsDetailPage({ params }: { params: Promise<{ id: string
               <img src="/images/TIERs-Logo-good.png" alt="TIERS Logo" />
               <p className="print-subtitle">Client Code: {htsData.initial.client_code}</p>
             </div>
-            <h2 className="text-xl font-semibold text-gray-900 mb-4">Pre-Test Counseling</h2>
+            <h2 className="text-xl font-semibold text-gray-900 mb-4">Pre-Test Counseling Last 3 Months</h2>
             <div className="space-y-4">
               <div>
                 <h3 className="text-sm font-medium text-gray-700 mb-2">Knowledge Assessment Scores</h3>

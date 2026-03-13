@@ -91,13 +91,13 @@ const navigation = [
     name: 'Pharmacy',
     href: '/dashboard/pharmacy',
     icon: Pill,
-    roles: ['Admin', 'Doctor', 'Nurse', 'Pharmacist'],
+    roles: ['Admin', 'Doctor', 'Nurse', 'Pharmacist', 'LabTech', 'Receptionist', 'ProgramAssociate'],
   },
   {
     name: 'Inventory',
     href: '/dashboard/inventory',
     icon: Package,
-    roles: ['Admin', 'Doctor', 'Nurse', 'Pharmacist'],
+    roles: ['Admin', 'Doctor', 'Nurse', 'Pharmacist', 'LabTech', 'Receptionist', 'ProgramAssociate'],
   },
   {
     name: 'Mental Health',
@@ -115,7 +115,7 @@ const navigation = [
     name: 'Clinics',
     href: '/dashboard/clinics',
     icon: Building2,
-    roles: ['Admin', 'Doctor', 'Nurse'],
+    roles: ['Admin', 'Doctor', 'Nurse', 'Pharmacist', 'LabTech', 'Receptionist', 'ProgramAssociate'],
   },
   {
     name: 'Reports',
