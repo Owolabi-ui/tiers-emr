@@ -5,7 +5,7 @@ import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { artApi, ArtInformation } from '@/lib/art';
 import { getErrorMessage } from '@/lib/api';
-import { getOrdersByService, LabTestOrderWithDetails } from '@/lib/laboratory';
+import { getOrdersByService, LabTestCatalog, LabTestOrderWithDetails, laboratoryApi } from '@/lib/laboratory';
 import { pharmacyApi, Prescription, getPrescriptionStatusColor } from '@/lib/pharmacy';
 import { eacApi, EacEpisode, getEacTriggerColor } from '@/lib/eac';
 import {
@@ -23,6 +23,8 @@ import {
   Clock,
   Pill,
   UserCircle,
+  Plus,
+  XCircle,
 } from 'lucide-react';
 
 export default function ArtDetailPage({ params }: { params: Promise<{ id: string }> }) {
@@ -34,6 +36,13 @@ export default function ArtDetailPage({ params }: { params: Promise<{ id: string
   const [eacEpisodes, setEacEpisodes] = useState<EacEpisode[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [showLabModal, setShowLabModal] = useState(false);
+  const [catalog, setCatalog] = useState<LabTestCatalog[]>([]);
+  const [catalogLoading, setCatalogLoading] = useState(false);
+  const [selectedTest, setSelectedTest] = useState<string>('');
+  const [labOrderLoading, setLabOrderLoading] = useState(false);
+  const [labOrderError, setLabOrderError] = useState<string | null>(null);
+  const [labOrderSuccess, setLabOrderSuccess] = useState<string | null>(null);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -173,6 +182,51 @@ export default function ArtDetailPage({ params }: { params: Promise<{ id: string
     }
   };
 
+  const handleOpenLabModal = async () => {
+    setShowLabModal(true);
+    setSelectedTest('');
+    setLabOrderError(null);
+    setLabOrderSuccess(null);
+    if (catalog.length === 0) {
+      try {
+        setCatalogLoading(true);
+        const res = await laboratoryApi.getCatalog(true);
+        setCatalog(res.tests);
+      } catch (err) {
+        setLabOrderError(getErrorMessage(err));
+      } finally {
+        setCatalogLoading(false);
+      }
+    }
+  };
+
+  const handleSubmitLabOrder = async () => {
+    if (!selectedTest || !artInfo) return;
+    try {
+      setLabOrderLoading(true);
+      setLabOrderError(null);
+      await laboratoryApi.createOrder({
+        patient_id: artInfo.patient_id,
+        test_id: selectedTest,
+        service_type: 'ART',
+        service_record_id: artInfo.id,
+        priority: 'Routine',
+        clinical_indication: 'ART monitoring',
+      });
+      setLabOrderSuccess('Lab test ordered successfully.');
+      const orders = await getOrdersByService('ART', id);
+      setLabOrders(orders);
+      setTimeout(() => {
+        setShowLabModal(false);
+        setLabOrderSuccess(null);
+      }, 1500);
+    } catch (err) {
+      setLabOrderError(getErrorMessage(err));
+    } finally {
+      setLabOrderLoading(false);
+    }
+  };
+
   if (loading) {
     return (
       <div className="flex items-center justify-center min-h-[400px]">
@@ -235,6 +289,13 @@ export default function ArtDetailPage({ params }: { params: Promise<{ id: string
             </div>
           </div>
         </div>
+        <button
+          onClick={handleOpenLabModal}
+          className="px-4 py-2 rounded-lg bg-purple-600 text-white text-sm font-medium hover:bg-purple-700 flex items-center gap-2"
+        >
+          <Plus className="h-4 w-4" />
+          Order Lab Test
+        </button>
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
@@ -476,7 +537,7 @@ export default function ArtDetailPage({ params }: { params: Promise<{ id: string
                       )}
                     </div>
                     <Link
-                      href={`/dashboard/lab/orders/${order.id}`}
+                      href={`/dashboard/laboratory/${order.id}`}
                       className="ml-4 px-3 py-1.5 text-xs font-medium text-[#5b21b6] hover:bg-purple-50 dark:hover:bg-purple-900/20 rounded-md transition-colors"
                     >
                       View Details
@@ -664,5 +725,68 @@ export default function ArtDetailPage({ params }: { params: Promise<{ id: string
         </div>
       </div>
     </div>
+    {showLabModal && (
+      <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
+        <div className="bg-white dark:bg-neutral-900 rounded-xl max-w-md w-full border border-black/10 dark:border-white/15">
+          <div className="bg-[#5b21b6] px-5 py-3 flex items-center justify-between rounded-t-xl">
+            <h3 className="font-semibold text-white">Order Lab Test</h3>
+            <button onClick={() => setShowLabModal(false)} className="text-white hover:text-gray-200">
+              <XCircle className="h-5 w-5" />
+            </button>
+          </div>
+          <div className="p-6 space-y-4">
+            {catalogLoading ? (
+              <div className="flex justify-center py-6">
+                <Loader2 className="h-6 w-6 animate-spin text-[#5b21b6]" />
+              </div>
+            ) : (
+              <div>
+                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                  Select Test <span className="text-red-500">*</span>
+                </label>
+                <select
+                  value={selectedTest}
+                  onChange={(e) => setSelectedTest(e.target.value)}
+                  className="w-full h-10 px-4 rounded-lg border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-neutral-800 text-sm text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-[#5b21b6]/50"
+                >
+                  <option value="">Choose a test...</option>
+                  {catalog.map((test) => (
+                    <option key={test.id} value={test.id}>
+                      {test.test_name} ({test.test_code})
+                    </option>
+                  ))}
+                </select>
+              </div>
+            )}
+
+            {labOrderError && (
+              <p className="text-sm text-red-600">{labOrderError}</p>
+            )}
+            {labOrderSuccess && (
+              <p className="text-sm text-green-600">{labOrderSuccess}</p>
+            )}
+
+            <div className="flex justify-end gap-3 pt-2">
+              <button
+                type="button"
+                onClick={() => setShowLabModal(false)}
+                className="px-4 py-2 rounded-lg border border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 text-sm hover:bg-gray-50 dark:hover:bg-neutral-800"
+              >
+                Cancel
+              </button>
+              <button
+                type="button"
+                onClick={handleSubmitLabOrder}
+                disabled={!selectedTest || labOrderLoading}
+                className="px-4 py-2 rounded-lg bg-[#5b21b6] text-white text-sm font-medium hover:bg-[#4c1d95] disabled:opacity-50 flex items-center gap-2"
+              >
+                {labOrderLoading && <Loader2 className="h-4 w-4 animate-spin" />}
+                Order Test
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    )}
   );
 }

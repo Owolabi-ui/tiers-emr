@@ -8,7 +8,6 @@ import {
   CreateArtInformationRequest
 } from '@/lib/art';
 import { patientsApi, Patient } from '@/lib/patients';
-import { createARTViralLoadOrder } from '@/lib/laboratory';
 import { getErrorMessage } from '@/lib/api';
 import { useFormConfig } from '@/hooks/useFormConfig';
 import { FORM_SCHEMAS } from '@/lib/form-schemas';
@@ -23,7 +22,6 @@ import {
   Calendar,
   Heart,
   Phone,
-  FlaskConical,
 } from 'lucide-react';
 
 type FormData = Omit<CreateArtInformationRequest, 'patient_id'>;
@@ -163,32 +161,6 @@ export default function NewArtPage() {
       // Step 1: Create ART enrollment record
       const artRecord = await artApi.create(requestData);
       
-      // Step 2: Auto-create viral load lab order
-      try {
-        console.log('Creating viral load order for ART patient...');
-        console.log('Patient ID:', selectedPatient.id);
-        console.log('ART Record ID:', artRecord.id);
-        
-        const labOrder = await createARTViralLoadOrder(
-          selectedPatient.id,
-          artRecord.id,
-          'Baseline viral load - ART enrollment'
-        );
-        
-        console.log('✅ Viral load order created:', labOrder.order_number);
-      } catch (labError: any) {
-        // Log detailed error but don't fail enrollment
-        console.error('❌ Failed to create viral load order:', labError);
-        console.error('Error details:', {
-          message: labError?.message,
-          response: labError?.response?.data,
-          status: labError?.response?.status
-        });
-        
-        // Show a warning to the user but don't block enrollment
-        alert('ART enrollment successful, but viral load order failed to create. Please create the lab order manually.');
-      }
-
       router.push(`/dashboard/art/${artRecord.id}`);
     } catch (err: any) {
       // Handle specific error cases
@@ -386,21 +358,6 @@ export default function NewArtPage() {
           <ArrowLeft className="h-4 w-4" />
           Change Patient
         </button>
-      </div>
-
-      {/* Info Banner */}
-      <div className="bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-lg p-4">
-        <div className="flex items-start gap-3">
-          <FlaskConical className="h-5 w-5 text-blue-600 dark:text-blue-400 flex-shrink-0 mt-0.5" />
-          <div className="flex-1">
-            <p className="text-sm font-medium text-blue-900 dark:text-blue-300">
-              Baseline Viral Load Order
-            </p>
-            <p className="text-sm text-blue-700 dark:text-blue-400 mt-1">
-              A viral load test will be automatically ordered upon enrollment. This is required for ART monitoring.
-            </p>
-          </div>
-        </div>
       </div>
 
       {/* Selected Patient Info */}
