@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -32,7 +32,7 @@ import Link from 'next/link';
 
 const labOrderFormSchema = z.object({
   patient_id: z.string().uuid('Please select a patient'),
-  test_id: z.string().uuid('Please select a lab test'),
+  test_ids: z.array(z.string().uuid()).min(1, 'Please select at least one lab test'),
   priority: z.enum(['Routine', 'Urgent', 'STAT']),
   clinical_notes: z.string().optional(),
 });
@@ -60,7 +60,6 @@ export default function NewLabOrderPage() {
   // Lab test catalog
   const [labTests, setLabTests] = useState<LabTestCatalog[]>([]);
   const [labTestsLoading, setLabTestsLoading] = useState(true);
-  const [selectedTest, setSelectedTest] = useState<LabTestCatalog | null>(null);
 
   const {
     register,
@@ -72,10 +71,11 @@ export default function NewLabOrderPage() {
     resolver: zodResolver(labOrderFormSchema),
     defaultValues: {
       priority: 'Routine',
+      test_ids: [],
     },
   });
 
-  const testId = watch('test_id');
+  const selectedTestIds = watch('test_ids');
 
   // Load lab test catalog
   useEffect(() => {
@@ -94,15 +94,15 @@ export default function NewLabOrderPage() {
     loadLabTests();
   }, []);
 
-  // Update selected test when test_id changes
-  useEffect(() => {
-    if (testId) {
-      const test = labTests.find((t) => t.id === testId);
-      setSelectedTest(test || null);
-    } else {
-      setSelectedTest(null);
+  const selectedTests = labTests.filter((test) => selectedTestIds.includes(test.id));
+  const groupedTests = labTests.reduce<Record<string, LabTestCatalog[]>>((acc, test) => {
+    const category = test.category || 'Other';
+    if (!acc[category]) {
+      acc[category] = [];
     }
-  }, [testId, labTests]);
+    acc[category].push(test);
+    return acc;
+  }, {});
 
   // Debounced patient search
   useEffect(() => {
@@ -178,19 +178,51 @@ export default function NewLabOrderPage() {
       setLoading(true);
       setError(null);
 
-      const order = await laboratoryApi.createOrder({
+      await laboratoryApi.createBulkOrders({
         patient_id: data.patient_id,
-        test_id: data.test_id,
+        test_ids: data.test_ids,
         priority: data.priority as LabTestPriority,
         clinical_notes: data.clinical_notes || null,
       });
 
-      router.push(`/dashboard/laboratory/${order.id}`);
+      router.push('/dashboard/laboratory');
     } catch (err) {
       setError(getErrorMessage(err));
     } finally {
       setLoading(false);
     }
+  };
+
+  const toggleTestSelection = (testId: string) => {
+    const next = selectedTestIds.includes(testId)
+      ? selectedTestIds.filter((id) => id !== testId)
+      : [...selectedTestIds, testId];
+    setValue('test_ids', next, { shouldValidate: true });
+  };
+
+  const removeSelectedTest = (testId: string) => {
+    setValue(
+      'test_ids',
+      selectedTestIds.filter((id) => id !== testId),
+      { shouldValidate: true }
+    );
+  };
+
+  const areAllTestsInCategorySelected = (tests: LabTestCatalog[]) =>
+    tests.length > 0 && tests.every((test) => selectedTestIds.includes(test.id));
+
+  const toggleCategorySelection = (tests: LabTestCatalog[]) => {
+    const testIds = tests.map((test) => test.id);
+    const allSelected = areAllTestsInCategorySelected(tests);
+    const next = allSelected
+      ? selectedTestIds.filter((id) => !testIds.includes(id))
+      : Array.from(new Set([...selectedTestIds, ...testIds]));
+
+    setValue('test_ids', next, { shouldValidate: true });
+  };
+
+  const clearAllSelectedTests = () => {
+    setValue('test_ids', [], { shouldValidate: true });
   };
 
   return (
@@ -323,7 +355,7 @@ export default function NewLabOrderPage() {
           <div className="p-6 space-y-4">
             <div>
               <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                Select Test <span className="text-red-500">*</span>
+                Select Test(s) <span className="text-red-500">*</span>
               </label>
               {labTestsLoading ? (
                 <div className="flex items-center justify-center h-12 border border-gray-200 dark:border-gray-700 rounded-lg">
@@ -331,56 +363,97 @@ export default function NewLabOrderPage() {
                   <span className="ml-2 text-sm text-gray-500">Loading tests...</span>
                 </div>
               ) : (
-                <select
-                  {...register('test_id')}
-                  className="w-full h-12 px-4 rounded-lg border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-neutral-800 text-sm text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-[#5b21b6]/50"
-                >
-                  <option value="">Select a test...</option>
-                  {labTests.map((test) => (
-                    <option key={test.id} value={test.id}>
-                      {test.test_name} ({test.category})
-                    </option>
+                <div className="space-y-4 max-h-80 overflow-y-auto border border-gray-200 dark:border-gray-700 rounded-lg p-4 bg-gray-50 dark:bg-neutral-800">
+                  {Object.entries(groupedTests).map(([category, tests]) => (
+                    <div key={category}>
+                      <div className="flex items-center justify-between mb-2">
+                        <h3 className="text-sm font-semibold text-gray-900 dark:text-white">
+                          {category}
+                        </h3>
+                        <button
+                          type="button"
+                          onClick={() => toggleCategorySelection(tests)}
+                          className="text-xs font-medium text-[#5b21b6] hover:underline"
+                        >
+                          {areAllTestsInCategorySelected(tests) ? 'Deselect all' : 'Select all'}
+                        </button>
+                      </div>
+                      <div className="space-y-2">
+                        {tests.map((test) => (
+                          <label
+                            key={test.id}
+                            className="flex items-start gap-2 p-2 rounded-md hover:bg-white/70 dark:hover:bg-neutral-700 cursor-pointer"
+                          >
+                            <input
+                              type="checkbox"
+                              checked={selectedTestIds.includes(test.id)}
+                              onChange={() => toggleTestSelection(test.id)}
+                              className="mt-1 h-4 w-4 rounded border-gray-300 text-[#5b21b6] focus:ring-[#5b21b6]"
+                            />
+                            <div>
+                              <p className="text-sm font-medium text-gray-900 dark:text-white">
+                                {test.test_name}
+                              </p>
+                              <p className="text-xs text-gray-500 dark:text-gray-400">
+                                {test.test_code} | {test.sample_type} | TAT {test.turnaround_time_hours}h
+                              </p>
+                            </div>
+                          </label>
+                        ))}
+                      </div>
+                    </div>
                   ))}
-                </select>
+                </div>
               )}
-              {errors.test_id && (
-                <p className="text-sm text-red-600 dark:text-red-400 mt-1">{errors.test_id.message}</p>
+              {errors.test_ids && (
+                <p className="text-sm text-red-600 dark:text-red-400 mt-1">{errors.test_ids.message}</p>
               )}
             </div>
 
-            {/* Test Details */}
-            {selectedTest && (
-              <div className="p-4 bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-lg space-y-2">
-                <div className="grid grid-cols-2 gap-4">
-                  <div>
-                    <p className="text-xs text-gray-500 dark:text-gray-400">Test Code</p>
-                    <p className="text-sm font-medium text-gray-900 dark:text-white">{selectedTest.test_code}</p>
-                  </div>
-                  <div>
-                    <p className="text-xs text-gray-500 dark:text-gray-400">Category</p>
-                    <p className="text-sm font-medium text-gray-900 dark:text-white">{selectedTest.category}</p>
-                  </div>
-                  <div>
-                    <p className="text-xs text-gray-500 dark:text-gray-400">Sample Type</p>
-                    <p className="text-sm font-medium text-gray-900 dark:text-white">{selectedTest.sample_type}</p>
-                  </div>
-                  <div>
-                    <p className="text-xs text-gray-500 dark:text-gray-400">Turnaround Time</p>
-                    <p className="text-sm font-medium text-gray-900 dark:text-white">{selectedTest.turnaround_time_hours} hours</p>
-                  </div>
+            {selectedTests.length > 0 && (
+              <div className="p-4 bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-lg">
+                <div className="flex items-center justify-between mb-2">
+                  <p className="text-sm font-semibold text-gray-900 dark:text-white">
+                    Selected Tests ({selectedTests.length})
+                  </p>
+                  <button
+                    type="button"
+                    onClick={clearAllSelectedTests}
+                    className="text-xs font-medium text-red-600 hover:underline"
+                  >
+                    Clear all
+                  </button>
                 </div>
-                {selectedTest.requires_fasting && (
-                  <div className="flex items-center gap-2 mt-2 text-orange-600 dark:text-orange-400">
-                    <AlertCircle className="h-4 w-4" />
-                    <span className="text-sm font-medium">Fasting required</span>
-                  </div>
-                )}
-                {selectedTest.special_instructions && (
-                  <div className="mt-2">
-                    <p className="text-xs text-gray-500 dark:text-gray-400">Special Instructions</p>
-                    <p className="text-sm text-gray-700 dark:text-gray-300">{selectedTest.special_instructions}</p>
-                  </div>
-                )}
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                  {selectedTests.map((test) => (
+                    <div
+                      key={test.id}
+                      className="flex items-start justify-between gap-2 px-3 py-2 rounded-md text-xs font-medium bg-white dark:bg-neutral-800 border border-blue-200 dark:border-blue-700 text-gray-800 dark:text-gray-200"
+                    >
+                      <div>
+                        <p>
+                          {test.test_name}
+                          {test.requires_fasting && (
+                            <span className="text-orange-500 ml-1">(Fasting)</span>
+                          )}
+                        </p>
+                        {test.special_instructions && (
+                          <p className="text-[11px] text-gray-500 dark:text-gray-400 mt-0.5">
+                            {test.special_instructions}
+                          </p>
+                        )}
+                      </div>
+                      <button
+                        type="button"
+                        onClick={() => removeSelectedTest(test.id)}
+                        className="text-gray-500 hover:text-red-600 mt-0.5"
+                        aria-label={`Remove ${test.test_name}`}
+                      >
+                        <X className="h-3 w-3" />
+                      </button>
+                    </div>
+                  ))}
+                </div>
               </div>
             )}
           </div>
@@ -440,7 +513,7 @@ export default function NewLabOrderPage() {
             className="px-6 py-3 rounded-lg bg-[#5b21b6] text-white font-medium hover:bg-[#4c1d95] transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
           >
             {loading && <Loader2 className="h-5 w-5 animate-spin" />}
-            {loading ? 'Creating Order...' : 'Create Lab Order'}
+            {loading ? 'Creating Orders...' : 'Create Lab Orders'}
           </button>
         </div>
       </form>

@@ -265,7 +265,8 @@ export default function ArtDetailPage({ params }: { params: Promise<{ id: string
   }
 
   return (
-    <div className="max-w-7xl mx-auto space-y-6">
+    <>
+      <div className="max-w-7xl mx-auto space-y-6">
       {/* Header */}
       <div className="flex items-start justify-between">
         <div className="flex items-start gap-4">
@@ -724,8 +725,8 @@ export default function ArtDetailPage({ params }: { params: Promise<{ id: string
           </div>
         </div>
       </div>
-    </div>
-    {showLabModal && (
+      </div>
+      {showLabModal && (
       <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
         <div className="bg-white dark:bg-neutral-900 rounded-xl max-w-md w-full border border-black/10 dark:border-white/15">
           <div className="bg-[#5b21b6] px-5 py-3 flex items-center justify-between rounded-t-xl">
@@ -787,6 +788,7 @@ export default function ArtDetailPage({ params }: { params: Promise<{ id: string
           </div>
         </div>
       </div>
-    )}
+      )}
+    </>
   );
 }

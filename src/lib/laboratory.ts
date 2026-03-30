@@ -174,6 +174,16 @@ export interface CreateLabTestOrderRequest {
   service_record_id?: string | null;
 }
 
+export interface CreateBulkLabTestOrderRequest {
+  patient_id: string;
+  test_ids: string[];
+  priority?: LabTestPriority;
+  clinical_indication?: string | null;
+  clinical_notes?: string | null;
+  service_type?: string | null;
+  service_record_id?: string | null;
+}
+
 export interface CollectSampleRequest {
   sample_id: string; // Required: unique sample identifier
   sample_collected_at?: string | null; // ISO datetime, defaults to now
@@ -322,6 +332,12 @@ export const laboratoryApi = {
   // Create new lab test order
   createOrder: async (data: CreateLabTestOrderRequest): Promise<LabTestOrder> => {
     const response = await api.post<LabTestOrder>('/api/v1/lab/orders', data);
+    return response.data;
+  },
+
+  // Create multiple lab test orders in one atomic request
+  createBulkOrders: async (data: CreateBulkLabTestOrderRequest): Promise<LabTestOrder[]> => {
+    const response = await api.post<LabTestOrder[]>('/api/v1/lab/orders/bulk', data);
     return response.data;
   },
 
