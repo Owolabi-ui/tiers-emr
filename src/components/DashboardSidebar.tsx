@@ -23,6 +23,7 @@ import {
   ArrowLeftRight,
   Building2,
   X,
+  Upload,
 } from 'lucide-react';
 
 // Navigation items with role-based visibility
@@ -142,6 +143,12 @@ const adminNavigation = [
     name: 'Form Settings',
     href: '/dashboard/admin/form-configs',
     icon: FileText,
+    roles: ['Admin'],
+  },
+  {
+    name: 'Bulk Upload',
+    href: '/dashboard/bulk-upload',
+    icon: Upload,
     roles: ['Admin'],
   },
   {
