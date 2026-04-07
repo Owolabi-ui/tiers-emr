@@ -115,6 +115,50 @@ export interface ArtListItem {
   created_at: string;
 }
 
+export interface ArtFollowup {
+  id: string;
+  patient_id: string;
+  art_information_id: string;
+  visit_date: string;
+  duration_months_on_art: number | null;
+  functional_status: string | null;
+  who_clinical_stage: string | null;
+  tb_status: string | null;
+  other_problems: string | null;
+  cotrimoxazole_dose: string | null;
+  inh_dose: string | null;
+  other_drugs: string | null;
+  created_by: string;
+  created_at: string;
+}
+
+export interface CreateArtFollowupRequest {
+  patient_id: string;
+  visit_date: string;
+  duration_months?: number;
+  weight_kg?: number;
+  height_cm?: number;
+  bp_systolic?: number;
+  bp_diastolic?: number;
+  functional_status?: string;
+  who_clinical_stage?: string;
+  tb_status?: string;
+  other_problems?: string;
+  arv_drug_id: number;
+  cotrimoxazole_dose?: string;
+  inh_dose?: string;
+  other_drugs?: string;
+  order_cd4: boolean;
+  order_vl: boolean;
+}
+
+export interface CreateArtFollowupResponse {
+  followup: ArtFollowup;
+  prescription_id: string;
+  prescription_number: string;
+  lab_order_ids: string[];
+}
+
 // ============================================
 // API FUNCTIONS
 // ============================================
@@ -172,6 +216,16 @@ export const artApi = {
    */
   async getRecentEnrollments(): Promise<ArtListItem[]> {
     const response = await api.get<ArtListItem[]>('/api/v1/art/recent');
+    return response.data;
+  },
+
+  async createFollowup(data: CreateArtFollowupRequest): Promise<CreateArtFollowupResponse> {
+    const response = await api.post<CreateArtFollowupResponse>('/api/v1/art/followup', data);
+    return response.data;
+  },
+
+  async getFollowups(patientId: string): Promise<ArtFollowup[]> {
+    const response = await api.get<ArtFollowup[]>(`/api/v1/art/followup/patient/${patientId}`);
     return response.data;
   },
 };

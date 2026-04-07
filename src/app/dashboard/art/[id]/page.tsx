@@ -3,10 +3,10 @@
 import { useState, useEffect, use } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
-import { artApi, ArtInformation } from '@/lib/art';
+import { artApi, ArtFollowup, ArtInformation, CreateArtFollowupRequest } from '@/lib/art';
 import { getErrorMessage } from '@/lib/api';
 import { getOrdersByService, LabTestCatalog, LabTestOrderWithDetails, laboratoryApi } from '@/lib/laboratory';
-import { pharmacyApi, Prescription, getPrescriptionStatusColor } from '@/lib/pharmacy';
+import { DrugCatalog, pharmacyApi, Prescription, getPrescriptionStatusColor } from '@/lib/pharmacy';
 import { eacApi, EacEpisode, getEacTriggerColor } from '@/lib/eac';
 import {
   ArrowLeft,
@@ -25,6 +25,7 @@ import {
   UserCircle,
   Plus,
   XCircle,
+  X,
 } from 'lucide-react';
 
 export default function ArtDetailPage({ params }: { params: Promise<{ id: string }> }) {
@@ -33,6 +34,8 @@ export default function ArtDetailPage({ params }: { params: Promise<{ id: string
   const [artInfo, setArtInfo] = useState<ArtInformation | null>(null);
   const [labOrders, setLabOrders] = useState<LabTestOrderWithDetails[]>([]);
   const [prescriptions, setPrescriptions] = useState<Prescription[]>([]);
+  const [followups, setFollowups] = useState<ArtFollowup[]>([]);
+  const [selectedFollowup, setSelectedFollowup] = useState<ArtFollowup | null>(null);
   const [eacEpisodes, setEacEpisodes] = useState<EacEpisode[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -43,6 +46,31 @@ export default function ArtDetailPage({ params }: { params: Promise<{ id: string
   const [labOrderLoading, setLabOrderLoading] = useState(false);
   const [labOrderError, setLabOrderError] = useState<string | null>(null);
   const [labOrderSuccess, setLabOrderSuccess] = useState<string | null>(null);
+  const [showVisitModal, setShowVisitModal] = useState(false);
+  const [visitSaving, setVisitSaving] = useState(false);
+  const [visitError, setVisitError] = useState<string | null>(null);
+  const [visitSuccess, setVisitSuccess] = useState<string | null>(null);
+  const [drugOptions, setDrugOptions] = useState<DrugCatalog[]>([]);
+  const [drugLoading, setDrugLoading] = useState(false);
+  const [visitForm, setVisitForm] = useState<CreateArtFollowupRequest>({
+    patient_id: '',
+    visit_date: new Date().toISOString().split('T')[0],
+    duration_months: 1,
+    weight_kg: undefined,
+    height_cm: undefined,
+    bp_systolic: undefined,
+    bp_diastolic: undefined,
+    functional_status: undefined,
+    who_clinical_stage: undefined,
+    tb_status: undefined,
+    other_problems: undefined,
+    arv_drug_id: 26,
+    cotrimoxazole_dose: undefined,
+    inh_dose: undefined,
+    other_drugs: undefined,
+    order_cd4: false,
+    order_vl: true,
+  });
 
   useEffect(() => {
     const fetchData = async () => {
@@ -51,6 +79,7 @@ export default function ArtDetailPage({ params }: { params: Promise<{ id: string
         setError(null);
         const data = await artApi.getById(id);
         setArtInfo(data);
+        setVisitForm((prev) => ({ ...prev, patient_id: data.patient_id }));
         
         // Fetch lab orders for this ART record
         try {
@@ -70,6 +99,14 @@ export default function ArtDetailPage({ params }: { params: Promise<{ id: string
         } catch (err) {
           console.error('Failed to fetch prescriptions:', err);
           // Don't fail the whole page if prescriptions fail
+        }
+
+        // Fetch ART followups for this patient
+        try {
+          const followupData = await artApi.getFollowups(data.patient_id);
+          setFollowups(followupData);
+        } catch (err) {
+          console.error('Failed to fetch ART followups:', err);
         }
 
         // Fetch EAC episodes for this ART patient
@@ -227,6 +264,76 @@ export default function ArtDetailPage({ params }: { params: Promise<{ id: string
     }
   };
 
+  const openVisitModal = async () => {
+    setShowVisitModal(true);
+    setVisitError(null);
+    setVisitSuccess(null);
+    setVisitForm((prev) => ({
+      ...prev,
+      patient_id: artInfo?.patient_id ?? prev.patient_id,
+      visit_date: new Date().toISOString().split('T')[0],
+    }));
+
+    if (drugOptions.length === 0) {
+      try {
+        setDrugLoading(true);
+        const res = await pharmacyApi.getDrugs({ active_only: true });
+        const arvDrugs = res.drugs.filter((d) => d.commodity_type.toUpperCase() === 'ARV');
+        setDrugOptions(res.drugs);
+        if (arvDrugs.length > 0) {
+          setVisitForm((p) => {
+            const hasValidCurrent = arvDrugs.some((d) => d.id === p.arv_drug_id);
+            return hasValidCurrent ? p : { ...p, arv_drug_id: arvDrugs[0].id };
+          });
+        }
+      } catch (err) {
+        setVisitError(getErrorMessage(err));
+      } finally {
+        setDrugLoading(false);
+      }
+    }
+  };
+
+  const parseOptionalNumber = (value: string): number | undefined => {
+    const trimmed = value.trim();
+    if (!trimmed) return undefined;
+    const n = Number(trimmed);
+    return Number.isFinite(n) ? n : undefined;
+  };
+
+  const handleSaveVisit = async () => {
+    if (!artInfo) return;
+    try {
+      setVisitSaving(true);
+      setVisitError(null);
+      const payload: CreateArtFollowupRequest = {
+        ...visitForm,
+        patient_id: artInfo.patient_id,
+      };
+      const res = await artApi.createFollowup(payload);
+      setVisitSuccess(`Visit recorded. Prescription: ${res.prescription_number}`);
+
+      const [nextFollowups, nextPrescriptions, nextLabOrders] = await Promise.all([
+        artApi.getFollowups(artInfo.patient_id),
+        pharmacyApi.listPrescriptions({ patient_id: artInfo.patient_id }),
+        getOrdersByService('ART', id),
+      ]);
+
+      setFollowups(nextFollowups);
+      setPrescriptions(nextPrescriptions.data);
+      setLabOrders(nextLabOrders);
+
+      setTimeout(() => {
+        setShowVisitModal(false);
+        setVisitSuccess(null);
+      }, 1400);
+    } catch (err) {
+      setVisitError(getErrorMessage(err));
+    } finally {
+      setVisitSaving(false);
+    }
+  };
+
   if (loading) {
     return (
       <div className="flex items-center justify-center min-h-[400px]">
@@ -290,13 +397,22 @@ export default function ArtDetailPage({ params }: { params: Promise<{ id: string
             </div>
           </div>
         </div>
-        <button
-          onClick={handleOpenLabModal}
-          className="px-4 py-2 rounded-lg bg-purple-600 text-white text-sm font-medium hover:bg-purple-700 flex items-center gap-2"
-        >
-          <Plus className="h-4 w-4" />
-          Order Lab Test
-        </button>
+        <div className="flex items-center gap-2">
+          <button
+            onClick={openVisitModal}
+            className="px-4 py-2 rounded-lg border border-[#5b21b6] text-[#5b21b6] text-sm font-medium hover:bg-purple-50 dark:hover:bg-purple-900/20 flex items-center gap-2"
+          >
+            <Plus className="h-4 w-4" />
+            Record Visit
+          </button>
+          <button
+            onClick={handleOpenLabModal}
+            className="px-4 py-2 rounded-lg bg-purple-600 text-white text-sm font-medium hover:bg-purple-700 flex items-center gap-2"
+          >
+            <Plus className="h-4 w-4" />
+            Order Lab Test
+          </button>
+        </div>
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
@@ -495,6 +611,52 @@ export default function ArtDetailPage({ params }: { params: Promise<{ id: string
               </div>
             </div>
           )}
+
+          {/* Visit History */}
+          <div className="bg-white dark:bg-neutral-800 rounded-lg border border-gray-200 dark:border-gray-700 p-6">
+            <h2 className="text-lg font-semibold text-gray-900 dark:text-white mb-4 flex items-center gap-2">
+              <Calendar className="h-5 w-5 text-[#5b21b6]" />
+              Visit History
+            </h2>
+            {followups.length === 0 ? (
+              <p className="text-sm text-gray-500 dark:text-gray-400">No follow-up visits recorded yet.</p>
+            ) : (
+              <div className="overflow-x-auto">
+                <table className="w-full text-sm">
+                  <thead>
+                    <tr className="text-left border-b border-gray-200 dark:border-gray-700 text-gray-500 dark:text-gray-400">
+                      <th className="pb-2 pr-4">Visit Date</th>
+                      <th className="pb-2 pr-4">Duration (Months)</th>
+                      <th className="pb-2 pr-4">WHO Stage</th>
+                      <th className="pb-2">Functional Status</th>
+                    </tr>
+                  </thead>
+                  <tbody className="divide-y divide-gray-100 dark:divide-gray-800">
+                    {followups.map((f) => (
+                      <tr
+                        key={f.id}
+                        className="cursor-pointer hover:bg-purple-50/40 dark:hover:bg-purple-900/10"
+                        onClick={() => setSelectedFollowup(f)}
+                      >
+                        <td className="py-2 pr-4 text-gray-900 dark:text-white">
+                          {new Date(f.visit_date).toLocaleDateString()}
+                        </td>
+                        <td className="py-2 pr-4 text-gray-700 dark:text-gray-300">
+                          {f.duration_months_on_art ?? '-'}
+                        </td>
+                        <td className="py-2 pr-4 text-gray-700 dark:text-gray-300">
+                          {f.who_clinical_stage ?? '-'}
+                        </td>
+                        <td className="py-2 text-gray-700 dark:text-gray-300">
+                          {f.functional_status ?? '-'}
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            )}
+          </div>
 
           {/* Viral Load Testing Status */}
           {labOrders.length > 0 && (
@@ -788,6 +950,300 @@ export default function ArtDetailPage({ params }: { params: Promise<{ id: string
           </div>
         </div>
       </div>
+      )}
+      {showVisitModal && (
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
+          <div className="bg-white dark:bg-neutral-900 rounded-xl w-full max-w-3xl border border-black/10 dark:border-white/15 max-h-[90vh] overflow-y-auto">
+            <div className="sticky top-0 bg-[#5b21b6] px-5 py-3 flex items-center justify-between rounded-t-xl">
+              <h3 className="font-semibold text-white">Record ART Follow-up Visit</h3>
+              <button
+                onClick={() => setShowVisitModal(false)}
+                className="text-white hover:text-gray-200"
+                type="button"
+              >
+                <X className="h-5 w-5" />
+              </button>
+            </div>
+            <div className="p-6 space-y-6">
+              {/* Visit */}
+              <div>
+                <h4 className="text-sm font-semibold text-gray-900 dark:text-white mb-3">Visit</h4>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                  <div>
+                    <label className="block text-xs text-gray-500 mb-1">Visit Date</label>
+                    <input
+                      type="date"
+                      value={visitForm.visit_date}
+                      onChange={(e) => setVisitForm((p) => ({ ...p, visit_date: e.target.value }))}
+                      className="w-full h-10 rounded-lg border px-3 text-sm bg-white dark:bg-neutral-800"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-xs text-gray-500 mb-1">Duration (Months)</label>
+                    <select
+                      value={visitForm.duration_months ?? 1}
+                      onChange={(e) =>
+                        setVisitForm((p) => ({ ...p, duration_months: Number(e.target.value) || 1 }))
+                      }
+                      className="w-full h-10 rounded-lg border px-3 text-sm bg-white dark:bg-neutral-800"
+                    >
+                      {[1, 2, 3].map((m) => (
+                        <option key={m} value={m}>{m}</option>
+                      ))}
+                    </select>
+                  </div>
+                </div>
+              </div>
+
+              {/* Vitals */}
+              <div>
+                <h4 className="text-sm font-semibold text-gray-900 dark:text-white mb-3">Vitals (Optional)</h4>
+                <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+                  <input
+                    type="number"
+                    step="0.1"
+                    placeholder="Weight (kg)"
+                    value={visitForm.weight_kg ?? ''}
+                    onChange={(e) => setVisitForm((p) => ({ ...p, weight_kg: parseOptionalNumber(e.target.value) }))}
+                    className="w-full h-10 rounded-lg border px-3 text-sm bg-white dark:bg-neutral-800"
+                  />
+                  <input
+                    type="number"
+                    step="0.1"
+                    placeholder="Height (cm)"
+                    value={visitForm.height_cm ?? ''}
+                    onChange={(e) => setVisitForm((p) => ({ ...p, height_cm: parseOptionalNumber(e.target.value) }))}
+                    className="w-full h-10 rounded-lg border px-3 text-sm bg-white dark:bg-neutral-800"
+                  />
+                  <input
+                    type="number"
+                    step="1"
+                    placeholder="BP Systolic"
+                    value={visitForm.bp_systolic ?? ''}
+                    onChange={(e) => setVisitForm((p) => ({ ...p, bp_systolic: parseOptionalNumber(e.target.value) }))}
+                    className="w-full h-10 rounded-lg border px-3 text-sm bg-white dark:bg-neutral-800"
+                  />
+                  <input
+                    type="number"
+                    step="1"
+                    placeholder="BP Diastolic"
+                    value={visitForm.bp_diastolic ?? ''}
+                    onChange={(e) => setVisitForm((p) => ({ ...p, bp_diastolic: parseOptionalNumber(e.target.value) }))}
+                    className="w-full h-10 rounded-lg border px-3 text-sm bg-white dark:bg-neutral-800"
+                  />
+                </div>
+              </div>
+
+              {/* Clinical */}
+              <div>
+                <h4 className="text-sm font-semibold text-gray-900 dark:text-white mb-3">Clinical</h4>
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
+                  <select
+                    value={visitForm.functional_status ?? ''}
+                    onChange={(e) => setVisitForm((p) => ({ ...p, functional_status: e.target.value || undefined }))}
+                    className="w-full h-10 rounded-lg border px-3 text-sm bg-white dark:bg-neutral-800"
+                  >
+                    <option value="">Functional Status</option>
+                    <option value="Working">Working</option>
+                    <option value="Ambulatory">Ambulatory</option>
+                    <option value="Bedridden">Bedridden</option>
+                  </select>
+                  <select
+                    value={visitForm.who_clinical_stage ?? ''}
+                    onChange={(e) => setVisitForm((p) => ({ ...p, who_clinical_stage: e.target.value || undefined }))}
+                    className="w-full h-10 rounded-lg border px-3 text-sm bg-white dark:bg-neutral-800"
+                  >
+                    <option value="">WHO Clinical Stage</option>
+                    <option value="Stage 1">Stage 1</option>
+                    <option value="Stage 2">Stage 2</option>
+                    <option value="Stage 3">Stage 3</option>
+                    <option value="Stage 4">Stage 4</option>
+                  </select>
+                  <select
+                    value={visitForm.tb_status ?? ''}
+                    onChange={(e) => setVisitForm((p) => ({ ...p, tb_status: e.target.value || undefined }))}
+                    className="w-full h-10 rounded-lg border px-3 text-sm bg-white dark:bg-neutral-800"
+                  >
+                    <option value="">TB Status</option>
+                    <option value="No TB">No TB</option>
+                    <option value="On TB Treatment">On TB Treatment</option>
+                    <option value="TB Suspect">TB Suspect</option>
+                  </select>
+                </div>
+                <textarea
+                  placeholder="Other problems"
+                  value={visitForm.other_problems ?? ''}
+                  onChange={(e) => setVisitForm((p) => ({ ...p, other_problems: e.target.value || undefined }))}
+                  className="mt-3 w-full rounded-lg border px-3 py-2 text-sm bg-white dark:bg-neutral-800"
+                  rows={3}
+                />
+              </div>
+
+              {/* Medication */}
+              <div>
+                <h4 className="text-sm font-semibold text-gray-900 dark:text-white mb-3">Medication</h4>
+                {drugLoading ? (
+                  <div className="flex items-center gap-2 text-sm text-gray-500">
+                    <Loader2 className="h-4 w-4 animate-spin" />
+                    Loading drug catalog...
+                  </div>
+                ) : (
+                  <div className="space-y-3">
+                    <select
+                      value={visitForm.arv_drug_id}
+                      onChange={(e) => setVisitForm((p) => ({ ...p, arv_drug_id: Number(e.target.value) }))}
+                      className="w-full h-10 rounded-lg border px-3 text-sm bg-white dark:bg-neutral-800"
+                    >
+                      {drugOptions
+                        .filter((d) => d.commodity_type.toUpperCase() === 'ARV')
+                        .map((drug) => (
+                          <option key={drug.id} value={drug.id}>
+                            {drug.commodity_name} ({drug.commodity_id})
+                          </option>
+                        ))}
+                    </select>
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                      <input
+                        type="text"
+                        placeholder="Cotrimoxazole dose (optional)"
+                        value={visitForm.cotrimoxazole_dose ?? ''}
+                        onChange={(e) => setVisitForm((p) => ({ ...p, cotrimoxazole_dose: e.target.value || undefined }))}
+                        className="w-full h-10 rounded-lg border px-3 text-sm bg-white dark:bg-neutral-800"
+                      />
+                      <input
+                        type="text"
+                        placeholder="INH dose (optional)"
+                        value={visitForm.inh_dose ?? ''}
+                        onChange={(e) => setVisitForm((p) => ({ ...p, inh_dose: e.target.value || undefined }))}
+                        className="w-full h-10 rounded-lg border px-3 text-sm bg-white dark:bg-neutral-800"
+                      />
+                    </div>
+                    <textarea
+                      placeholder="Other drugs (optional)"
+                      value={visitForm.other_drugs ?? ''}
+                      onChange={(e) => setVisitForm((p) => ({ ...p, other_drugs: e.target.value || undefined }))}
+                      className="w-full rounded-lg border px-3 py-2 text-sm bg-white dark:bg-neutral-800"
+                      rows={2}
+                    />
+                  </div>
+                )}
+              </div>
+
+              {/* Labs */}
+              <div>
+                <h4 className="text-sm font-semibold text-gray-900 dark:text-white mb-3">Labs</h4>
+                <div className="flex items-center gap-6">
+                  <label className="inline-flex items-center gap-2 text-sm">
+                    <input
+                      type="checkbox"
+                      checked={visitForm.order_cd4}
+                      onChange={(e) => setVisitForm((p) => ({ ...p, order_cd4: e.target.checked }))}
+                    />
+                    Order CD4
+                  </label>
+                  <label className="inline-flex items-center gap-2 text-sm">
+                    <input
+                      type="checkbox"
+                      checked={visitForm.order_vl}
+                      onChange={(e) => setVisitForm((p) => ({ ...p, order_vl: e.target.checked }))}
+                    />
+                    Order Viral Load
+                  </label>
+                </div>
+              </div>
+
+              {visitError && <p className="text-sm text-red-600">{visitError}</p>}
+              {visitSuccess && <p className="text-sm text-green-600">{visitSuccess}</p>}
+
+              <div className="flex justify-end gap-3">
+                <button
+                  type="button"
+                  onClick={() => setShowVisitModal(false)}
+                  className="px-4 py-2 rounded-lg border text-sm hover:bg-gray-50 dark:hover:bg-neutral-800"
+                >
+                  Cancel
+                </button>
+                <button
+                  type="button"
+                  onClick={handleSaveVisit}
+                  disabled={visitSaving || !visitForm.visit_date || !visitForm.arv_drug_id}
+                  className="px-4 py-2 rounded-lg bg-[#5b21b6] text-white text-sm font-medium hover:bg-[#4c1d95] disabled:opacity-50 inline-flex items-center gap-2"
+                >
+                  {visitSaving && <Loader2 className="h-4 w-4 animate-spin" />}
+                  Save Visit
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+      {selectedFollowup && (
+        <div className="fixed inset-0 z-50 overflow-hidden">
+          <div
+            className="absolute inset-0 bg-black/40"
+            onClick={() => setSelectedFollowup(null)}
+          />
+          <div className="absolute right-0 top-0 h-full w-full max-w-lg bg-white dark:bg-neutral-900 shadow-xl flex flex-col">
+            <div className="flex items-start justify-between px-6 py-4 border-b border-gray-200 dark:border-gray-800">
+              <div>
+                <h3 className="font-semibold text-gray-900 dark:text-white">Follow-up Details</h3>
+                <p className="text-xs text-gray-500 mt-1">
+                  {new Date(selectedFollowup.visit_date).toLocaleDateString()}
+                </p>
+              </div>
+              <button
+                onClick={() => setSelectedFollowup(null)}
+                className="p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 text-gray-500"
+              >
+                <X className="h-5 w-5" />
+              </button>
+            </div>
+
+            <div className="flex-1 overflow-y-auto p-6 space-y-4 text-sm">
+              <div className="grid grid-cols-2 gap-3">
+                <div>
+                  <p className="text-gray-500">WHO Stage</p>
+                  <p className="font-medium text-gray-900 dark:text-white">{selectedFollowup.who_clinical_stage ?? '-'}</p>
+                </div>
+                <div>
+                  <p className="text-gray-500">Functional Status</p>
+                  <p className="font-medium text-gray-900 dark:text-white">{selectedFollowup.functional_status ?? '-'}</p>
+                </div>
+                <div>
+                  <p className="text-gray-500">TB Status</p>
+                  <p className="font-medium text-gray-900 dark:text-white">{selectedFollowup.tb_status ?? '-'}</p>
+                </div>
+                <div>
+                  <p className="text-gray-500">Duration on ART (months)</p>
+                  <p className="font-medium text-gray-900 dark:text-white">{selectedFollowup.duration_months_on_art ?? '-'}</p>
+                </div>
+              </div>
+
+              <div>
+                <p className="text-gray-500 mb-1">Cotrimoxazole Dose</p>
+                <p className="font-medium text-gray-900 dark:text-white">{selectedFollowup.cotrimoxazole_dose ?? '-'}</p>
+              </div>
+              <div>
+                <p className="text-gray-500 mb-1">INH Dose</p>
+                <p className="font-medium text-gray-900 dark:text-white">{selectedFollowup.inh_dose ?? '-'}</p>
+              </div>
+              <div>
+                <p className="text-gray-500 mb-1">Other Drugs</p>
+                <p className="font-medium text-gray-900 dark:text-white whitespace-pre-wrap">{selectedFollowup.other_drugs ?? '-'}</p>
+              </div>
+              <div>
+                <p className="text-gray-500 mb-1">Other Problems</p>
+                <p className="font-medium text-gray-900 dark:text-white whitespace-pre-wrap">{selectedFollowup.other_problems ?? '-'}</p>
+              </div>
+              <div>
+                <p className="text-gray-500 mb-1">Recorded At</p>
+                <p className="font-medium text-gray-900 dark:text-white">
+                  {new Date(selectedFollowup.created_at).toLocaleString()}
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
       )}
     </>
   );
