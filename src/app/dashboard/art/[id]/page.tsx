@@ -601,7 +601,7 @@ export default function ArtDetailPage({ params }: { params: Promise<{ id: string
                       )}
                     </div>
                     <Link
-                      href={`/dashboard/pharmacy/prescriptions/${prescription.id}`}
+                      href={`/dashboard/pharmacy/${prescription.id}`}
                       className="ml-4 px-3 py-1.5 text-xs font-medium text-[#5b21b6] hover:bg-purple-50 dark:hover:bg-purple-900/20 rounded-md transition-colors"
                     >
                       View Details
@@ -804,7 +804,7 @@ export default function ArtDetailPage({ params }: { params: Promise<{ id: string
                 Prescribe Medication
               </Link>
               <Link
-                href={`/dashboard/fileText/${artInfo.patient_id}`}
+                href={`/dashboard/patients/${artInfo.patient_id}`}
                 className="w-full flex items-center gap-2 px-4 py-2 text-sm font-medium text-gray-700 dark:text-gray-300 bg-gray-50 dark:bg-neutral-700 hover:bg-gray-100 dark:hover:bg-neutral-600 rounded-lg"
               >
                 <FileText className="h-4 w-4" />

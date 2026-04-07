@@ -221,7 +221,7 @@ export default function NewPrescriptionPage() {
       if (source === 'ART' && sourceId) {
         router.push(`/dashboard/art/${sourceId}`);
       } else {
-        router.push(`/dashboard/pharmacy/prescriptions/${prescription.id}`);
+        router.push(`/dashboard/pharmacy/${prescription.id}`);
       }
     } catch (error) {
       showError('Prescription Failed', getErrorMessage(error));
