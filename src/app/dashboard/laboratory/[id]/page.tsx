@@ -286,12 +286,13 @@ export default function LabOrderDetailPage() {
     return (
       <div className="space-y-6">
         <div className="flex items-center gap-4">
-          <Link
-            href="/dashboard/laboratory"
+          <button
+            type="button"
+            onClick={() => router.back()}
             className="p-2 hover:bg-gray-100 dark:hover:bg-neutral-800 rounded-lg transition-colors"
           >
             <ArrowLeft className="h-5 w-5 text-gray-500" />
-          </Link>
+          </button>
           <h1 className="text-2xl font-bold text-[#5b21b6]">Lab Order Details</h1>
         </div>
         <div className="rounded-lg bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 p-6">
@@ -376,12 +377,13 @@ export default function LabOrderDetailPage() {
       {/* Header */}
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-4">
-          <Link
-            href="/dashboard/laboratory"
+          <button
+            type="button"
+            onClick={() => router.back()}
             className="p-2 hover:bg-gray-100 dark:hover:bg-neutral-800 rounded-lg transition-colors no-print"
           >
             <ArrowLeft className="h-5 w-5 text-gray-500" />
-          </Link>
+          </button>
           <div>
             <h1 className="text-2xl font-bold text-[#5b21b6]">Lab Order Details</h1>
             <p className="text-sm text-gray-500 mt-1">{formatOrderNumber(order.order_number)}</p>

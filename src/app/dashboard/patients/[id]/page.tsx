@@ -107,7 +107,7 @@ export default function PatientDetailPage() {
     try {
       setDeleting(true);
       await patientsApi.delete(patientId);
-      router.push('/dashboard/patients');
+      router.back();
     } catch (err) {
       setError(getErrorMessage(err));
       setDeleting(false);

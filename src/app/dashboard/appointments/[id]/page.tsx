@@ -237,12 +237,13 @@ export default function AppointmentDetailPage() {
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div className="flex items-center gap-4">
-          <Link
-            href="/dashboard/appointments"
+          <button
+            type="button"
+            onClick={() => router.back()}
             className="p-2 rounded-lg text-gray-500 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"
           >
             <ArrowLeft className="h-5 w-5" />
-          </Link>
+          </button>
           <div>
             <h1 className="text-2xl font-bold text-[#5b21b6]">
               Appointment #{appointment.appointment_number}

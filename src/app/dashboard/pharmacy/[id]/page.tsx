@@ -48,7 +48,7 @@ export default function PrescriptionDetailPage() {
   };
 
   const handleBack = () => {
-    router.push('/dashboard/pharmacy');
+    router.back();
   };
 
   if (loading) {
