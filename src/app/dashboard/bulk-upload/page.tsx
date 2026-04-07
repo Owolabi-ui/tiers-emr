@@ -6,8 +6,10 @@ import { bulkUploadApi, ImportResult, RowIssue, ValidationReport } from '@/lib/b
 import { getErrorMessage } from '@/lib/api';
 
 type Step = 'upload' | 'preview' | 'done';
+type UploadMode = 'patients' | 'visits';
 
 export default function BulkUploadPage() {
+  const [mode, setMode] = useState<UploadMode>('patients');
   const [step, setStep] = useState<Step>('upload');
   const [file, setFile] = useState<File | null>(null);
   const [report, setReport] = useState<ValidationReport | null>(null);
@@ -21,7 +23,10 @@ export default function BulkUploadPage() {
     try {
       setLoading(true);
       setError(null);
-      const validationReport = await bulkUploadApi.validate(file);
+      const validationReport =
+        mode === 'patients'
+          ? await bulkUploadApi.validate(file)
+          : await bulkUploadApi.validateVisits(file);
       setReport(validationReport);
       setStep('preview');
     } catch (err) {
@@ -36,7 +41,10 @@ export default function BulkUploadPage() {
     try {
       setLoading(true);
       setError(null);
-      const importResult = await bulkUploadApi.confirm(file);
+      const importResult =
+        mode === 'patients'
+          ? await bulkUploadApi.confirm(file)
+          : await bulkUploadApi.confirmVisits(file);
       setResult(importResult);
       setStep('done');
     } catch (err) {
@@ -52,6 +60,12 @@ export default function BulkUploadPage() {
     setReport(null);
     setResult(null);
     setError(null);
+  };
+
+  const switchMode = (nextMode: UploadMode) => {
+    if (mode === nextMode) return;
+    setMode(nextMode);
+    reset();
   };
 
   const IssueTable = ({ issues, type }: { issues: RowIssue[]; type: 'error' | 'warning' }) => (
@@ -85,10 +99,35 @@ export default function BulkUploadPage() {
   return (
     <div className="max-w-3xl mx-auto space-y-6">
       <div>
-        <h1 className="text-2xl font-bold text-[#5b21b6]">Bulk Patient Upload - ART</h1>
+        <h1 className="text-2xl font-bold text-[#5b21b6]">Bulk Upload - ART</h1>
         <p className="text-sm text-gray-500 mt-1">
-          Import existing ART patients from CSV. Validate first, then confirm.
+          Validate CSV first, then confirm import.
         </p>
+      </div>
+
+      <div className="inline-flex rounded-lg border border-gray-200 dark:border-gray-700 p-1 bg-white dark:bg-neutral-900">
+        <button
+          type="button"
+          onClick={() => switchMode('patients')}
+          className={`px-3 py-1.5 rounded-md text-sm font-medium transition-colors ${
+            mode === 'patients'
+              ? 'bg-[#5b21b6] text-white'
+              : 'text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-neutral-800'
+          }`}
+        >
+          ART Patients
+        </button>
+        <button
+          type="button"
+          onClick={() => switchMode('visits')}
+          className={`px-3 py-1.5 rounded-md text-sm font-medium transition-colors ${
+            mode === 'visits'
+              ? 'bg-[#5b21b6] text-white'
+              : 'text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-neutral-800'
+          }`}
+        >
+          ART Visits
+        </button>
       </div>
 
       {error && (
@@ -113,7 +152,11 @@ export default function BulkUploadPage() {
               <>
                 <Upload className="h-8 w-8 text-gray-400 mx-auto mb-3" />
                 <p className="text-sm font-medium text-gray-700 dark:text-gray-300">Click to select CSV file</p>
-                <p className="text-xs text-gray-500 mt-1">Combined patient CSV (all rows)</p>
+                <p className="text-xs text-gray-500 mt-1">
+                  {mode === 'patients'
+                    ? 'Combined patient CSV (all rows)'
+                    : 'ART follow-up visits CSV'}
+                </p>
               </>
             )}
           </div>
@@ -129,8 +172,8 @@ export default function BulkUploadPage() {
             disabled={!file || loading}
             className="w-full py-2.5 rounded-lg bg-[#5b21b6] text-white font-medium hover:bg-[#4c1d95] disabled:opacity-50 flex items-center justify-center gap-2"
           >
-            {loading && <Loader2 className="h-4 w-4 animate-spin" />}
-            {loading ? 'Validating...' : 'Validate File'}
+              {loading && <Loader2 className="h-4 w-4 animate-spin" />}
+              {loading ? 'Validating...' : 'Validate File'}
           </button>
         </div>
       )}
@@ -189,7 +232,9 @@ export default function BulkUploadPage() {
               className="flex-1 py-2.5 rounded-lg bg-[#5b21b6] text-white font-medium hover:bg-[#4c1d95] disabled:opacity-50 flex items-center justify-center gap-2"
             >
               {loading && <Loader2 className="h-4 w-4 animate-spin" />}
-              {loading ? 'Importing...' : `Confirm Import (${report.valid_count} patients)`}
+              {loading
+                ? 'Importing...'
+                : `Confirm Import (${report.valid_count} ${mode === 'patients' ? 'patients' : 'visits'})`}
             </button>
           </div>
         </div>
@@ -200,7 +245,8 @@ export default function BulkUploadPage() {
           <CheckCircle className="h-12 w-12 text-green-500 mx-auto" />
           <div>
             <p className="text-xl font-bold text-gray-900 dark:text-white">
-              {result.imported} patient{result.imported !== 1 ? 's' : ''} imported successfully
+              {result.imported} {mode === 'patients' ? 'patient' : 'visit'}
+              {result.imported !== 1 ? 's' : ''} imported successfully
             </p>
             {result.skipped > 0 && (
               <p className="text-sm text-red-600 mt-1">{result.skipped} row(s) failed during import</p>

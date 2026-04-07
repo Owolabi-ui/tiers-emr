@@ -48,4 +48,22 @@ export const bulkUploadApi = {
     );
     return res.data;
   },
+
+  validateVisits: async (file: File): Promise<ValidationReport> => {
+    const res = await api.post<ValidationReport>(
+      '/api/v1/bulk-upload/art/visits/validate',
+      toForm(file),
+      multipartConfig
+    );
+    return res.data;
+  },
+
+  confirmVisits: async (file: File): Promise<ImportResult> => {
+    const res = await api.post<ImportResult>(
+      '/api/v1/bulk-upload/art/visits/confirm',
+      toForm(file),
+      multipartConfig
+    );
+    return res.data;
+  },
 };
