@@ -39,8 +39,8 @@ export type ArtStatus =
 export interface ArtInformation {
   id: string;
   patient_id: string;
-  patient_name: string;
-  patient_hospital_no: string;
+  patient_name: string | null;
+  patient_hospital_no: string | null;
 
   // ART Client Information
   art_no: string;
@@ -106,8 +106,8 @@ export interface CompleteArtWorkflowResponse {
 export interface ArtListItem {
   id: string;
   patient_id: string;
-  patient_name: string;
-  patient_hospital_no: string;
+  patient_name: string | null;
+  patient_hospital_no: string | null;
   art_no: string;
   date_enrolled_into_hiv_care: string;
   entry_point: CareEntryPoint;

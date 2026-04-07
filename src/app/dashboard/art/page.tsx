@@ -63,9 +63,9 @@ export default function ArtPage() {
     if (!searchTerm) return true;
     const search = searchTerm.toLowerCase();
     return (
-      record.patient_name.toLowerCase().includes(search) ||
-      record.patient_hospital_no.toLowerCase().includes(search) ||
-      record.art_no.toLowerCase().includes(search)
+      (record.patient_name ?? '').toLowerCase().includes(search) ||
+      (record.patient_hospital_no ?? '').toLowerCase().includes(search) ||
+      (record.art_no ?? '').toLowerCase().includes(search)
     );
   });
 
@@ -102,7 +102,7 @@ export default function ArtPage() {
   };
 
   // Calculate stats
-  const activeCount = artRecords.filter(r => r.status.toLowerCase().includes('active')).length;
+  const activeCount = artRecords.filter(r => (r.status ?? '').toLowerCase().includes('active')).length;
   const recentEnrollments = artRecords.filter(r => {
     const enrollDate = new Date(r.date_enrolled_into_hiv_care);
     const thirtyDaysAgo = new Date();
