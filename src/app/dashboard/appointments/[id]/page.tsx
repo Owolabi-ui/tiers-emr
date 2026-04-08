@@ -188,7 +188,7 @@ export default function AppointmentDetailPage() {
     return (
       <div className="flex items-center justify-center min-h-[400px]">
         <div className="text-center">
-          <Loader2 className="h-8 w-8 animate-spin text-[#5b21b6] mx-auto" />
+          <Loader2 className="h-8 w-8 animate-spin text-[#065f46] mx-auto" />
           <p className="mt-4 text-sm text-gray-500">Loading appointment details...</p>
         </div>
       </div>
@@ -208,7 +208,7 @@ export default function AppointmentDetailPage() {
               <p className="text-sm text-red-700 dark:text-red-400 mt-1">{error}</p>
               <Link
                 href="/dashboard/appointments"
-                className="mt-4 inline-flex items-center gap-2 text-sm text-[#5b21b6] hover:underline"
+                className="mt-4 inline-flex items-center gap-2 text-sm text-[#065f46] hover:underline"
               >
                 <ArrowLeft className="h-4 w-4" />
                 Back to appointments
@@ -245,7 +245,7 @@ export default function AppointmentDetailPage() {
             <ArrowLeft className="h-5 w-5" />
           </button>
           <div>
-            <h1 className="text-2xl font-bold text-[#5b21b6]">
+            <h1 className="text-2xl font-bold text-[#065f46]">
               Appointment #{appointment.appointment_number}
             </h1>
             <p className="text-sm text-gray-500">
@@ -355,7 +355,7 @@ export default function AppointmentDetailPage() {
 
       {/* Quick Info Cards */}
       <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
-        <div className="rounded-xl border border-black/10 dark:border-white/15 bg-purple-50/40 dark:bg-[#5b21b6]/10 p-4">
+        <div className="rounded-xl border border-black/10 dark:border-white/15 bg-green-50/40 dark:bg-[#065f46]/10 p-4">
           <div className="flex items-center gap-2 text-gray-500 text-sm mb-1">
             <Calendar className="h-4 w-4" />
             Date
@@ -364,7 +364,7 @@ export default function AppointmentDetailPage() {
             {formatAppointmentDate(appointment.appointment_date)}
           </p>
         </div>
-        <div className="rounded-xl border border-black/10 dark:border-white/15 bg-purple-50/40 dark:bg-[#5b21b6]/10 p-4">
+        <div className="rounded-xl border border-black/10 dark:border-white/15 bg-green-50/40 dark:bg-[#065f46]/10 p-4">
           <div className="flex items-center gap-2 text-gray-500 text-sm mb-1">
             <Clock className="h-4 w-4" />
             Time
@@ -373,7 +373,7 @@ export default function AppointmentDetailPage() {
             {formatTime(appointment.appointment_time)}
           </p>
         </div>
-        <div className="rounded-xl border border-black/10 dark:border-white/15 bg-purple-50/40 dark:bg-[#5b21b6]/10 p-4">
+        <div className="rounded-xl border border-black/10 dark:border-white/15 bg-green-50/40 dark:bg-[#065f46]/10 p-4">
           <div className="flex items-center gap-2 text-gray-500 text-sm mb-1">
             <Stethoscope className="h-4 w-4" />
             Type
@@ -384,7 +384,7 @@ export default function AppointmentDetailPage() {
             {appointment.appointment_type}
           </p>
         </div>
-        <div className="rounded-xl border border-black/10 dark:border-white/15 bg-purple-50/40 dark:bg-[#5b21b6]/10 p-4">
+        <div className="rounded-xl border border-black/10 dark:border-white/15 bg-green-50/40 dark:bg-[#065f46]/10 p-4">
           <div className="flex items-center gap-2 text-gray-500 text-sm mb-1">
             <FileText className="h-4 w-4" />
             Service
@@ -399,7 +399,7 @@ export default function AppointmentDetailPage() {
         {/* Patient Information */}
         {patient && (
           <div className="rounded-xl border border-black/10 dark:border-white/15 bg-white dark:bg-neutral-900 overflow-hidden">
-            <div className="bg-[#5b21b6] px-5 py-3 flex items-center gap-2">
+            <div className="bg-[#065f46] px-5 py-3 flex items-center gap-2">
               <User className="h-5 w-5 text-white" />
               <h2 className="font-semibold text-white">Patient</h2>
             </div>
@@ -413,7 +413,7 @@ export default function AppointmentDetailPage() {
                 </div>
                 <Link
                   href={`/dashboard/patients/${patient.id}`}
-                  className="text-sm text-[#5b21b6] hover:underline"
+                  className="text-sm text-[#065f46] hover:underline"
                 >
                   View Profile
                 </Link>
@@ -446,7 +446,7 @@ export default function AppointmentDetailPage() {
 
         {/* Appointment Notes */}
         <div className="rounded-xl border border-black/10 dark:border-white/15 bg-white dark:bg-neutral-900 overflow-hidden">
-          <div className="bg-[#5b21b6] px-5 py-3 flex items-center gap-2">
+          <div className="bg-[#065f46] px-5 py-3 flex items-center gap-2">
             <FileText className="h-5 w-5 text-white" />
             <h2 className="font-semibold text-white">Notes</h2>
           </div>
@@ -471,7 +471,7 @@ export default function AppointmentDetailPage() {
         {/* Visit Details (if completed) */}
         {visit_details && (
           <div className="rounded-xl border border-black/10 dark:border-white/15 bg-white dark:bg-neutral-900 overflow-hidden lg:col-span-2">
-            <div className="bg-[#5b21b6] px-5 py-3 flex items-center gap-2">
+            <div className="bg-[#065f46] px-5 py-3 flex items-center gap-2">
               <Stethoscope className="h-5 w-5 text-white" />
               <h2 className="font-semibold text-white">Visit Details</h2>
             </div>
@@ -502,7 +502,7 @@ export default function AppointmentDetailPage() {
               )}
               <div className="sm:col-span-2 flex flex-wrap gap-2 pt-2 border-t border-gray-100 dark:border-gray-800">
                 {visit_details.lab_tests_ordered && (
-                  <span className="px-2 py-1 rounded-full text-xs font-medium bg-purple-100 text-purple-700 dark:bg-purple-900/30 dark:text-purple-400">
+                  <span className="px-2 py-1 rounded-full text-xs font-medium bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400">
                     Lab Tests Ordered
                   </span>
                 )}
@@ -529,7 +529,7 @@ export default function AppointmentDetailPage() {
         {/* Notifications */}
         {notifications.length > 0 && (
           <div className="rounded-xl border border-black/10 dark:border-white/15 bg-white dark:bg-neutral-900 overflow-hidden lg:col-span-2">
-            <div className="bg-[#5b21b6] px-5 py-3 flex items-center gap-2">
+            <div className="bg-[#065f46] px-5 py-3 flex items-center gap-2">
               <Bell className="h-5 w-5 text-white" />
               <h2 className="font-semibold text-white">Notifications</h2>
             </div>
@@ -580,7 +580,7 @@ export default function AppointmentDetailPage() {
                 value={cancelReason}
                 onChange={(e) => setCancelReason(e.target.value)}
                 rows={3}
-                className="w-full rounded-lg border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-neutral-800 px-3 py-2 text-sm text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-[#5b21b6]/50"
+                className="w-full rounded-lg border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-neutral-800 px-3 py-2 text-sm text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-[#065f46]/50"
                 placeholder="Enter reason..."
               />
             </div>
@@ -627,7 +627,7 @@ export default function AppointmentDetailPage() {
                   type="date"
                   value={rescheduleDate}
                   onChange={(e) => setRescheduleDate(e.target.value)}
-                  className="w-full h-10 rounded-lg border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-neutral-800 px-3 text-sm text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-[#5b21b6]/50"
+                  className="w-full h-10 rounded-lg border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-neutral-800 px-3 text-sm text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-[#065f46]/50"
                 />
               </div>
               <div>
@@ -638,7 +638,7 @@ export default function AppointmentDetailPage() {
                   type="time"
                   value={rescheduleTime}
                   onChange={(e) => setRescheduleTime(e.target.value)}
-                  className="w-full h-10 rounded-lg border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-neutral-800 px-3 text-sm text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-[#5b21b6]/50"
+                  className="w-full h-10 rounded-lg border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-neutral-800 px-3 text-sm text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-[#065f46]/50"
                 />
               </div>
               <div>
@@ -649,7 +649,7 @@ export default function AppointmentDetailPage() {
                   value={rescheduleReason}
                   onChange={(e) => setRescheduleReason(e.target.value)}
                   rows={2}
-                  className="w-full rounded-lg border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-neutral-800 px-3 py-2 text-sm text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-[#5b21b6]/50"
+                  className="w-full rounded-lg border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-neutral-800 px-3 py-2 text-sm text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-[#065f46]/50"
                   placeholder="Enter reason..."
                 />
               </div>

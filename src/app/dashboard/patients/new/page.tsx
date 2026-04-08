@@ -433,7 +433,7 @@ export default function NewPatientPage() {
     return (
       <div className="space-y-6">
         <div className="rounded-xl border border-green-200 dark:border-green-800 bg-green-50 dark:bg-green-900/20 p-5">
-          <h1 className="text-2xl font-bold text-[#5b21b6]">Patient Registered</h1>
+          <h1 className="text-2xl font-bold text-[#065f46]">Patient Registered</h1>
           <p className="mt-2 text-sm text-green-800 dark:text-green-300">
             {createdPatient.first_name} {createdPatient.last_name} was registered successfully.
           </p>
@@ -443,7 +443,7 @@ export default function NewPatientPage() {
         </div>
 
         <div className="rounded-xl border border-black/10 dark:border-white/15 bg-white dark:bg-neutral-900 overflow-hidden">
-          <div className="bg-[#5b21b6] px-5 py-3 flex items-center gap-2">
+          <div className="bg-[#065f46] px-5 py-3 flex items-center gap-2">
             <Heart className="h-5 w-5 text-white" />
             <h2 className="font-semibold text-white">Continue to Service</h2>
           </div>
@@ -469,7 +469,7 @@ export default function NewPatientPage() {
                     <button
                       type="button"
                       onClick={() => router.push(service.route(createdPatient.id))}
-                      className="inline-flex items-center gap-1.5 rounded-md border border-[#5b21b6]/30 px-3 py-1.5 text-xs font-medium text-[#5b21b6] hover:bg-[#5b21b6]/10 transition-colors"
+                      className="inline-flex items-center gap-1.5 rounded-md border border-[#065f46]/30 px-3 py-1.5 text-xs font-medium text-[#065f46] hover:bg-[#065f46]/10 transition-colors"
                     >
                       <ShieldCheck className="h-3.5 w-3.5" />
                       Launch Service
@@ -507,7 +507,7 @@ export default function NewPatientPage() {
           </Link>
           <Link
             href="/dashboard/patients"
-            className="inline-flex items-center gap-2 px-6 py-2.5 rounded-lg bg-[#5b21b6] text-white text-sm font-medium shadow-lg hover:bg-[#4c1d95] transition-all"
+            className="inline-flex items-center gap-2 px-6 py-2.5 rounded-lg bg-[#065f46] text-white text-sm font-medium shadow-lg hover:bg-[#064e3b] transition-all"
           >
             Back to Patients
           </Link>
@@ -527,7 +527,7 @@ export default function NewPatientPage() {
           <ArrowLeft className="h-5 w-5" />
         </Link>
         <div>
-          <h1 className="text-2xl font-bold text-[#5b21b6]">New Patient</h1>
+          <h1 className="text-2xl font-bold text-[#065f46]">New Patient</h1>
           <p className="text-sm text-gray-500">Register a new patient in the system</p>
         </div>
       </div>
@@ -551,7 +551,7 @@ export default function NewPatientPage() {
         {/* Personal Information */}
         {showPersonalSection && (
         <div className="rounded-xl border border-black/10 dark:border-white/15 bg-white dark:bg-neutral-900 overflow-hidden">
-          <div className="bg-[#5b21b6] px-5 py-3 flex items-center gap-2">
+          <div className="bg-[#065f46] px-5 py-3 flex items-center gap-2">
             <User className="h-5 w-5 text-white" />
             <h2 className="font-semibold text-white">Personal Information</h2>
           </div>
@@ -563,7 +563,7 @@ export default function NewPatientPage() {
               </label>
               <input
                 {...register('first_name')}
-                className="w-full h-10 rounded-lg border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-neutral-800 px-3 text-sm focus:outline-none focus:ring-2 focus:ring-[#5b21b6]/50"
+                className="w-full h-10 rounded-lg border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-neutral-800 px-3 text-sm focus:outline-none focus:ring-2 focus:ring-[#065f46]/50"
                 placeholder="Enter first name"
               />
               {errors.first_name && (
@@ -578,7 +578,7 @@ export default function NewPatientPage() {
               </label>
               <input
                 {...register('middle_name')}
-                className="w-full h-10 rounded-lg border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-neutral-800 px-3 text-sm focus:outline-none focus:ring-2 focus:ring-[#5b21b6]/50"
+                className="w-full h-10 rounded-lg border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-neutral-800 px-3 text-sm focus:outline-none focus:ring-2 focus:ring-[#065f46]/50"
                 placeholder="Enter middle name"
               />
             </div>
@@ -590,7 +590,7 @@ export default function NewPatientPage() {
               </label>
               <input
                 {...register('last_name')}
-                className="w-full h-10 rounded-lg border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-neutral-800 px-3 text-sm focus:outline-none focus:ring-2 focus:ring-[#5b21b6]/50"
+                className="w-full h-10 rounded-lg border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-neutral-800 px-3 text-sm focus:outline-none focus:ring-2 focus:ring-[#065f46]/50"
                 placeholder="Enter last name"
               />
               {errors.last_name && (
@@ -605,7 +605,7 @@ export default function NewPatientPage() {
               </label>
               <input
                 {...register('preferred_name')}
-                className="w-full h-10 rounded-lg border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-neutral-800 px-3 text-sm focus:outline-none focus:ring-2 focus:ring-[#5b21b6]/50"
+                className="w-full h-10 rounded-lg border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-neutral-800 px-3 text-sm focus:outline-none focus:ring-2 focus:ring-[#065f46]/50"
                 placeholder="Nickname or preferred name"
               />
             </div>
@@ -617,7 +617,7 @@ export default function NewPatientPage() {
               </label>
               <select
                 {...register('sex')}
-                className="w-full h-10 rounded-lg border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-neutral-800 px-3 text-sm focus:outline-none focus:ring-2 focus:ring-[#5b21b6]/50"
+                className="w-full h-10 rounded-lg border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-neutral-800 px-3 text-sm focus:outline-none focus:ring-2 focus:ring-[#065f46]/50"
               >
                 {getOptions('sex', sexOptions as string[]).map((sex) => (
                   <option key={sex} value={sex}>
@@ -634,7 +634,7 @@ export default function NewPatientPage() {
               </label>
               <select
                 {...register('gender')}
-                className="w-full h-10 rounded-lg border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-neutral-800 px-3 text-sm focus:outline-none focus:ring-2 focus:ring-[#5b21b6]/50"
+                className="w-full h-10 rounded-lg border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-neutral-800 px-3 text-sm focus:outline-none focus:ring-2 focus:ring-[#065f46]/50"
               >
                 <option value="">Select gender</option>
                 {genderOptions.map((gender) => (
@@ -653,7 +653,7 @@ export default function NewPatientPage() {
               <input
                 {...register('date_of_birth')}
                 type="date"
-                className="w-full h-10 rounded-lg border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-neutral-800 px-3 text-sm focus:outline-none focus:ring-2 focus:ring-[#5b21b6]/50"
+                className="w-full h-10 rounded-lg border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-neutral-800 px-3 text-sm focus:outline-none focus:ring-2 focus:ring-[#065f46]/50"
               />
               {errors.date_of_birth && (
                 <p className="mt-1 text-sm text-red-600">{errors.date_of_birth.message}</p>
@@ -667,7 +667,7 @@ export default function NewPatientPage() {
               </label>
               <select
                 {...register('current_clinic_id')}
-                className="w-full h-10 rounded-lg border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-neutral-800 px-3 text-sm focus:outline-none focus:ring-2 focus:ring-[#5b21b6]/50"
+                className="w-full h-10 rounded-lg border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-neutral-800 px-3 text-sm focus:outline-none focus:ring-2 focus:ring-[#065f46]/50"
               >
                 <option value="">Select clinic</option>
                 {clinics.map((clinic) => (
@@ -688,7 +688,7 @@ export default function NewPatientPage() {
               </label>
               <select
                 {...register('marital_status')}
-                className="w-full h-10 rounded-lg border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-neutral-800 px-3 text-sm focus:outline-none focus:ring-2 focus:ring-[#5b21b6]/50"
+                className="w-full h-10 rounded-lg border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-neutral-800 px-3 text-sm focus:outline-none focus:ring-2 focus:ring-[#065f46]/50"
               >
                 <option value="">Select status</option>
                 {getOptions('marital_status', maritalStatusOptions as string[]).map((status) => (
@@ -706,7 +706,7 @@ export default function NewPatientPage() {
         {/* Contact Information */}
         {showContactSection && (
         <div className="rounded-xl border border-black/10 dark:border-white/15 bg-white dark:bg-neutral-900 overflow-hidden">
-          <div className="bg-[#5b21b6] px-5 py-3 flex items-center gap-2">
+          <div className="bg-[#065f46] px-5 py-3 flex items-center gap-2">
             <Phone className="h-5 w-5 text-white" />
             <h2 className="font-semibold text-white">Contact Information</h2>
           </div>
@@ -719,7 +719,7 @@ export default function NewPatientPage() {
               <input
                 {...register('phone')}
                 type="tel"
-                className="w-full h-10 rounded-lg border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-neutral-800 px-3 text-sm focus:outline-none focus:ring-2 focus:ring-[#5b21b6]/50"
+                className="w-full h-10 rounded-lg border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-neutral-800 px-3 text-sm focus:outline-none focus:ring-2 focus:ring-[#065f46]/50"
                 placeholder="e.g., 08012345678"
               />
             </div>
@@ -732,7 +732,7 @@ export default function NewPatientPage() {
               <input
                 {...register('email')}
                 type="email"
-                className="w-full h-10 rounded-lg border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-neutral-800 px-3 text-sm focus:outline-none focus:ring-2 focus:ring-[#5b21b6]/50"
+                className="w-full h-10 rounded-lg border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-neutral-800 px-3 text-sm focus:outline-none focus:ring-2 focus:ring-[#065f46]/50"
                 placeholder="patient@example.com"
               />
             </div>
@@ -744,7 +744,7 @@ export default function NewPatientPage() {
         {/* Address */}
         {showAddressSection && (
         <div className="rounded-xl border border-black/10 dark:border-white/15 bg-white dark:bg-neutral-900 overflow-hidden">
-          <div className="bg-[#5b21b6] px-5 py-3 flex items-center gap-2">
+          <div className="bg-[#065f46] px-5 py-3 flex items-center gap-2">
             <MapPin className="h-5 w-5 text-white" />
             <h2 className="font-semibold text-white">Address</h2>
           </div>
@@ -756,7 +756,7 @@ export default function NewPatientPage() {
               </label>
               <input
                 {...register('address')}
-                className="w-full h-10 rounded-lg border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-neutral-800 px-3 text-sm focus:outline-none focus:ring-2 focus:ring-[#5b21b6]/50"
+                className="w-full h-10 rounded-lg border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-neutral-800 px-3 text-sm focus:outline-none focus:ring-2 focus:ring-[#065f46]/50"
                 placeholder="Enter street address"
               />
             </div>
@@ -768,7 +768,7 @@ export default function NewPatientPage() {
               </label>
               <select
                 {...register('state_id', { valueAsNumber: true })}
-                className="w-full h-10 rounded-lg border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-neutral-800 px-3 text-sm focus:outline-none focus:ring-2 focus:ring-[#5b21b6]/50"
+                className="w-full h-10 rounded-lg border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-neutral-800 px-3 text-sm focus:outline-none focus:ring-2 focus:ring-[#065f46]/50"
               >
                 <option value="">Select state</option>
                 {states.map((state) => (
@@ -787,7 +787,7 @@ export default function NewPatientPage() {
               <select
                 {...register('lga_id', { valueAsNumber: true })}
                 disabled={!selectedStateId}
-                className="w-full h-10 rounded-lg border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-neutral-800 px-3 text-sm focus:outline-none focus:ring-2 focus:ring-[#5b21b6]/50 disabled:opacity-50"
+                className="w-full h-10 rounded-lg border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-neutral-800 px-3 text-sm focus:outline-none focus:ring-2 focus:ring-[#065f46]/50 disabled:opacity-50"
               >
                 <option value="">Select LGA</option>
                 {lgas.map((lga) => (
@@ -805,7 +805,7 @@ export default function NewPatientPage() {
               </label>
               <input
                 {...register('city')}
-                className="w-full h-10 rounded-lg border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-neutral-800 px-3 text-sm focus:outline-none focus:ring-2 focus:ring-[#5b21b6]/50"
+                className="w-full h-10 rounded-lg border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-neutral-800 px-3 text-sm focus:outline-none focus:ring-2 focus:ring-[#065f46]/50"
                 placeholder="Enter city"
               />
             </div>
@@ -817,7 +817,7 @@ export default function NewPatientPage() {
         {/* Education & Occupation */}
         {showEducationOccupationSection && (
         <div className="rounded-xl border border-black/10 dark:border-white/15 bg-white dark:bg-neutral-900 overflow-hidden">
-          <div className="bg-[#5b21b6] px-5 py-3 flex items-center gap-2">
+          <div className="bg-[#065f46] px-5 py-3 flex items-center gap-2">
             <Briefcase className="h-5 w-5 text-white" />
             <h2 className="font-semibold text-white">Education & Occupation</h2>
           </div>
@@ -829,7 +829,7 @@ export default function NewPatientPage() {
               </label>
               <select
                 {...register('educational_level')}
-                className="w-full h-10 rounded-lg border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-neutral-800 px-3 text-sm focus:outline-none focus:ring-2 focus:ring-[#5b21b6]/50"
+                className="w-full h-10 rounded-lg border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-neutral-800 px-3 text-sm focus:outline-none focus:ring-2 focus:ring-[#065f46]/50"
               >
                 <option value="">Select level</option>
                 {getOptions('educational_level', educationalLevelOptions as string[]).map((level) => (
@@ -847,7 +847,7 @@ export default function NewPatientPage() {
               </label>
               <select
                 {...register('occupation')}
-                className="w-full h-10 rounded-lg border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-neutral-800 px-3 text-sm focus:outline-none focus:ring-2 focus:ring-[#5b21b6]/50"
+                className="w-full h-10 rounded-lg border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-neutral-800 px-3 text-sm focus:outline-none focus:ring-2 focus:ring-[#065f46]/50"
               >
                 <option value="">Select occupation</option>
                 {getOptions('occupation', occupationOptions as string[]).map((occ) => (
@@ -865,7 +865,7 @@ export default function NewPatientPage() {
               </label>
               <input
                 {...register('occupation_specify')}
-                className="w-full h-10 rounded-lg border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-neutral-800 px-3 text-sm focus:outline-none focus:ring-2 focus:ring-[#5b21b6]/50"
+                className="w-full h-10 rounded-lg border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-neutral-800 px-3 text-sm focus:outline-none focus:ring-2 focus:ring-[#065f46]/50"
                 placeholder="Specify job title or details"
               />
             </div>
@@ -877,7 +877,7 @@ export default function NewPatientPage() {
         {/* Emergency Contact */}
         {showEmergencySection && (
         <div className="rounded-xl border border-black/10 dark:border-white/15 bg-white dark:bg-neutral-900 overflow-hidden">
-          <div className="bg-[#5b21b6] px-5 py-3 flex items-center gap-2">
+          <div className="bg-[#065f46] px-5 py-3 flex items-center gap-2">
             <UserPlus className="h-5 w-5 text-white" />
             <h2 className="font-semibold text-white">Emergency Contact</h2>
           </div>
@@ -889,7 +889,7 @@ export default function NewPatientPage() {
               </label>
               <input
                 {...register('emergency_contact_name')}
-                className="w-full h-10 rounded-lg border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-neutral-800 px-3 text-sm focus:outline-none focus:ring-2 focus:ring-[#5b21b6]/50"
+                className="w-full h-10 rounded-lg border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-neutral-800 px-3 text-sm focus:outline-none focus:ring-2 focus:ring-[#065f46]/50"
                 placeholder="Full name"
               />
             </div>
@@ -901,7 +901,7 @@ export default function NewPatientPage() {
               </label>
               <input
                 {...register('emergency_contact_relationship')}
-                className="w-full h-10 rounded-lg border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-neutral-800 px-3 text-sm focus:outline-none focus:ring-2 focus:ring-[#5b21b6]/50"
+                className="w-full h-10 rounded-lg border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-neutral-800 px-3 text-sm focus:outline-none focus:ring-2 focus:ring-[#065f46]/50"
                 placeholder="e.g., Spouse, Parent"
               />
             </div>
@@ -914,7 +914,7 @@ export default function NewPatientPage() {
               <input
                 {...register('emergency_contact_phone')}
                 type="tel"
-                className="w-full h-10 rounded-lg border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-neutral-800 px-3 text-sm focus:outline-none focus:ring-2 focus:ring-[#5b21b6]/50"
+                className="w-full h-10 rounded-lg border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-neutral-800 px-3 text-sm focus:outline-none focus:ring-2 focus:ring-[#065f46]/50"
                 placeholder="e.g., 08012345678"
               />
             </div>
@@ -928,7 +928,7 @@ export default function NewPatientPage() {
           <button
             type="button"
             onClick={() => setVitalSignsExpanded((prev) => !prev)}
-            className="w-full bg-[#5b21b6] px-5 py-3 flex items-center justify-between text-left"
+            className="w-full bg-[#065f46] px-5 py-3 flex items-center justify-between text-left"
           >
             <div className="flex items-center gap-2">
               <Activity className="h-5 w-5 text-white" />
@@ -955,7 +955,7 @@ export default function NewPatientPage() {
                   type="number"
                   step="0.1"
                   placeholder="e.g., 36.5"
-                  className="w-full h-10 rounded-lg border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-neutral-800 px-3 text-sm focus:outline-none focus:ring-2 focus:ring-[#5b21b6]/50"
+                  className="w-full h-10 rounded-lg border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-neutral-800 px-3 text-sm focus:outline-none focus:ring-2 focus:ring-[#065f46]/50"
                 />
                 {watchedTemperature !== undefined && watchedTemperature !== null && (
                   <p className={`mt-1 text-xs font-medium ${getStatusColor(getTemperatureStatus(watchedTemperature))}`}>
@@ -972,7 +972,7 @@ export default function NewPatientPage() {
                   {...register('pulse_rate')}
                   type="number"
                   placeholder="e.g., 72"
-                  className="w-full h-10 rounded-lg border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-neutral-800 px-3 text-sm focus:outline-none focus:ring-2 focus:ring-[#5b21b6]/50"
+                  className="w-full h-10 rounded-lg border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-neutral-800 px-3 text-sm focus:outline-none focus:ring-2 focus:ring-[#065f46]/50"
                 />
                 {watchedPulse !== undefined && watchedPulse !== null && (
                   <p className={`mt-1 text-xs font-medium ${getStatusColor(getPulseStatus(watchedPulse))}`}>
@@ -989,7 +989,7 @@ export default function NewPatientPage() {
                   {...register('respiratory_rate')}
                   type="number"
                   placeholder="e.g., 16"
-                  className="w-full h-10 rounded-lg border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-neutral-800 px-3 text-sm focus:outline-none focus:ring-2 focus:ring-[#5b21b6]/50"
+                  className="w-full h-10 rounded-lg border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-neutral-800 px-3 text-sm focus:outline-none focus:ring-2 focus:ring-[#065f46]/50"
                 />
                 {watchedRespiration !== undefined && watchedRespiration !== null && (
                   <p className={`mt-1 text-xs font-medium ${getStatusColor(getRespirationStatus(watchedRespiration))}`}>
@@ -1006,7 +1006,7 @@ export default function NewPatientPage() {
                   {...register('blood_pressure_systolic')}
                   type="number"
                   placeholder="e.g., 120"
-                  className="w-full h-10 rounded-lg border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-neutral-800 px-3 text-sm focus:outline-none focus:ring-2 focus:ring-[#5b21b6]/50"
+                  className="w-full h-10 rounded-lg border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-neutral-800 px-3 text-sm focus:outline-none focus:ring-2 focus:ring-[#065f46]/50"
                 />
                 {watchedSystolic !== undefined && watchedSystolic !== null && (
                   <p className={`mt-1 text-xs font-medium ${getStatusColor(getSystolicBpStatus(watchedSystolic))}`}>
@@ -1023,7 +1023,7 @@ export default function NewPatientPage() {
                   {...register('blood_pressure_diastolic')}
                   type="number"
                   placeholder="e.g., 80"
-                  className="w-full h-10 rounded-lg border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-neutral-800 px-3 text-sm focus:outline-none focus:ring-2 focus:ring-[#5b21b6]/50"
+                  className="w-full h-10 rounded-lg border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-neutral-800 px-3 text-sm focus:outline-none focus:ring-2 focus:ring-[#065f46]/50"
                 />
                 {watchedDiastolic !== undefined && watchedDiastolic !== null && (
                   <p className={`mt-1 text-xs font-medium ${getStatusColor(getDiastolicBpStatus(watchedDiastolic))}`}>
@@ -1041,7 +1041,7 @@ export default function NewPatientPage() {
                   type="number"
                   step="0.1"
                   placeholder="e.g., 98"
-                  className="w-full h-10 rounded-lg border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-neutral-800 px-3 text-sm focus:outline-none focus:ring-2 focus:ring-[#5b21b6]/50"
+                  className="w-full h-10 rounded-lg border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-neutral-800 px-3 text-sm focus:outline-none focus:ring-2 focus:ring-[#065f46]/50"
                 />
                 {watchedSpO2 !== undefined && watchedSpO2 !== null && (
                   <p className={`mt-1 text-xs font-medium ${getStatusColor(getSpO2Status(watchedSpO2))}`}>
@@ -1059,7 +1059,7 @@ export default function NewPatientPage() {
                   type="number"
                   step="0.1"
                   placeholder="e.g., 70.5"
-                  className="w-full h-10 rounded-lg border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-neutral-800 px-3 text-sm focus:outline-none focus:ring-2 focus:ring-[#5b21b6]/50"
+                  className="w-full h-10 rounded-lg border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-neutral-800 px-3 text-sm focus:outline-none focus:ring-2 focus:ring-[#065f46]/50"
                 />
               </div>
 
@@ -1072,7 +1072,7 @@ export default function NewPatientPage() {
                   type="number"
                   step="0.1"
                   placeholder="e.g., 170"
-                  className="w-full h-10 rounded-lg border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-neutral-800 px-3 text-sm focus:outline-none focus:ring-2 focus:ring-[#5b21b6]/50"
+                  className="w-full h-10 rounded-lg border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-neutral-800 px-3 text-sm focus:outline-none focus:ring-2 focus:ring-[#065f46]/50"
                 />
               </div>
 
@@ -1105,7 +1105,7 @@ export default function NewPatientPage() {
           <button
             type="submit"
             disabled={loading}
-            className="inline-flex items-center gap-2 px-6 py-2.5 rounded-lg bg-[#5b21b6] text-white text-sm font-medium shadow-lg hover:bg-[#4c1d95] disabled:opacity-50 disabled:cursor-not-allowed transition-all"
+            className="inline-flex items-center gap-2 px-6 py-2.5 rounded-lg bg-[#065f46] text-white text-sm font-medium shadow-lg hover:bg-[#064e3b] disabled:opacity-50 disabled:cursor-not-allowed transition-all"
           >
             {loading ? (
               <>

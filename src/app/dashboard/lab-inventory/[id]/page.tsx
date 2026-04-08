@@ -50,10 +50,10 @@ export default function LabInventoryItemDetailsPage() {
     <div className="space-y-6">
       <div className="flex items-start justify-between gap-4">
         <div>
-          <Link href="/dashboard/lab-inventory" className="text-sm text-[#5b21b6] underline">
+          <Link href="/dashboard/lab-inventory" className="text-sm text-[#065f46] underline">
             Back to Lab Inventory
           </Link>
-          <h1 className="text-2xl font-bold text-[#5b21b6] mt-2">{item.product_name}</h1>
+          <h1 className="text-2xl font-bold text-[#065f46] mt-2">{item.product_name}</h1>
           <p className="text-sm text-gray-500 font-mono">{item.product_code}</p>
         </div>
         <div className="flex gap-2">
@@ -82,7 +82,7 @@ export default function LabInventoryItemDetailsPage() {
 
       <div className="rounded-xl border overflow-x-auto bg-white dark:bg-neutral-900">
         <table className="w-full text-sm">
-          <thead className="bg-[#5b21b6] text-white">
+          <thead className="bg-[#065f46] text-white">
             <tr>
               <th className="px-4 py-3 text-left font-medium">Date</th>
               <th className="px-4 py-3 text-left font-medium">Type</th>

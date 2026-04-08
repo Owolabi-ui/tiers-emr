@@ -115,7 +115,7 @@ export default function PublicIntakePage() {
 
   if (loading) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-indigo-50 via-white to-purple-50">
+      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-indigo-50 via-white to-green-50">
         <div className="text-center">
           <Loader2 className="h-12 w-12 animate-spin text-indigo-600 mx-auto mb-4" />
           <p className="text-gray-600">Loading form...</p>
@@ -126,7 +126,7 @@ export default function PublicIntakePage() {
 
   if (error && !patientName) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-indigo-50 via-white to-purple-50 p-4">
+      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-indigo-50 via-white to-green-50 p-4">
         <div className="max-w-md w-full bg-white rounded-lg shadow-xl p-8 text-center">
           <AlertCircle className="h-16 w-16 text-red-500 mx-auto mb-4" />
           <h1 className="text-2xl font-bold text-gray-900 mb-2">Link Invalid or Expired</h1>
@@ -194,7 +194,7 @@ export default function PublicIntakePage() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-indigo-50 via-white to-purple-50 py-12 px-4">
+    <div className="min-h-screen bg-gradient-to-br from-indigo-50 via-white to-green-50 py-12 px-4">
       <div className="max-w-3xl mx-auto">
         <div className="bg-white rounded-lg shadow-lg p-8 mb-6">
           <div className="flex items-center gap-4 mb-4">

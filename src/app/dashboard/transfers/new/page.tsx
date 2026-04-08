@@ -273,7 +273,7 @@ export default function NewTransferPage() {
       <div className="mb-6">
         <Link
           href="/dashboard/transfers"
-          className="text-purple-600 hover:text-purple-700 dark:text-purple-400 mb-4 inline-block"
+          className="text-green-600 hover:text-green-700 dark:text-green-400 mb-4 inline-block"
         >
           ← Back to Transfers
         </Link>
@@ -543,7 +543,7 @@ export default function NewTransferPage() {
           <button
             type="submit"
             disabled={loading}
-            className="flex-1 px-6 py-3 bg-purple-600 text-white rounded-lg hover:bg-purple-700 disabled:bg-gray-400 disabled:cursor-not-allowed transition-colors font-medium"
+            className="flex-1 px-6 py-3 bg-green-600 text-white rounded-lg hover:bg-green-700 disabled:bg-gray-400 disabled:cursor-not-allowed transition-colors font-medium"
           >
             {loading ? 'Creating Transfer...' : 'Create Transfer Request'}
           </button>

@@ -28,13 +28,13 @@ export default function LabLowStockReportPage() {
   return (
     <div className="space-y-6">
       <div>
-        <Link href="/dashboard/lab-inventory" className="text-sm text-[#5b21b6] underline">Back to Lab Inventory</Link>
-        <h1 className="text-2xl font-bold text-[#5b21b6] mt-2">Low Stock Report</h1>
+        <Link href="/dashboard/lab-inventory" className="text-sm text-[#065f46] underline">Back to Lab Inventory</Link>
+        <h1 className="text-2xl font-bold text-[#065f46] mt-2">Low Stock Report</h1>
       </div>
       {error && <div className="rounded-lg border border-red-200 bg-red-50 p-3 text-sm text-red-700">{error}</div>}
       <div className="rounded-xl border overflow-x-auto bg-white dark:bg-neutral-900">
         <table className="w-full text-sm">
-          <thead className="bg-[#5b21b6] text-white">
+          <thead className="bg-[#065f46] text-white">
             <tr>
               <th className="px-4 py-3 text-left font-medium">Code</th>
               <th className="px-4 py-3 text-left font-medium">Item</th>

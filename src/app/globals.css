@@ -3,7 +3,7 @@
 :root {
   --background: #ffffff;
   --foreground: #171717;
-  --brand-purple: #8b5cf6; /* violet-500 */
+  --brand-green: #10b981; /* emerald-500 */
   --brand-orange: #f97316; /* orange-500 */
 }
 
@@ -29,19 +29,19 @@ body {
 
 /* Brand utilities */
 .btn-brand {
-  background-color: #5b21b6; /* deep purple */
+  background-color: #065f46; /* deep green */
   color: white;
-  box-shadow: 0 6px 20px rgba(91, 33, 182, 0.35);
+  box-shadow: 0 6px 20px rgba(6, 95, 70, 0.35);
   transition: transform 150ms ease, box-shadow 200ms ease, opacity 150ms ease, background-color 150ms ease;
 }
-.btn-brand:hover { transform: translateY(-1px); opacity: 0.98; background-color: #4c1d95; box-shadow: 0 10px 24px rgba(76, 29, 149, 0.45); }
+.btn-brand:hover { transform: translateY(-1px); opacity: 0.98; background-color: #064e3b; box-shadow: 0 10px 24px rgba(6, 78, 59, 0.45); }
 
 .btn-outline-brand {
-  border: 1px solid #5b21b6; /* deep purple */
-  color: #5b21b6;
+  border: 1px solid #065f46; /* deep green */
+  color: #065f46;
   transition: background-color 150ms ease, transform 150ms ease, color 150ms ease, border-color 150ms ease;
 }
-.btn-outline-brand:hover { background-color: rgba(91, 33, 182, 0.08); transform: translateY(-1px); }
+.btn-outline-brand:hover { background-color: rgba(6, 95, 70, 0.08); transform: translateY(-1px); }
 
 .card {
   transition: transform 200ms ease, box-shadow 200ms ease, border-color 200ms ease, background-color 200ms ease;
@@ -49,7 +49,7 @@ body {
 .card:hover { transform: translateY(-2px); box-shadow: 0 10px 24px rgba(0,0,0,0.08); }
 
 .gradient-text {
-  background-image: linear-gradient(90deg, var(--brand-purple), var(--brand-orange));
+  background-image: linear-gradient(90deg, var(--brand-green), var(--brand-orange));
   -webkit-background-clip: text; background-clip: text; color: transparent;
 }
 
@@ -75,11 +75,11 @@ body {
 @keyframes ripple { 0% { transform: scale(0); opacity: 1; } 100% { transform: scale(40); opacity: 0; } }
 .animate-ripple { animation: ripple 600ms linear; }
 
-/* Select option highlight (purple) */
-.select-purple option:checked,
-.select-purple option:hover,
-.select-purple option:focus {
-  background-color: #5b21b6; /* brand purple */
+/* Select option highlight (brand green) */
+.select-brand option:checked,
+.select-brand option:hover,
+.select-brand option:focus {
+  background-color: #065f46; /* brand green */
   color: #ffffff;
 }
 

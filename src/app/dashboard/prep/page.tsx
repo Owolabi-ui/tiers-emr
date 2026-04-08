@@ -113,7 +113,7 @@ export default function PrepPage() {
     return (
       <div className="flex items-center justify-center min-h-[400px]">
         <div className="text-center">
-          <Loader2 className="h-8 w-8 animate-spin text-[#5b21b6] mx-auto" />
+          <Loader2 className="h-8 w-8 animate-spin text-[#065f46] mx-auto" />
           <p className="mt-4 text-sm text-gray-500">Loading PrEP data...</p>
         </div>
       </div>
@@ -139,14 +139,14 @@ export default function PrepPage() {
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div>
-          <h1 className="text-2xl font-bold text-[#5b21b6]">PrEP Management</h1>
+          <h1 className="text-2xl font-bold text-[#065f46]">PrEP Management</h1>
           <p className="text-sm text-gray-500 mt-1">
             Pre-Exposure Prophylaxis for HIV prevention
           </p>
         </div>
         <Link
           href="/dashboard/prep/new"
-          className="inline-flex items-center justify-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-[#5b21b6] hover:bg-[#4c1d95] focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#5b21b6]"
+          className="inline-flex items-center justify-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-[#065f46] hover:bg-[#064e3b] focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#065f46]"
         >
           <Plus className="h-5 w-5 mr-2" />
           New PrEP Enrollment
@@ -221,7 +221,7 @@ export default function PrepPage() {
               placeholder="Search by patient name or hospital number..."
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
-              className="w-full h-10 pl-10 pr-4 rounded-lg border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-neutral-800 text-sm text-gray-900 dark:text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-[#5b21b6]/50"
+              className="w-full h-10 pl-10 pr-4 rounded-lg border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-neutral-800 text-sm text-gray-900 dark:text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-[#065f46]/50"
             />
           </div>
         </div>
@@ -302,7 +302,7 @@ export default function PrepPage() {
                     <td className="px-4 py-3 text-sm">
                       <Link
                         href={`/dashboard/prep/${record.hts_initial_id}`}
-                        className="text-[#5b21b6] hover:text-[#4c1d95] font-medium"
+                        className="text-[#065f46] hover:text-[#064e3b] font-medium"
                       >
                         View Details
                       </Link>

@@ -134,7 +134,7 @@ export default function LabOrderDetailPage({ params }: { params: Promise<{ id: s
         );
       case 'In Progress':
         return (
-          <span className="inline-flex items-center gap-1 px-3 py-1 rounded-full text-sm font-medium bg-purple-100 text-purple-800 dark:bg-purple-900/30 dark:text-purple-400">
+          <span className="inline-flex items-center gap-1 px-3 py-1 rounded-full text-sm font-medium bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-400">
             <Loader2 className="h-4 w-4 animate-spin" />
             In Progress
           </span>
@@ -175,7 +175,7 @@ export default function LabOrderDetailPage({ params }: { params: Promise<{ id: s
     return (
       <div className="flex items-center justify-center min-h-[400px]">
         <div className="text-center">
-          <Loader2 className="h-8 w-8 animate-spin text-[#5b21b6] mx-auto" />
+          <Loader2 className="h-8 w-8 animate-spin text-[#065f46] mx-auto" />
           <p className="mt-4 text-sm text-gray-500">Loading lab order...</p>
         </div>
       </div>
@@ -240,7 +240,7 @@ export default function LabOrderDetailPage({ params }: { params: Promise<{ id: s
       {/* Patient Information */}
       <div className="bg-white dark:bg-neutral-800 rounded-lg border border-gray-200 dark:border-gray-700 p-6">
         <h2 className="text-lg font-semibold text-gray-900 dark:text-white mb-4 flex items-center gap-2">
-          <User className="h-5 w-5 text-[#5b21b6]" />
+          <User className="h-5 w-5 text-[#065f46]" />
           Patient Information
         </h2>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -262,7 +262,7 @@ export default function LabOrderDetailPage({ params }: { params: Promise<{ id: s
       {/* Test Information */}
       <div className="bg-white dark:bg-neutral-800 rounded-lg border border-gray-200 dark:border-gray-700 p-6">
         <h2 className="text-lg font-semibold text-gray-900 dark:text-white mb-4 flex items-center gap-2">
-          <FlaskConical className="h-5 w-5 text-[#5b21b6]" />
+          <FlaskConical className="h-5 w-5 text-[#065f46]" />
           Test Details
         </h2>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -308,14 +308,14 @@ export default function LabOrderDetailPage({ params }: { params: Promise<{ id: s
       {order.status === 'Ordered' && (
         <div className="bg-white dark:bg-neutral-800 rounded-lg border border-gray-200 dark:border-gray-700 p-6">
           <h2 className="text-lg font-semibold text-gray-900 dark:text-white mb-4 flex items-center gap-2">
-            <Syringe className="h-5 w-5 text-[#5b21b6]" />
+            <Syringe className="h-5 w-5 text-[#065f46]" />
             Sample Collection
           </h2>
           
           {!showSampleForm ? (
             <button
               onClick={() => setShowSampleForm(true)}
-              className="w-full px-4 py-3 bg-[#5b21b6] text-white rounded-lg hover:bg-[#4c1d95] transition-colors font-medium"
+              className="w-full px-4 py-3 bg-[#065f46] text-white rounded-lg hover:bg-[#064e3b] transition-colors font-medium"
             >
               Collect Sample
             </button>
@@ -330,14 +330,14 @@ export default function LabOrderDetailPage({ params }: { params: Promise<{ id: s
                   value={sampleId}
                   onChange={(e) => setSampleId(e.target.value)}
                   placeholder="Enter sample barcode or ID"
-                  className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-neutral-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-[#5b21b6] focus:border-transparent"
+                  className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-neutral-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-[#065f46] focus:border-transparent"
                 />
               </div>
               <div className="flex gap-3">
                 <button
                   onClick={handleCollectSample}
                   disabled={processing}
-                  className="flex-1 px-4 py-2 bg-[#5b21b6] text-white rounded-lg hover:bg-[#4c1d95] disabled:opacity-50 disabled:cursor-not-allowed transition-colors font-medium"
+                  className="flex-1 px-4 py-2 bg-[#065f46] text-white rounded-lg hover:bg-[#064e3b] disabled:opacity-50 disabled:cursor-not-allowed transition-colors font-medium"
                 >
                   {processing ? (
                     <span className="flex items-center justify-center gap-2">
@@ -385,14 +385,14 @@ export default function LabOrderDetailPage({ params }: { params: Promise<{ id: s
       {order.status === 'Sample Collected' && (
         <div className="bg-white dark:bg-neutral-800 rounded-lg border border-gray-200 dark:border-gray-700 p-6">
           <h2 className="text-lg font-semibold text-gray-900 dark:text-white mb-4 flex items-center gap-2">
-            <Send className="h-5 w-5 text-[#5b21b6]" />
+            <Send className="h-5 w-5 text-[#065f46]" />
             Enter Results
           </h2>
           
           {!showResultForm ? (
             <button
               onClick={() => setShowResultForm(true)}
-              className="w-full px-4 py-3 bg-[#5b21b6] text-white rounded-lg hover:bg-[#4c1d95] transition-colors font-medium"
+              className="w-full px-4 py-3 bg-[#065f46] text-white rounded-lg hover:bg-[#064e3b] transition-colors font-medium"
             >
               Enter Test Results
             </button>
@@ -407,7 +407,7 @@ export default function LabOrderDetailPage({ params }: { params: Promise<{ id: s
                     <select
                       value={resultValue}
                       onChange={(e) => setResultValue(e.target.value)}
-                      className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-neutral-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-[#5b21b6] focus:border-transparent"
+                      className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-neutral-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-[#065f46] focus:border-transparent"
                     >
                       <option value="">Select result...</option>
                       {getQualitativeOptions(order.test_info.test_code).map((option) => (
@@ -422,7 +422,7 @@ export default function LabOrderDetailPage({ params }: { params: Promise<{ id: s
                       value={resultValue}
                       onChange={(e) => setResultValue(e.target.value)}
                       placeholder="e.g., 450"
-                      className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-neutral-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-[#5b21b6] focus:border-transparent"
+                      className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-neutral-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-[#065f46] focus:border-transparent"
                     />
                   )}
                 </div>
@@ -435,7 +435,7 @@ export default function LabOrderDetailPage({ params }: { params: Promise<{ id: s
                     value={resultUnit}
                     onChange={(e) => setResultUnit(e.target.value)}
                     disabled={isQualitativeTest(order.test_info.test_code)}
-                    className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-neutral-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-[#5b21b6] focus:border-transparent disabled:opacity-50 disabled:cursor-not-allowed"
+                    className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-neutral-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-[#065f46] focus:border-transparent disabled:opacity-50 disabled:cursor-not-allowed"
                   />
                 </div>
               </div>
@@ -447,7 +447,7 @@ export default function LabOrderDetailPage({ params }: { params: Promise<{ id: s
                 <select
                   value={resultInterpretation}
                   onChange={(e) => setResultInterpretation(e.target.value as any)}
-                  className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-neutral-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-[#5b21b6] focus:border-transparent"
+                  className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-neutral-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-[#065f46] focus:border-transparent"
                 >
                   <option value="">Select interpretation...</option>
                   <option value="Undetectable">Undetectable (&lt;50 copies/mL)</option>
@@ -465,7 +465,7 @@ export default function LabOrderDetailPage({ params }: { params: Promise<{ id: s
                   onChange={(e) => setResultNotes(e.target.value)}
                   rows={3}
                   placeholder="Additional observations or notes..."
-                  className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-neutral-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-[#5b21b6] focus:border-transparent resize-none"
+                  className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-neutral-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-[#065f46] focus:border-transparent resize-none"
                 />
               </div>
 
@@ -473,7 +473,7 @@ export default function LabOrderDetailPage({ params }: { params: Promise<{ id: s
                 <button
                   onClick={handleSubmitResult}
                   disabled={processing}
-                  className="flex-1 px-4 py-2 bg-[#5b21b6] text-white rounded-lg hover:bg-[#4c1d95] disabled:opacity-50 disabled:cursor-not-allowed transition-colors font-medium"
+                  className="flex-1 px-4 py-2 bg-[#065f46] text-white rounded-lg hover:bg-[#064e3b] disabled:opacity-50 disabled:cursor-not-allowed transition-colors font-medium"
                 >
                   {processing ? (
                     <span className="flex items-center justify-center gap-2">

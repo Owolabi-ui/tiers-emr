@@ -57,7 +57,7 @@ const serviceColors: Record<ServiceType, string> = {
   PREP: 'bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-400',
   PEP: 'bg-orange-100 text-orange-700 dark:bg-orange-900/30 dark:text-orange-400',
   ART: 'bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-400',
-  'Mental Health': 'bg-purple-100 text-purple-700 dark:bg-purple-900/30 dark:text-purple-400',
+  'Mental Health': 'bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400',
 };
 
 export default function PatientDetailPage() {
@@ -138,7 +138,7 @@ export default function PatientDetailPage() {
     return (
       <div className="flex items-center justify-center min-h-[400px]">
         <div className="text-center">
-          <Loader2 className="h-8 w-8 animate-spin text-[#5b21b6] mx-auto" />
+          <Loader2 className="h-8 w-8 animate-spin text-[#065f46] mx-auto" />
           <p className="mt-4 text-sm text-gray-500">Loading patient details...</p>
         </div>
       </div>
@@ -160,7 +160,7 @@ export default function PatientDetailPage() {
               </p>
               <Link
                 href="/dashboard/patients"
-                className="mt-4 inline-flex items-center gap-2 text-sm text-[#5b21b6] hover:underline"
+                className="mt-4 inline-flex items-center gap-2 text-sm text-[#065f46] hover:underline"
               >
                 <ArrowLeft className="h-4 w-4" />
                 Back to patients
@@ -184,7 +184,7 @@ export default function PatientDetailPage() {
             <ArrowLeft className="h-5 w-5" />
           </Link>
           <div>
-            <h1 className="text-2xl font-bold text-[#5b21b6]">{getPatientFullName(patient)}</h1>
+            <h1 className="text-2xl font-bold text-[#065f46]">{getPatientFullName(patient)}</h1>
             <p className="text-sm text-gray-500">
               Hospital No: <span className="font-mono">{patient.hospital_no}</span>
             </p>
@@ -193,7 +193,7 @@ export default function PatientDetailPage() {
         <div className="flex items-center gap-2">
           <button
             onClick={() => setShowFingerprintCapture(true)}
-            className="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-purple-600 text-white text-sm font-medium hover:bg-purple-700 transition-colors"
+            className="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-green-600 text-white text-sm font-medium hover:bg-green-700 transition-colors"
           >
             <Fingerprint className="h-4 w-4" />
             Add Fingerprint
@@ -222,21 +222,21 @@ export default function PatientDetailPage() {
 
       {/* Quick Info Cards */}
       <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
-        <div className="rounded-xl border border-black/10 dark:border-white/15 bg-purple-50/40 dark:bg-[#5b21b6]/10 p-4">
+        <div className="rounded-xl border border-black/10 dark:border-white/15 bg-green-50/40 dark:bg-[#065f46]/10 p-4">
           <div className="flex items-center gap-2 text-gray-500 text-sm mb-1">
             <User className="h-4 w-4" />
             Sex
           </div>
           <p className="font-semibold text-gray-900 dark:text-white">{patient.sex}</p>
         </div>
-        <div className="rounded-xl border border-black/10 dark:border-white/15 bg-purple-50/40 dark:bg-[#5b21b6]/10 p-4">
+        <div className="rounded-xl border border-black/10 dark:border-white/15 bg-green-50/40 dark:bg-[#065f46]/10 p-4">
           <div className="flex items-center gap-2 text-gray-500 text-sm mb-1">
             <Calendar className="h-4 w-4" />
             Age
           </div>
           <p className="font-semibold text-gray-900 dark:text-white">{formatPatientAge(patient)}</p>
         </div>
-        <div className="rounded-xl border border-black/10 dark:border-white/15 bg-purple-50/40 dark:bg-[#5b21b6]/10 p-4">
+        <div className="rounded-xl border border-black/10 dark:border-white/15 bg-green-50/40 dark:bg-[#065f46]/10 p-4">
           <div className="flex items-center gap-2 text-gray-500 text-sm mb-1">
             <Activity className="h-4 w-4" />
             Status
@@ -245,7 +245,7 @@ export default function PatientDetailPage() {
             {patient.is_active ? 'Active' : 'Inactive'}
           </p>
         </div>
-        <div className="rounded-xl border border-black/10 dark:border-white/15 bg-purple-50/40 dark:bg-[#5b21b6]/10 p-4">
+        <div className="rounded-xl border border-black/10 dark:border-white/15 bg-green-50/40 dark:bg-[#065f46]/10 p-4">
           <div className="flex items-center gap-2 text-gray-500 text-sm mb-1">
             <Calendar className="h-4 w-4" />
             Registered
@@ -255,7 +255,7 @@ export default function PatientDetailPage() {
           </p>
         </div>
         {patient.registered_by_name && (
-          <div className="rounded-xl border border-black/10 dark:border-white/15 bg-purple-50/40 dark:bg-[#5b21b6]/10 p-4">
+          <div className="rounded-xl border border-black/10 dark:border-white/15 bg-green-50/40 dark:bg-[#065f46]/10 p-4">
             <div className="flex items-center gap-2 text-gray-500 text-sm mb-1">
               <UserPlus className="h-4 w-4" />
               Registered By
@@ -268,7 +268,7 @@ export default function PatientDetailPage() {
       {/* Services Enrolled */}
       {details && details.services.length > 0 && (
         <div className="rounded-xl border border-black/10 dark:border-white/15 bg-white dark:bg-neutral-900 overflow-hidden">
-          <div className="bg-[#5b21b6] px-5 py-3 flex items-center gap-2">
+          <div className="bg-[#065f46] px-5 py-3 flex items-center gap-2">
             <Heart className="h-5 w-5 text-white" />
             <h2 className="font-semibold text-white">Enrolled Services</h2>
           </div>
@@ -294,10 +294,10 @@ export default function PatientDetailPage() {
       {/* Vital Signs */}
       {vitalSigns.length > 0 && (
         <div className="rounded-xl border border-black/10 dark:border-white/15 bg-white dark:bg-neutral-900 overflow-hidden">
-          <div className="bg-[#5b21b6] px-5 py-3 flex items-center gap-2">
+          <div className="bg-[#065f46] px-5 py-3 flex items-center gap-2">
             <Activity className="h-5 w-5 text-white" />
             <h2 className="font-semibold text-white">Vital Signs</h2>
-            <span className="ml-auto text-xs text-purple-200">
+            <span className="ml-auto text-xs text-green-200">
               Latest: {new Date(vitalSigns[0].recorded_at).toLocaleDateString()}
             </span>
           </div>
@@ -355,7 +355,7 @@ export default function PatientDetailPage() {
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         {/* Personal Information */}
         <div className="rounded-xl border border-black/10 dark:border-white/15 bg-white dark:bg-neutral-900 overflow-hidden">
-          <div className="bg-[#5b21b6] px-5 py-3 flex items-center gap-2">
+          <div className="bg-[#065f46] px-5 py-3 flex items-center gap-2">
             <User className="h-5 w-5 text-white" />
             <h2 className="font-semibold text-white">Personal Information</h2>
           </div>
@@ -375,7 +375,7 @@ export default function PatientDetailPage() {
 
         {/* Contact Information */}
         <div className="rounded-xl border border-black/10 dark:border-white/15 bg-white dark:bg-neutral-900 overflow-hidden">
-          <div className="bg-[#5b21b6] px-5 py-3 flex items-center gap-2">
+          <div className="bg-[#065f46] px-5 py-3 flex items-center gap-2">
             <Phone className="h-5 w-5 text-white" />
             <h2 className="font-semibold text-white">Contact Information</h2>
           </div>
@@ -398,7 +398,7 @@ export default function PatientDetailPage() {
 
         {/* Address */}
         <div className="rounded-xl border border-black/10 dark:border-white/15 bg-white dark:bg-neutral-900 overflow-hidden">
-          <div className="bg-[#5b21b6] px-5 py-3 flex items-center gap-2">
+          <div className="bg-[#065f46] px-5 py-3 flex items-center gap-2">
             <MapPin className="h-5 w-5 text-white" />
             <h2 className="font-semibold text-white">Address</h2>
           </div>
@@ -411,7 +411,7 @@ export default function PatientDetailPage() {
 
         {/* Education & Occupation */}
         <div className="rounded-xl border border-black/10 dark:border-white/15 bg-white dark:bg-neutral-900 overflow-hidden">
-          <div className="bg-[#5b21b6] px-5 py-3 flex items-center gap-2">
+          <div className="bg-[#065f46] px-5 py-3 flex items-center gap-2">
             <Briefcase className="h-5 w-5 text-white" />
             <h2 className="font-semibold text-white">Education & Occupation</h2>
           </div>
@@ -426,7 +426,7 @@ export default function PatientDetailPage() {
 
         {/* Emergency Contact */}
         <div className="rounded-xl border border-black/10 dark:border-white/15 bg-white dark:bg-neutral-900 overflow-hidden">
-          <div className="bg-[#5b21b6] px-5 py-3 flex items-center gap-2">
+          <div className="bg-[#065f46] px-5 py-3 flex items-center gap-2">
             <UserPlus className="h-5 w-5 text-white" />
             <h2 className="font-semibold text-white">Emergency Contact</h2>
           </div>
@@ -440,7 +440,7 @@ export default function PatientDetailPage() {
         {/* Biometrics */}
         {details && details.biometrics.length > 0 && (
           <div className="rounded-xl border border-black/10 dark:border-white/15 bg-white dark:bg-neutral-900 overflow-hidden">
-            <div className="bg-[#5b21b6] px-5 py-3 flex items-center gap-2">
+            <div className="bg-[#065f46] px-5 py-3 flex items-center gap-2">
               <Fingerprint className="h-5 w-5 text-white" />
               <h2 className="font-semibold text-white">Biometrics</h2>
             </div>

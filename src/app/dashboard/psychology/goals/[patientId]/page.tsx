@@ -107,7 +107,7 @@ export default function TherapyGoalsPage() {
           </Link>
           <div>
             <h1 className="text-2xl font-bold text-gray-900 dark:text-white flex items-center gap-3">
-              <Target className="h-7 w-7 text-purple-600 dark:text-purple-400" />
+              <Target className="h-7 w-7 text-green-600 dark:text-green-400" />
               Therapy Goals
             </h1>
             <p className="text-gray-600 dark:text-gray-400 mt-1">
@@ -117,7 +117,7 @@ export default function TherapyGoalsPage() {
         </div>
         <button
           onClick={() => setShowNewForm(true)}
-          className="inline-flex items-center gap-2 px-4 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 transition-colors"
+          className="inline-flex items-center gap-2 px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors"
         >
           <Plus className="h-4 w-4" />
           New Goal
@@ -147,7 +147,7 @@ export default function TherapyGoalsPage() {
                 onChange={(e) => setNewGoal({ ...newGoal, goal_description: e.target.value })}
                 rows={3}
                 required
-                className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-purple-500 dark:bg-neutral-900 dark:text-white"
+                className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-green-500 dark:bg-neutral-900 dark:text-white"
                 placeholder="e.g., Reduce anxiety symptoms by practicing daily mindfulness for 10 minutes"
               />
             </div>
@@ -159,7 +159,7 @@ export default function TherapyGoalsPage() {
                 type="date"
                 value={newGoal.target_date || ''}
                 onChange={(e) => setNewGoal({ ...newGoal, target_date: e.target.value })}
-                className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-purple-500 dark:bg-neutral-900 dark:text-white"
+                className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-green-500 dark:bg-neutral-900 dark:text-white"
               />
             </div>
             <div className="flex items-center justify-end gap-3">
@@ -175,7 +175,7 @@ export default function TherapyGoalsPage() {
               </button>
               <button
                 type="submit"
-                className="inline-flex items-center gap-2 px-4 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 transition-colors"
+                className="inline-flex items-center gap-2 px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors"
               >
                 <Save className="h-4 w-4" />
                 Save Goal
@@ -198,7 +198,7 @@ export default function TherapyGoalsPage() {
             </p>
             <button
               onClick={() => setShowNewForm(true)}
-              className="inline-flex items-center gap-2 px-4 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 transition-colors"
+              className="inline-flex items-center gap-2 px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors"
             >
               <Plus className="h-4 w-4" />
               Create First Goal
@@ -217,7 +217,7 @@ export default function TherapyGoalsPage() {
                       goal.status === 'Achieved' ? 'bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-400' :
                       goal.status === 'In Progress' ? 'bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-400' :
                       goal.status === 'Discontinued' ? 'bg-gray-100 text-gray-800 dark:bg-gray-900/30 dark:text-gray-400' :
-                      'bg-purple-100 text-purple-800 dark:bg-purple-900/30 dark:text-purple-400'
+                      'bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-400'
                     }`}>
                       {goal.status}
                     </span>
@@ -270,7 +270,7 @@ export default function TherapyGoalsPage() {
                     <select
                       defaultValue={goal.status}
                       onChange={(e) => handleUpdateGoal(goal.id, { status: e.target.value as any })}
-                      className="w-full px-3 py-2 text-sm border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-purple-500 dark:bg-neutral-900 dark:text-white"
+                      className="w-full px-3 py-2 text-sm border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-green-500 dark:bg-neutral-900 dark:text-white"
                     >
                       {goalStatusOptions.map((status) => (
                         <option key={status} value={status}>{status}</option>
@@ -289,7 +289,7 @@ export default function TherapyGoalsPage() {
                         }
                       }}
                       rows={2}
-                      className="w-full px-3 py-2 text-sm border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-purple-500 dark:bg-neutral-900 dark:text-white"
+                      className="w-full px-3 py-2 text-sm border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-green-500 dark:bg-neutral-900 dark:text-white"
                       placeholder="Document progress towards this goal..."
                     />
                   </div>

@@ -198,7 +198,7 @@ export default function ArtDetailPage({ params }: { params: Promise<{ id: string
         );
       case 'In Progress':
         return (
-          <span className="inline-flex items-center gap-1 px-2 py-1 rounded-full text-xs font-medium bg-purple-100 text-purple-800 dark:bg-purple-900/30 dark:text-purple-400">
+          <span className="inline-flex items-center gap-1 px-2 py-1 rounded-full text-xs font-medium bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-400">
             <Loader2 className="h-3 w-3" />
             In Progress
           </span>
@@ -338,7 +338,7 @@ export default function ArtDetailPage({ params }: { params: Promise<{ id: string
     return (
       <div className="flex items-center justify-center min-h-[400px]">
         <div className="text-center">
-          <Loader2 className="h-8 w-8 animate-spin text-[#5b21b6] mx-auto" />
+          <Loader2 className="h-8 w-8 animate-spin text-[#065f46] mx-auto" />
           <p className="mt-4 text-sm text-gray-500">Loading ART information...</p>
         </div>
       </div>
@@ -400,14 +400,14 @@ export default function ArtDetailPage({ params }: { params: Promise<{ id: string
         <div className="flex items-center gap-2">
           <button
             onClick={openVisitModal}
-            className="px-4 py-2 rounded-lg border border-[#5b21b6] text-[#5b21b6] text-sm font-medium hover:bg-purple-50 dark:hover:bg-purple-900/20 flex items-center gap-2"
+            className="px-4 py-2 rounded-lg border border-[#065f46] text-[#065f46] text-sm font-medium hover:bg-green-50 dark:hover:bg-green-900/20 flex items-center gap-2"
           >
             <Plus className="h-4 w-4" />
             Record Visit
           </button>
           <button
             onClick={handleOpenLabModal}
-            className="px-4 py-2 rounded-lg bg-purple-600 text-white text-sm font-medium hover:bg-purple-700 flex items-center gap-2"
+            className="px-4 py-2 rounded-lg bg-green-600 text-white text-sm font-medium hover:bg-green-700 flex items-center gap-2"
           >
             <Plus className="h-4 w-4" />
             Order Lab Test
@@ -421,7 +421,7 @@ export default function ArtDetailPage({ params }: { params: Promise<{ id: string
           {/* ART Client Information */}
           <div className="bg-white dark:bg-neutral-800 rounded-lg border border-gray-200 dark:border-gray-700 p-6">
             <h2 className="text-lg font-semibold text-gray-900 dark:text-white mb-4 flex items-center gap-2">
-              <Heart className="h-5 w-5 text-[#5b21b6]" />
+              <Heart className="h-5 w-5 text-[#065f46]" />
               ART Client Information
             </h2>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -496,7 +496,7 @@ export default function ArtDetailPage({ params }: { params: Promise<{ id: string
           <div className="bg-white dark:bg-neutral-800 rounded-lg border border-gray-200 dark:border-gray-700 p-6">
             <div className="flex items-center justify-between mb-4">
               <h2 className="text-lg font-semibold text-gray-900 dark:text-white flex items-center gap-2">
-                <UserCircle className="h-5 w-5 text-[#5b21b6]" />
+                <UserCircle className="h-5 w-5 text-[#065f46]" />
                 Enhanced Adherence Counseling
               </h2>
               <Link
@@ -547,7 +547,7 @@ export default function ArtDetailPage({ params }: { params: Promise<{ id: string
                     </div>
                     <Link
                       href={`/dashboard/eac/${episode.id}`}
-                      className="ml-4 px-3 py-1.5 text-xs font-medium text-[#5b21b6] hover:bg-purple-50 dark:hover:bg-purple-900/20 rounded-md transition-colors"
+                      className="ml-4 px-3 py-1.5 text-xs font-medium text-[#065f46] hover:bg-green-50 dark:hover:bg-green-900/20 rounded-md transition-colors"
                     >
                       View Details
                     </Link>
@@ -561,7 +561,7 @@ export default function ArtDetailPage({ params }: { params: Promise<{ id: string
           {prescriptions.length > 0 && (
             <div className="bg-white dark:bg-neutral-800 rounded-lg border border-gray-200 dark:border-gray-700 p-6">
               <h2 className="text-lg font-semibold text-gray-900 dark:text-white mb-4 flex items-center gap-2">
-                <Pill className="h-5 w-5 text-[#5b21b6]" />
+                <Pill className="h-5 w-5 text-[#065f46]" />
                 Prescriptions
               </h2>
               <div className="space-y-3">
@@ -602,7 +602,7 @@ export default function ArtDetailPage({ params }: { params: Promise<{ id: string
                     </div>
                     <Link
                       href={`/dashboard/pharmacy/${prescription.id}`}
-                      className="ml-4 px-3 py-1.5 text-xs font-medium text-[#5b21b6] hover:bg-purple-50 dark:hover:bg-purple-900/20 rounded-md transition-colors"
+                      className="ml-4 px-3 py-1.5 text-xs font-medium text-[#065f46] hover:bg-green-50 dark:hover:bg-green-900/20 rounded-md transition-colors"
                     >
                       View Details
                     </Link>
@@ -615,7 +615,7 @@ export default function ArtDetailPage({ params }: { params: Promise<{ id: string
           {/* Visit History */}
           <div className="bg-white dark:bg-neutral-800 rounded-lg border border-gray-200 dark:border-gray-700 p-6">
             <h2 className="text-lg font-semibold text-gray-900 dark:text-white mb-4 flex items-center gap-2">
-              <Calendar className="h-5 w-5 text-[#5b21b6]" />
+              <Calendar className="h-5 w-5 text-[#065f46]" />
               Visit History
             </h2>
             {followups.length === 0 ? (
@@ -635,7 +635,7 @@ export default function ArtDetailPage({ params }: { params: Promise<{ id: string
                     {followups.map((f) => (
                       <tr
                         key={f.id}
-                        className="cursor-pointer hover:bg-purple-50/40 dark:hover:bg-purple-900/10"
+                        className="cursor-pointer hover:bg-green-50/40 dark:hover:bg-green-900/10"
                         onClick={() => setSelectedFollowup(f)}
                       >
                         <td className="py-2 pr-4 text-gray-900 dark:text-white">
@@ -662,7 +662,7 @@ export default function ArtDetailPage({ params }: { params: Promise<{ id: string
           {labOrders.length > 0 && (
             <div className="bg-white dark:bg-neutral-800 rounded-lg border border-gray-200 dark:border-gray-700 p-6">
               <h2 className="text-lg font-semibold text-gray-900 dark:text-white mb-4 flex items-center gap-2">
-                <FlaskConical className="h-5 w-5 text-[#5b21b6]" />
+                <FlaskConical className="h-5 w-5 text-[#065f46]" />
                 Laboratory Testing
               </h2>
               <div className="space-y-3">
@@ -701,7 +701,7 @@ export default function ArtDetailPage({ params }: { params: Promise<{ id: string
                     </div>
                     <Link
                       href={`/dashboard/laboratory/${order.id}`}
-                      className="ml-4 px-3 py-1.5 text-xs font-medium text-[#5b21b6] hover:bg-purple-50 dark:hover:bg-purple-900/20 rounded-md transition-colors"
+                      className="ml-4 px-3 py-1.5 text-xs font-medium text-[#065f46] hover:bg-green-50 dark:hover:bg-green-900/20 rounded-md transition-colors"
                     >
                       View Details
                     </Link>
@@ -715,7 +715,7 @@ export default function ArtDetailPage({ params }: { params: Promise<{ id: string
           {(artInfo.name_of_next_of_kin || artInfo.relationship_with_next_of_kin || artInfo.phone_no_of_next_of_kin) && (
             <div className="bg-white dark:bg-neutral-800 rounded-lg border border-gray-200 dark:border-gray-700 p-6">
               <h2 className="text-lg font-semibold text-gray-900 dark:text-white mb-4 flex items-center gap-2">
-                <User className="h-5 w-5 text-[#5b21b6]" />
+                <User className="h-5 w-5 text-[#065f46]" />
                 Next of Kin
               </h2>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -751,7 +751,7 @@ export default function ArtDetailPage({ params }: { params: Promise<{ id: string
           {/* Patient Information */}
           <div className="bg-white dark:bg-neutral-800 rounded-lg border border-gray-200 dark:border-gray-700 p-6">
             <h2 className="text-lg font-semibold text-gray-900 dark:text-white mb-4 flex items-center gap-2">
-              <User className="h-5 w-5 text-[#5b21b6]" />
+              <User className="h-5 w-5 text-[#065f46]" />
               Patient Information
             </h2>
             <div className="flex items-center justify-between">
@@ -798,7 +798,7 @@ export default function ArtDetailPage({ params }: { params: Promise<{ id: string
               </Link>
               <Link
                 href={`/dashboard/pharmacy/prescriptions/new?patient_id=${artInfo.patient_id}&source=ART&source_id=${id}`}
-                className="w-full flex items-center gap-2 px-4 py-2 text-sm font-medium text-white bg-[#5b21b6] hover:bg-[#4c1d95] rounded-lg transition-colors"
+                className="w-full flex items-center gap-2 px-4 py-2 text-sm font-medium text-white bg-[#065f46] hover:bg-[#064e3b] rounded-lg transition-colors"
               >
                 <Pill className="h-4 w-4" />
                 Prescribe Medication
@@ -855,8 +855,8 @@ export default function ArtDetailPage({ params }: { params: Promise<{ id: string
               {artInfo.updated_at !== artInfo.created_at && (
                 <div className="flex gap-3">
                   <div className="flex-shrink-0">
-                    <div className="h-8 w-8 rounded-full bg-purple-100 dark:bg-purple-900/30 flex items-center justify-center">
-                      <Edit className="h-4 w-4 text-purple-600 dark:text-purple-400" />
+                    <div className="h-8 w-8 rounded-full bg-green-100 dark:bg-green-900/30 flex items-center justify-center">
+                      <Edit className="h-4 w-4 text-green-600 dark:text-green-400" />
                     </div>
                   </div>
                   <div>
@@ -891,7 +891,7 @@ export default function ArtDetailPage({ params }: { params: Promise<{ id: string
       {showLabModal && (
       <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
         <div className="bg-white dark:bg-neutral-900 rounded-xl max-w-md w-full border border-black/10 dark:border-white/15">
-          <div className="bg-[#5b21b6] px-5 py-3 flex items-center justify-between rounded-t-xl">
+          <div className="bg-[#065f46] px-5 py-3 flex items-center justify-between rounded-t-xl">
             <h3 className="font-semibold text-white">Order Lab Test</h3>
             <button onClick={() => setShowLabModal(false)} className="text-white hover:text-gray-200">
               <XCircle className="h-5 w-5" />
@@ -900,7 +900,7 @@ export default function ArtDetailPage({ params }: { params: Promise<{ id: string
           <div className="p-6 space-y-4">
             {catalogLoading ? (
               <div className="flex justify-center py-6">
-                <Loader2 className="h-6 w-6 animate-spin text-[#5b21b6]" />
+                <Loader2 className="h-6 w-6 animate-spin text-[#065f46]" />
               </div>
             ) : (
               <div>
@@ -910,7 +910,7 @@ export default function ArtDetailPage({ params }: { params: Promise<{ id: string
                 <select
                   value={selectedTest}
                   onChange={(e) => setSelectedTest(e.target.value)}
-                  className="w-full h-10 px-4 rounded-lg border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-neutral-800 text-sm text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-[#5b21b6]/50"
+                  className="w-full h-10 px-4 rounded-lg border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-neutral-800 text-sm text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-[#065f46]/50"
                 >
                   <option value="">Choose a test...</option>
                   {catalog.map((test) => (
@@ -941,7 +941,7 @@ export default function ArtDetailPage({ params }: { params: Promise<{ id: string
                 type="button"
                 onClick={handleSubmitLabOrder}
                 disabled={!selectedTest || labOrderLoading}
-                className="px-4 py-2 rounded-lg bg-[#5b21b6] text-white text-sm font-medium hover:bg-[#4c1d95] disabled:opacity-50 flex items-center gap-2"
+                className="px-4 py-2 rounded-lg bg-[#065f46] text-white text-sm font-medium hover:bg-[#064e3b] disabled:opacity-50 flex items-center gap-2"
               >
                 {labOrderLoading && <Loader2 className="h-4 w-4 animate-spin" />}
                 Order Test
@@ -954,7 +954,7 @@ export default function ArtDetailPage({ params }: { params: Promise<{ id: string
       {showVisitModal && (
         <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
           <div className="bg-white dark:bg-neutral-900 rounded-xl w-full max-w-3xl border border-black/10 dark:border-white/15 max-h-[90vh] overflow-y-auto">
-            <div className="sticky top-0 bg-[#5b21b6] px-5 py-3 flex items-center justify-between rounded-t-xl">
+            <div className="sticky top-0 bg-[#065f46] px-5 py-3 flex items-center justify-between rounded-t-xl">
               <h3 className="font-semibold text-white">Record ART Follow-up Visit</h3>
               <button
                 onClick={() => setShowVisitModal(false)}
@@ -1167,7 +1167,7 @@ export default function ArtDetailPage({ params }: { params: Promise<{ id: string
                   type="button"
                   onClick={handleSaveVisit}
                   disabled={visitSaving || !visitForm.visit_date || !visitForm.arv_drug_id}
-                  className="px-4 py-2 rounded-lg bg-[#5b21b6] text-white text-sm font-medium hover:bg-[#4c1d95] disabled:opacity-50 inline-flex items-center gap-2"
+                  className="px-4 py-2 rounded-lg bg-[#065f46] text-white text-sm font-medium hover:bg-[#064e3b] disabled:opacity-50 inline-flex items-center gap-2"
                 >
                   {visitSaving && <Loader2 className="h-4 w-4 animate-spin" />}
                   Save Visit

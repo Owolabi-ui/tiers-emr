@@ -391,7 +391,7 @@ export default function DashboardHeader({ onMobileMenuOpen }: DashboardHeaderPro
                     {unreadCount > 0 && (
                       <button
                         onClick={handleMarkAllAsRead}
-                        className="text-xs text-[#5b21b6] hover:text-[#4c1d95] font-medium flex items-center gap-1"
+                        className="text-xs text-[#065f46] hover:text-[#064e3b] font-medium flex items-center gap-1"
                       >
                         <CheckCheck className="h-3 w-3" />
                         Mark all read
@@ -403,7 +403,7 @@ export default function DashboardHeader({ onMobileMenuOpen }: DashboardHeaderPro
                   <div className="max-h-96 overflow-y-auto">
                     {loading ? (
                       <div className="flex items-center justify-center py-8">
-                        <Loader2 className="h-6 w-6 animate-spin text-[#5b21b6]" />
+                        <Loader2 className="h-6 w-6 animate-spin text-[#065f46]" />
                       </div>
                     ) : notifications.length === 0 ? (
                       <div className="py-8 text-center">
@@ -415,7 +415,7 @@ export default function DashboardHeader({ onMobileMenuOpen }: DashboardHeaderPro
                         <div
                           key={notification.id}
                           className={`px-4 py-3 border-b border-gray-50 dark:border-gray-800 last:border-0 hover:bg-gray-50 dark:hover:bg-gray-800/50 cursor-pointer ${
-                            !notification.is_read ? 'bg-purple-50/50 dark:bg-purple-900/10' : ''
+                            !notification.is_read ? 'bg-green-50/50 dark:bg-green-900/10' : ''
                           }`}
                           onClick={() => handleNotificationClick(notification)}
                         >
@@ -490,7 +490,7 @@ export default function DashboardHeader({ onMobileMenuOpen }: DashboardHeaderPro
                     <div className="px-4 py-2 border-t border-gray-100 dark:border-gray-800">
                       <Link
                         href="/dashboard/notifications"
-                        className="text-xs text-[#5b21b6] hover:text-[#4c1d95] font-medium"
+                        className="text-xs text-[#065f46] hover:text-[#064e3b] font-medium"
                         onClick={() => setNotificationsOpen(false)}
                       >
                         View all notifications
@@ -535,7 +535,7 @@ export default function DashboardHeader({ onMobileMenuOpen }: DashboardHeaderPro
                   <div className="max-h-96 overflow-y-auto">
                     {messagesLoading ? (
                       <div className="flex items-center justify-center py-8">
-                        <Loader2 className="h-6 w-6 animate-spin text-[#5b21b6]" />
+                        <Loader2 className="h-6 w-6 animate-spin text-[#065f46]" />
                       </div>
                     ) : messages.length === 0 ? (
                       <div className="py-8 text-center">
@@ -552,7 +552,7 @@ export default function DashboardHeader({ onMobileMenuOpen }: DashboardHeaderPro
                           onClick={() => handleMessageClick(message)}
                         >
                           <div className="flex gap-3">
-                            <div className="flex-shrink-0 h-10 w-10 rounded-full bg-purple-500 flex items-center justify-center text-white font-semibold text-sm">
+                            <div className="flex-shrink-0 h-10 w-10 rounded-full bg-green-500 flex items-center justify-center text-white font-semibold text-sm">
                               {message.sender_name?.charAt(0).toUpperCase() || 'S'}
                             </div>
                             <div className="flex-1 min-w-0">
@@ -584,7 +584,7 @@ export default function DashboardHeader({ onMobileMenuOpen }: DashboardHeaderPro
                   <div className="px-4 py-2 border-t border-gray-100 dark:border-gray-800">
                     <Link
                       href="/dashboard/messages"
-                      className="text-xs text-[#5b21b6] hover:text-[#4c1d95] font-medium"
+                      className="text-xs text-[#065f46] hover:text-[#064e3b] font-medium"
                       onClick={() => setMessagesOpen(false)}
                     >
                       View all messages
@@ -600,7 +600,7 @@ export default function DashboardHeader({ onMobileMenuOpen }: DashboardHeaderPro
                 onClick={() => setProfileOpen(!profileOpen)}
                 className="flex items-center gap-2 p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800"
               >
-                <div className="h-8 w-8 rounded-full bg-[#5b21b6] flex items-center justify-center text-white text-sm font-medium">
+                <div className="h-8 w-8 rounded-full bg-[#065f46] flex items-center justify-center text-white text-sm font-medium">
                   {user?.full_name?.charAt(0).toUpperCase() || 'U'}
                 </div>
                 <div className="hidden sm:block text-left">

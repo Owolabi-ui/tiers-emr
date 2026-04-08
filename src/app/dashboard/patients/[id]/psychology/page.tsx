@@ -126,10 +126,10 @@ export default function PatientPsychologyPage() {
 
         <Link
           href={`/dashboard/psychology/assessments/gad7/${patientId}`}
-          className="bg-white dark:bg-neutral-800 rounded-lg border border-gray-200 dark:border-gray-700 p-4 hover:border-purple-300 dark:hover:border-purple-700 transition-colors"
+          className="bg-white dark:bg-neutral-800 rounded-lg border border-gray-200 dark:border-gray-700 p-4 hover:border-green-300 dark:hover:border-green-700 transition-colors"
         >
           <div className="flex items-center gap-3">
-            <Activity className="h-5 w-5 text-purple-600 dark:text-purple-400" />
+            <Activity className="h-5 w-5 text-green-600 dark:text-green-400" />
             <span className="font-medium text-gray-900 dark:text-white">GAD-7</span>
           </div>
         </Link>
@@ -215,7 +215,7 @@ export default function PatientPsychologyPage() {
                 <div className="mt-4">
                   <Link
                     href={`/dashboard/psychology/assessments/gad7/${patientId}`}
-                    className="text-sm text-purple-600 dark:text-purple-400 hover:underline"
+                    className="text-sm text-green-600 dark:text-green-400 hover:underline"
                   >
                     View history ({gad7.length} assessments)
                   </Link>
@@ -261,7 +261,7 @@ export default function PatientPsychologyPage() {
         <div className="bg-white dark:bg-neutral-800 rounded-lg border border-gray-200 dark:border-gray-700 p-6">
           <div className="flex items-center justify-between mb-4">
             <h3 className="text-lg font-semibold text-gray-900 dark:text-white flex items-center gap-2">
-              <Target className="h-5 w-5 text-purple-600 dark:text-purple-400" />
+              <Target className="h-5 w-5 text-green-600 dark:text-green-400" />
               Active Therapy Goals
             </h3>
             <Link
@@ -286,7 +286,7 @@ export default function PatientPsychologyPage() {
                   </div>
                   <span className={`px-2.5 py-0.5 rounded-full text-xs font-medium ${
                     goal.status === 'In Progress' ? 'bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-400' :
-                    'bg-purple-100 text-purple-800 dark:bg-purple-900/30 dark:text-purple-400'
+                    'bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-400'
                   }`}>
                     {goal.status}
                   </span>

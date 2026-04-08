@@ -207,11 +207,11 @@ export function GenerateAssessmentLinkModal({
               {/* Fill Now Option */}
               <button
                 onClick={() => handleOptionSelect('fill')}
-                className="w-full p-6 border-2 border-gray-200 dark:border-gray-700 hover:border-purple-500 dark:hover:border-purple-500 rounded-lg transition-colors text-left group"
+                className="w-full p-6 border-2 border-gray-200 dark:border-gray-700 hover:border-green-500 dark:hover:border-green-500 rounded-lg transition-colors text-left group"
               >
                 <div className="flex items-start gap-4">
-                  <div className="p-3 bg-purple-100 dark:bg-purple-900/30 rounded-lg group-hover:bg-purple-200 dark:group-hover:bg-purple-900/50 transition-colors">
-                    <FileText className="h-6 w-6 text-purple-600 dark:text-purple-400" />
+                  <div className="p-3 bg-green-100 dark:bg-green-900/30 rounded-lg group-hover:bg-green-200 dark:group-hover:bg-green-900/50 transition-colors">
+                    <FileText className="h-6 w-6 text-green-600 dark:text-green-400" />
                   </div>
                   <div className="flex-1">
                     <h3 className="font-semibold text-gray-900 dark:text-white mb-1">
@@ -220,7 +220,7 @@ export function GenerateAssessmentLinkModal({
                     <p className="text-sm text-gray-600 dark:text-gray-400">
                       Fill out the assessment together on this device. You or the patient can input responses directly into the system.
                     </p>
-                    <p className="text-xs text-purple-600 dark:text-purple-400 mt-2 font-medium">
+                    <p className="text-xs text-green-600 dark:text-green-400 mt-2 font-medium">
                       Best for patients without phones or during in-person sessions
                     </p>
                   </div>

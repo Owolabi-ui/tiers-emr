@@ -100,7 +100,7 @@ export default function GAD7AssessmentPage() {
         </Link>
         <div>
           <h1 className="text-2xl font-bold text-gray-900 dark:text-white flex items-center gap-3">
-            <Brain className="h-7 w-7 text-purple-600 dark:text-purple-400" />
+            <Brain className="h-7 w-7 text-green-600 dark:text-green-400" />
             GAD-7 Anxiety Screening
           </h1>
           <p className="text-gray-600 dark:text-gray-400 mt-1">
@@ -110,10 +110,10 @@ export default function GAD7AssessmentPage() {
       </div>
 
       {/* Instructions */}
-      <div className="bg-purple-50 dark:bg-purple-950/30 border border-purple-200 dark:border-purple-800 rounded-lg p-4">
+      <div className="bg-green-50 dark:bg-green-950/30 border border-green-200 dark:border-green-800 rounded-lg p-4">
         <div className="flex items-start gap-3">
-          <Info className="h-5 w-5 text-purple-600 dark:text-purple-400 flex-shrink-0 mt-0.5" />
-          <div className="text-sm text-purple-900 dark:text-purple-100">
+          <Info className="h-5 w-5 text-green-600 dark:text-green-400 flex-shrink-0 mt-0.5" />
+          <div className="text-sm text-green-900 dark:text-green-100">
             <p className="font-medium mb-1">Instructions</p>
             <p>Over the <strong>last 2 weeks</strong>, how often have you been bothered by the following problems?</p>
           </div>
@@ -138,7 +138,7 @@ export default function GAD7AssessmentPage() {
           <input
             type="date"
             {...register('assessment_date', { required: 'Assessment date is required' })}
-            className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-purple-500 dark:bg-neutral-900 dark:text-white"
+            className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-green-500 dark:bg-neutral-900 dark:text-white"
           />
           {errors.assessment_date && (
             <p className="mt-1 text-sm text-red-600 dark:text-red-400">{errors.assessment_date.message}</p>
@@ -170,7 +170,7 @@ export default function GAD7AssessmentPage() {
                           valueAsNumber: true,
                         })}
                         onChange={calculateCurrentScore}
-                        className="text-purple-600 focus:ring-purple-500"
+                        className="text-green-600 focus:ring-green-500"
                       />
                       <span className="text-sm text-gray-700 dark:text-gray-300">{option.label}</span>
                     </label>
@@ -188,7 +188,7 @@ export default function GAD7AssessmentPage() {
           </p>
           <select
             {...register('difficulty_level')}
-            className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-purple-500 dark:bg-neutral-900 dark:text-white"
+            className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-green-500 dark:bg-neutral-900 dark:text-white"
           >
             <option value="">Select difficulty level</option>
             {difficultyOptions.map((option) => (
@@ -199,7 +199,7 @@ export default function GAD7AssessmentPage() {
 
         {/* Current Score Display */}
         {currentScore && (
-          <div className="bg-gradient-to-br from-purple-50 to-pink-50 dark:from-purple-950/30 dark:to-pink-950/30 rounded-lg border border-purple-200 dark:border-purple-800 p-6">
+          <div className="bg-gradient-to-br from-green-50 to-pink-50 dark:from-green-950/30 dark:to-pink-950/30 rounded-lg border border-green-200 dark:border-green-800 p-6">
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-sm font-medium text-gray-600 dark:text-gray-400">Current Score</p>
@@ -237,7 +237,7 @@ export default function GAD7AssessmentPage() {
           <textarea
             {...register('notes')}
             rows={4}
-            className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-purple-500 dark:bg-neutral-900 dark:text-white"
+            className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-green-500 dark:bg-neutral-900 dark:text-white"
             placeholder="Any additional observations or context..."
           />
         </div>
@@ -253,14 +253,14 @@ export default function GAD7AssessmentPage() {
           <button
             type="button"
             onClick={calculateCurrentScore}
-            className="px-4 py-2 border border-purple-300 dark:border-purple-700 rounded-lg text-purple-700 dark:text-purple-300 hover:bg-purple-50 dark:hover:bg-purple-950/30 transition-colors"
+            className="px-4 py-2 border border-green-300 dark:border-green-700 rounded-lg text-green-700 dark:text-green-300 hover:bg-green-50 dark:hover:bg-green-950/30 transition-colors"
           >
             Calculate Score
           </button>
           <button
             type="submit"
             disabled={loading}
-            className="inline-flex items-center gap-2 px-4 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+            className="inline-flex items-center gap-2 px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
           >
             {loading ? (
               <>

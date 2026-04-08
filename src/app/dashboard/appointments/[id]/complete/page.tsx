@@ -147,7 +147,7 @@ export default function CompleteAppointmentPage() {
     return (
       <div className="flex items-center justify-center min-h-[400px]">
         <div className="text-center">
-          <Loader2 className="h-8 w-8 animate-spin text-[#5b21b6] mx-auto" />
+          <Loader2 className="h-8 w-8 animate-spin text-[#065f46] mx-auto" />
           <p className="mt-4 text-sm text-gray-500">Loading appointment...</p>
         </div>
       </div>
@@ -167,7 +167,7 @@ export default function CompleteAppointmentPage() {
               <p className="text-sm text-red-700 dark:text-red-400 mt-1">{error}</p>
               <Link
                 href={`/dashboard/appointments/${appointmentId}`}
-                className="mt-4 inline-flex items-center gap-2 text-sm text-[#5b21b6] hover:underline"
+                className="mt-4 inline-flex items-center gap-2 text-sm text-[#065f46] hover:underline"
               >
                 <ArrowLeft className="h-4 w-4" />
                 Back to appointment
@@ -206,7 +206,7 @@ export default function CompleteAppointmentPage() {
           <ArrowLeft className="h-5 w-5" />
         </Link>
         <div>
-          <h1 className="text-2xl font-bold text-[#5b21b6]">Complete Visit</h1>
+          <h1 className="text-2xl font-bold text-[#065f46]">Complete Visit</h1>
           <p className="text-sm text-gray-500">
             #{appointment?.appointment_number} -{' '}
             {appointment && formatAppointmentDate(appointment.appointment_date)} at{' '}
@@ -217,10 +217,10 @@ export default function CompleteAppointmentPage() {
 
       {/* Patient Info Banner */}
       {patient && (
-        <div className="rounded-xl border border-black/10 dark:border-white/15 bg-purple-50/40 dark:bg-[#5b21b6]/10 p-4">
+        <div className="rounded-xl border border-black/10 dark:border-white/15 bg-green-50/40 dark:bg-[#065f46]/10 p-4">
           <div className="flex items-center gap-4">
-            <div className="p-3 rounded-full bg-[#5b21b6]/10">
-              <User className="h-6 w-6 text-[#5b21b6]" />
+            <div className="p-3 rounded-full bg-[#065f46]/10">
+              <User className="h-6 w-6 text-[#065f46]" />
             </div>
             <div>
               <p className="font-semibold text-gray-900 dark:text-white">
@@ -247,7 +247,7 @@ export default function CompleteAppointmentPage() {
       <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
         {/* Clinical Summary */}
         <div className="rounded-xl border border-black/10 dark:border-white/15 bg-white dark:bg-neutral-900 overflow-hidden">
-          <div className="bg-[#5b21b6] px-5 py-3 flex items-center gap-2">
+          <div className="bg-[#065f46] px-5 py-3 flex items-center gap-2">
             <ClipboardList className="h-5 w-5 text-white" />
             <h2 className="font-semibold text-white">Clinical Summary *</h2>
           </div>
@@ -256,7 +256,7 @@ export default function CompleteAppointmentPage() {
               {...register('clinical_summary')}
               rows={4}
               placeholder="Summarize the visit outcome, key findings, and any important notes..."
-              className="w-full rounded-lg border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-neutral-800 px-3 py-2 text-sm text-gray-900 dark:text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-[#5b21b6]/50 resize-none"
+              className="w-full rounded-lg border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-neutral-800 px-3 py-2 text-sm text-gray-900 dark:text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-[#065f46]/50 resize-none"
             />
             {errors.clinical_summary && (
               <p className="mt-1 text-sm text-red-600">{errors.clinical_summary.message}</p>
@@ -266,7 +266,7 @@ export default function CompleteAppointmentPage() {
 
         {/* Visit Details */}
         <div className="rounded-xl border border-black/10 dark:border-white/15 bg-white dark:bg-neutral-900 overflow-hidden">
-          <div className="bg-[#5b21b6] px-5 py-3 flex items-center gap-2">
+          <div className="bg-[#065f46] px-5 py-3 flex items-center gap-2">
             <Stethoscope className="h-5 w-5 text-white" />
             <h2 className="font-semibold text-white">Visit Details</h2>
           </div>
@@ -279,7 +279,7 @@ export default function CompleteAppointmentPage() {
                 type="text"
                 {...register('chief_complaint')}
                 placeholder="Patient's main complaint or reason for visit"
-                className="w-full h-10 rounded-lg border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-neutral-800 px-3 text-sm text-gray-900 dark:text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-[#5b21b6]/50"
+                className="w-full h-10 rounded-lg border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-neutral-800 px-3 text-sm text-gray-900 dark:text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-[#065f46]/50"
               />
             </div>
 
@@ -291,7 +291,7 @@ export default function CompleteAppointmentPage() {
                 {...register('assessment')}
                 rows={2}
                 placeholder="Clinical assessment and observations"
-                className="w-full rounded-lg border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-neutral-800 px-3 py-2 text-sm text-gray-900 dark:text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-[#5b21b6]/50 resize-none"
+                className="w-full rounded-lg border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-neutral-800 px-3 py-2 text-sm text-gray-900 dark:text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-[#065f46]/50 resize-none"
               />
             </div>
 
@@ -303,7 +303,7 @@ export default function CompleteAppointmentPage() {
                 type="text"
                 {...register('diagnosis')}
                 placeholder="Diagnosis or impression"
-                className="w-full h-10 rounded-lg border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-neutral-800 px-3 text-sm text-gray-900 dark:text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-[#5b21b6]/50"
+                className="w-full h-10 rounded-lg border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-neutral-800 px-3 text-sm text-gray-900 dark:text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-[#065f46]/50"
               />
             </div>
 
@@ -315,7 +315,7 @@ export default function CompleteAppointmentPage() {
                 {...register('treatment_plan')}
                 rows={2}
                 placeholder="Treatment plan and recommendations"
-                className="w-full rounded-lg border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-neutral-800 px-3 py-2 text-sm text-gray-900 dark:text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-[#5b21b6]/50 resize-none"
+                className="w-full rounded-lg border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-neutral-800 px-3 py-2 text-sm text-gray-900 dark:text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-[#065f46]/50 resize-none"
               />
             </div>
           </div>
@@ -323,7 +323,7 @@ export default function CompleteAppointmentPage() {
 
         {/* Actions Taken */}
         <div className="rounded-xl border border-black/10 dark:border-white/15 bg-white dark:bg-neutral-900 overflow-hidden">
-          <div className="bg-[#5b21b6] px-5 py-3 flex items-center gap-2">
+          <div className="bg-[#065f46] px-5 py-3 flex items-center gap-2">
             <FileText className="h-5 w-5 text-white" />
             <h2 className="font-semibold text-white">Actions Taken</h2>
           </div>
@@ -334,15 +334,15 @@ export default function CompleteAppointmentPage() {
                 onClick={() => setValue('lab_tests_ordered', !labTestsOrdered)}
                 className={`flex flex-col items-center gap-2 p-4 rounded-lg border-2 transition-all ${
                   labTestsOrdered
-                    ? 'border-purple-500 bg-purple-50 dark:bg-purple-900/20'
+                    ? 'border-green-500 bg-green-50 dark:bg-green-900/20'
                     : 'border-gray-200 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-800'
                 }`}
               >
                 <TestTube
-                  className={`h-6 w-6 ${labTestsOrdered ? 'text-purple-600' : 'text-gray-400'}`}
+                  className={`h-6 w-6 ${labTestsOrdered ? 'text-green-600' : 'text-gray-400'}`}
                 />
                 <span
-                  className={`text-sm font-medium ${labTestsOrdered ? 'text-purple-700 dark:text-purple-400' : 'text-gray-600 dark:text-gray-400'}`}
+                  className={`text-sm font-medium ${labTestsOrdered ? 'text-green-700 dark:text-green-400' : 'text-gray-600 dark:text-gray-400'}`}
                 >
                   Lab Tests
                 </span>
@@ -410,7 +410,7 @@ export default function CompleteAppointmentPage() {
 
         {/* Follow-up Appointment */}
         <div className="rounded-xl border border-black/10 dark:border-white/15 bg-white dark:bg-neutral-900 overflow-hidden">
-          <div className="bg-[#5b21b6] px-5 py-3 flex items-center gap-2">
+          <div className="bg-[#065f46] px-5 py-3 flex items-center gap-2">
             <Calendar className="h-5 w-5 text-white" />
             <h2 className="font-semibold text-white">Next Appointment (Optional)</h2>
           </div>
@@ -423,7 +423,7 @@ export default function CompleteAppointmentPage() {
                 <input
                   type="date"
                   {...register('next_appointment_date')}
-                  className="w-full h-10 rounded-lg border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-neutral-800 px-3 text-sm text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-[#5b21b6]/50"
+                  className="w-full h-10 rounded-lg border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-neutral-800 px-3 text-sm text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-[#065f46]/50"
                 />
               </div>
               <div>
@@ -434,7 +434,7 @@ export default function CompleteAppointmentPage() {
                   type="text"
                   {...register('next_appointment_reason')}
                   placeholder="e.g., Lab review, Refill, Follow-up"
-                  className="w-full h-10 rounded-lg border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-neutral-800 px-3 text-sm text-gray-900 dark:text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-[#5b21b6]/50"
+                  className="w-full h-10 rounded-lg border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-neutral-800 px-3 text-sm text-gray-900 dark:text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-[#065f46]/50"
                 />
               </div>
             </div>

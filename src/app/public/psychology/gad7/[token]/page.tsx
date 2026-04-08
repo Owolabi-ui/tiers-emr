@@ -91,9 +91,9 @@ export default function PublicGAD7Page() {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-purple-50 to-indigo-50 dark:from-gray-900 dark:to-gray-800 flex items-center justify-center p-4">
+      <div className="min-h-screen bg-gradient-to-br from-green-50 to-indigo-50 dark:from-gray-900 dark:to-gray-800 flex items-center justify-center p-4">
         <div className="text-center">
-          <Loader2 className="h-8 w-8 animate-spin text-purple-600 mx-auto mb-4" />
+          <Loader2 className="h-8 w-8 animate-spin text-green-600 mx-auto mb-4" />
           <p className="text-gray-600 dark:text-gray-400">Loading assessment...</p>
         </div>
       </div>
@@ -102,7 +102,7 @@ export default function PublicGAD7Page() {
 
   if (error && !submitting) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-purple-50 to-indigo-50 dark:from-gray-900 dark:to-gray-800 flex items-center justify-center p-4">
+      <div className="min-h-screen bg-gradient-to-br from-green-50 to-indigo-50 dark:from-gray-900 dark:to-gray-800 flex items-center justify-center p-4">
         <div className="bg-white dark:bg-gray-800 rounded-lg shadow-xl p-8 max-w-md w-full text-center">
           <AlertCircle className="h-16 w-16 text-red-500 mx-auto mb-4" />
           <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-2">Invalid or Expired Link</h2>
@@ -115,7 +115,7 @@ export default function PublicGAD7Page() {
 
   if (success) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-purple-50 to-indigo-50 dark:from-gray-900 dark:to-gray-800 flex items-center justify-center p-4">
+      <div className="min-h-screen bg-gradient-to-br from-green-50 to-indigo-50 dark:from-gray-900 dark:to-gray-800 flex items-center justify-center p-4">
         <div className="bg-white dark:bg-gray-800 rounded-lg shadow-xl p-8 max-w-md w-full text-center">
           <CheckCircle2 className="h-16 w-16 text-green-500 mx-auto mb-4" />
           <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-2">Assessment Submitted!</h2>
@@ -129,13 +129,13 @@ export default function PublicGAD7Page() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-purple-50 to-indigo-50 dark:from-gray-900 dark:to-gray-800 py-8 px-4">
+    <div className="min-h-screen bg-gradient-to-br from-green-50 to-indigo-50 dark:from-gray-900 dark:to-gray-800 py-8 px-4">
       <div className="max-w-3xl mx-auto">
         {/* Header */}
         <div className="bg-white dark:bg-gray-800 rounded-lg shadow-xl p-6 mb-6">
           <div className="flex items-center gap-3 mb-4">
-            <div className="bg-purple-100 dark:bg-purple-900/30 p-3 rounded-lg">
-              <Brain className="h-8 w-8 text-purple-600 dark:text-purple-400" />
+            <div className="bg-green-100 dark:bg-green-900/30 p-3 rounded-lg">
+              <Brain className="h-8 w-8 text-green-600 dark:text-green-400" />
             </div>
             <div>
               <h1 className="text-2xl font-bold text-gray-900 dark:text-white">GAD-7 Anxiety Screening</h1>
@@ -143,7 +143,7 @@ export default function PublicGAD7Page() {
             </div>
           </div>
           
-          <div className="bg-purple-50 dark:bg-purple-900/20 border border-purple-200 dark:border-purple-800 rounded-lg p-4">
+          <div className="bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800 rounded-lg p-4">
             <p className="text-sm text-gray-700 dark:text-gray-300">
               <strong>Instructions:</strong> Over the last 2 weeks, how often have you been bothered by the following problems?
             </p>
@@ -170,7 +170,7 @@ export default function PublicGAD7Page() {
                       value={option.value}
                       checked={formData[question.id as keyof GAD7Submission] === option.value}
                       onChange={() => handleChange(question.id, option.value)}
-                      className="h-4 w-4 text-purple-600 focus:ring-purple-500"
+                      className="h-4 w-4 text-green-600 focus:ring-green-500"
                       required
                     />
                     <span className="ml-3 text-gray-700 dark:text-gray-300">{option.label}</span>
@@ -191,7 +191,7 @@ export default function PublicGAD7Page() {
             <button
               type="submit"
               disabled={submitting}
-              className="w-full bg-purple-600 hover:bg-purple-700 text-white font-semibold py-3 px-6 rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+              className="w-full bg-green-600 hover:bg-green-700 text-white font-semibold py-3 px-6 rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
             >
               {submitting ? (
                 <>

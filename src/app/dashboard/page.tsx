@@ -36,7 +36,7 @@ import {
 } from 'recharts';
 import { dashboardApi, DashboardStats, PatientTrendData, AppointmentStats, ServiceDistribution, RecentActivity, UpcomingAppointment } from '@/lib/dashboard';
 
-const COLORS = ['#10b981', '#f97316', '#ef4444', '#eab308', '#3b82f6', '#8b5cf6'];
+const COLORS = ['#10b981', '#f97316', '#ef4444', '#eab308', '#3b82f6', '#10b981'];
 
 export default function DashboardPage() {
   const user = useAuthStore((state) => state.user);
@@ -81,7 +81,7 @@ export default function DashboardPage() {
     return (
       <div className="flex items-center justify-center h-96">
         <div className="text-center">
-          <div className="inline-block h-8 w-8 animate-spin rounded-full border-4 border-solid border-[#5b21b6] border-r-transparent"></div>
+          <div className="inline-block h-8 w-8 animate-spin rounded-full border-4 border-solid border-[#065f46] border-r-transparent"></div>
           <p className="mt-4 text-gray-500">Loading dashboard...</p>
         </div>
       </div>
@@ -153,8 +153,8 @@ export default function DashboardPage() {
             className="bg-white dark:bg-neutral-900 rounded-xl border border-gray-200 dark:border-gray-800 p-4 hover:shadow-lg transition-shadow"
           >
             <div className="flex items-center justify-between mb-3">
-              <div className="p-2 rounded-lg bg-[#5b21b6]/10">
-                <stat.icon className="h-5 w-5 text-[#5b21b6]" />
+              <div className="p-2 rounded-lg bg-[#065f46]/10">
+                <stat.icon className="h-5 w-5 text-[#065f46]" />
               </div>
               {stat.changeType === 'positive' && (
                 <ArrowUpRight className="h-4 w-4 text-green-600" />
@@ -371,7 +371,7 @@ export default function DashboardPage() {
           </h3>
           <a
             href="/dashboard/appointments"
-            className="text-sm text-[#5b21b6] hover:underline font-medium"
+            className="text-sm text-[#065f46] hover:underline font-medium"
           >
             View all &rarr;
           </a>

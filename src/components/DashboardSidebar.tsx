@@ -1,9 +1,9 @@
 'use client';
 
 import Link from 'next/link';
-import Image from 'next/image';
 import { usePathname } from 'next/navigation';
 import { useAuthStore } from '@/lib/auth-store';
+import BrandLogo from '@/components/BrandLogo';
 import {
   LayoutDashboard,
   Users,
@@ -181,13 +181,7 @@ export default function DashboardSidebar({ mobileOpen = false, onClose, onMobile
     <>
       {/* Logo */}
       <div className="flex h-20 items-center justify-center px-6 border-b border-gray-200 dark:border-gray-800">
-        <Image
-          src="/images/TIERs-Logo-good.png"
-          alt="TIERs Logo"
-          width={180}
-          height={180}
-          className="flex-shrink-0"
-        />
+        <BrandLogo size="md" />
       </div>
 
       {/* Navigation */}
@@ -201,7 +195,7 @@ export default function DashboardSidebar({ mobileOpen = false, onClose, onMobile
               onClick={onClose}
               className={`flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-colors ${
                 isActive
-                  ? 'bg-[#5b21b6] text-white'
+                  ? 'bg-[#065f46] text-white'
                   : 'text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800'
               }`}
             >
@@ -227,7 +221,7 @@ export default function DashboardSidebar({ mobileOpen = false, onClose, onMobile
                   onClick={onClose}
                   className={`flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-colors ${
                     isActive
-                      ? 'bg-[#5b21b6] text-white'
+                      ? 'bg-[#065f46] text-white'
                       : 'text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800'
                   }`}
                 >

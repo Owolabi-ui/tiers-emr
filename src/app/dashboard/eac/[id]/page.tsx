@@ -162,7 +162,7 @@ export default function EacEpisodeDetailPage({ params }: { params: Promise<{ id:
     return (
       <div className="flex items-center justify-center min-h-[400px]">
         <div className="text-center">
-          <Loader2 className="h-8 w-8 animate-spin text-[#5b21b6] mx-auto" />
+          <Loader2 className="h-8 w-8 animate-spin text-[#065f46] mx-auto" />
           <p className="mt-4 text-sm text-gray-500">Loading EAC episode...</p>
         </div>
       </div>

@@ -72,7 +72,7 @@ export default function ClinicsPage() {
         </div>
         <Link
           href="/dashboard/clinics/new"
-          className="px-6 py-3 bg-purple-600 text-white rounded-lg hover:bg-purple-700 transition-colors font-medium"
+          className="px-6 py-3 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors font-medium"
         >
           + Add Clinic
         </Link>
@@ -94,7 +94,7 @@ export default function ClinicsPage() {
             </p>
             <Link
               href="/dashboard/clinics/new"
-              className="inline-block px-6 py-3 bg-purple-600 text-white rounded-lg hover:bg-purple-700 transition-colors font-medium"
+              className="inline-block px-6 py-3 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors font-medium"
             >
               Create First Clinic
             </Link>
@@ -164,7 +164,7 @@ export default function ClinicsPage() {
                       <div className="flex items-center gap-3">
                         <Link
                           href={`/dashboard/clinics/${clinic.id}`}
-                          className="text-purple-600 hover:text-purple-700 dark:text-purple-400 dark:hover:text-purple-300 font-medium"
+                          className="text-green-600 hover:text-green-700 dark:text-green-400 dark:hover:text-green-300 font-medium"
                         >
                           View Details
                         </Link>

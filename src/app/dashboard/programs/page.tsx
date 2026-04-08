@@ -266,7 +266,7 @@ export default function ProgramsPage() {
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="text-2xl font-bold text-[#5b21b6]">Programs</h1>
+        <h1 className="text-2xl font-bold text-[#065f46]">Programs</h1>
         <p className="text-sm text-gray-500">
           Manage outreach clients, stock items, and dispensing records.
         </p>
@@ -280,7 +280,7 @@ export default function ProgramsPage() {
             onClick={() => setActiveTab(tab.key)}
             className={`px-4 py-2 rounded-lg text-sm font-medium border ${
               activeTab === tab.key
-                ? 'bg-[#5b21b6] text-white border-[#5b21b6]'
+                ? 'bg-[#065f46] text-white border-[#065f46]'
                 : 'bg-white text-gray-700 border-gray-300'
             }`}
           >
@@ -320,7 +320,7 @@ export default function ProgramsPage() {
               <h2 className="font-semibold">Current Inventory</h2>
             </div>
             <table className="w-full text-sm">
-              <thead className="bg-[#5b21b6] text-white">
+              <thead className="bg-[#065f46] text-white">
                 <tr>
                   <th className="text-left px-3 py-2">Item</th>
                   <th className="text-left px-3 py-2">Category</th>
@@ -378,7 +378,7 @@ export default function ProgramsPage() {
               <h2 className="font-semibold">Clients & Last Dispensation</h2>
             </div>
             <table className="w-full text-sm">
-              <thead className="bg-[#5b21b6] text-white">
+              <thead className="bg-[#065f46] text-white">
                 <tr>
                   <th className="text-left px-3 py-2">Code</th>
                   <th className="text-left px-3 py-2">Name</th>
@@ -445,7 +445,7 @@ export default function ProgramsPage() {
               <button
                 type="submit"
                 disabled={createClientMutation.isPending}
-                className="px-4 py-2 rounded-lg bg-[#5b21b6] text-white text-sm"
+                className="px-4 py-2 rounded-lg bg-[#065f46] text-white text-sm"
               >
                 {createClientMutation.isPending ? 'Saving...' : 'Add Client'}
               </button>
@@ -454,7 +454,7 @@ export default function ProgramsPage() {
 
           <div className="rounded-xl border overflow-hidden bg-white dark:bg-neutral-900">
             <table className="w-full text-sm">
-              <thead className="bg-[#5b21b6] text-white">
+              <thead className="bg-[#065f46] text-white">
                 <tr>
                   <th className="text-left px-3 py-2">Code</th>
                   <th className="text-left px-3 py-2">Name</th>
@@ -539,7 +539,7 @@ export default function ProgramsPage() {
                 <button
                   type="submit"
                   disabled={createItemMutation.isPending}
-                  className="px-4 py-2 rounded-lg bg-[#5b21b6] text-white text-sm"
+                  className="px-4 py-2 rounded-lg bg-[#065f46] text-white text-sm"
                 >
                   {createItemMutation.isPending ? 'Saving...' : 'Add Item'}
                 </button>
@@ -593,7 +593,7 @@ export default function ProgramsPage() {
                 <button
                   type="submit"
                   disabled={addStockMutation.isPending}
-                  className="px-4 py-2 rounded-lg bg-[#5b21b6] text-white text-sm"
+                  className="px-4 py-2 rounded-lg bg-[#065f46] text-white text-sm"
                 >
                   {addStockMutation.isPending ? 'Saving...' : 'Add Stock'}
                 </button>
@@ -603,7 +603,7 @@ export default function ProgramsPage() {
 
           <div className="rounded-xl border overflow-hidden bg-white dark:bg-neutral-900">
             <table className="w-full text-sm">
-              <thead className="bg-[#5b21b6] text-white">
+              <thead className="bg-[#065f46] text-white">
                 <tr>
                   <th className="text-left px-3 py-2">Code</th>
                   <th className="text-left px-3 py-2">Item</th>
@@ -715,7 +715,7 @@ export default function ProgramsPage() {
                 <button
                   type="button"
                   onClick={() => setDispenseLines((prev) => [...prev, { item_id: '', quantity: '1' }])}
-                  className="inline-flex items-center gap-2 px-3 py-2 rounded-lg border text-sm text-[#5b21b6] border-[#d6c2ff]"
+                  className="inline-flex items-center gap-2 px-3 py-2 rounded-lg border text-sm text-[#065f46] border-[#d6c2ff]"
                 >
                   <Plus className="h-4 w-4" />
                   Add another item
@@ -775,7 +775,7 @@ export default function ProgramsPage() {
                             setClientSearchQuery('');
                             setClientSearchOpen(false);
                           }}
-                          className="px-3 py-2 text-sm cursor-pointer hover:bg-purple-50"
+                          className="px-3 py-2 text-sm cursor-pointer hover:bg-green-50"
                         >
                           <span className="font-mono text-xs text-gray-500">{c.client_code}</span> {c.full_name}
                           {c.phone && <span className="text-gray-400 ml-1">. {c.phone}</span>}
@@ -803,7 +803,7 @@ export default function ProgramsPage() {
               <button
                 type="submit"
                 disabled={dispenseMutation.isPending}
-                className="px-4 py-2 rounded-lg bg-[#5b21b6] text-white text-sm"
+                className="px-4 py-2 rounded-lg bg-[#065f46] text-white text-sm"
               >
                 {dispenseMutation.isPending ? 'Saving...' : 'Dispense'}
               </button>
@@ -838,7 +838,7 @@ function StatCard({
     <div className="rounded-xl border bg-white dark:bg-neutral-900 p-4">
       <div className="flex items-center justify-between">
         <p className="text-sm text-gray-600">{title}</p>
-        <div className="text-[#5b21b6]">{icon}</div>
+        <div className="text-[#065f46]">{icon}</div>
       </div>
       <p className="text-2xl font-bold mt-2">{value.toLocaleString()}</p>
     </div>

@@ -144,7 +144,7 @@ export default function PepDetailPage({ params }: { params: Promise<{ id: string
     return (
       <div className="flex items-center justify-center min-h-[400px]">
         <div className="text-center">
-          <Loader2 className="h-8 w-8 animate-spin text-[#5b21b6] mx-auto" />
+          <Loader2 className="h-8 w-8 animate-spin text-[#065f46] mx-auto" />
           <p className="mt-4 text-sm text-gray-500">Loading PEP information...</p>
         </div>
       </div>
@@ -226,7 +226,7 @@ export default function PepDetailPage({ params }: { params: Promise<{ id: string
           {/* Exposure Information */}
           <div className="bg-white dark:bg-neutral-800 rounded-lg border border-gray-200 dark:border-gray-700 p-6">
             <h2 className="text-lg font-semibold text-gray-900 dark:text-white mb-4 flex items-center gap-2">
-              <AlertCircle className="h-5 w-5 text-[#5b21b6]" />
+              <AlertCircle className="h-5 w-5 text-[#065f46]" />
               Exposure Information
             </h2>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -280,7 +280,7 @@ export default function PepDetailPage({ params }: { params: Promise<{ id: string
           {/* Treatment Supporter Information */}
           <div className="bg-white dark:bg-neutral-800 rounded-lg border border-gray-200 dark:border-gray-700 p-6">
             <h2 className="text-lg font-semibold text-gray-900 dark:text-white mb-4 flex items-center gap-2">
-              <User className="h-5 w-5 text-[#5b21b6]" />
+              <User className="h-5 w-5 text-[#065f46]" />
               Treatment Supporter
             </h2>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -309,7 +309,7 @@ export default function PepDetailPage({ params }: { params: Promise<{ id: string
           {/* Linked HTS Record */}
           <div className="bg-white dark:bg-neutral-800 rounded-lg border border-gray-200 dark:border-gray-700 p-6">
             <h2 className="text-lg font-semibold text-gray-900 dark:text-white mb-4 flex items-center gap-2">
-              <Shield className="h-5 w-5 text-[#5b21b6]" />
+              <Shield className="h-5 w-5 text-[#065f46]" />
               Linked HTS Record
             </h2>
             <div className="flex items-center justify-between">
@@ -342,7 +342,7 @@ export default function PepDetailPage({ params }: { params: Promise<{ id: string
             <div className="space-y-2">
               <button
                 onClick={() => setShowPrescriptionForm(true)}
-                className="w-full flex items-center gap-2 px-4 py-2 text-sm font-medium text-white bg-[#5b21b6] hover:bg-[#4c1d95] rounded-lg"
+                className="w-full flex items-center gap-2 px-4 py-2 text-sm font-medium text-white bg-[#065f46] hover:bg-[#064e3b] rounded-lg"
               >
                 <Pill className="h-4 w-4" />
                 Prescribe Medication
@@ -459,10 +459,10 @@ export default function PepDetailPage({ params }: { params: Promise<{ id: string
           </div>
 
           {/* PEP Information */}
-          <div className="bg-purple-50 dark:bg-purple-900/20 border border-purple-200 dark:border-purple-800 rounded-lg p-4">
+          <div className="bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800 rounded-lg p-4">
             <div className="flex items-start gap-3">
-              <Clock className="h-5 w-5 text-purple-600 dark:text-purple-400 flex-shrink-0 mt-0.5" />
-              <div className="text-sm text-purple-800 dark:text-purple-300">
+              <Clock className="h-5 w-5 text-green-600 dark:text-green-400 flex-shrink-0 mt-0.5" />
+              <div className="text-sm text-green-800 dark:text-green-300">
                 <p className="font-medium">PEP Treatment Window</p>
                 <p className="mt-1">
                   PEP is most effective when started within 72 hours of exposure. 

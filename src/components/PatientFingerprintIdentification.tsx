@@ -41,7 +41,7 @@ export default function PatientFingerprintIdentification({
         // Check if service is running
         const isRunning = await service.healthCheck();
         if (!isRunning) {
-          throw new Error('Fingerprint service not running. Please start the TIERS Fingerprint Service.');
+          throw new Error('Fingerprint service not running. Please start the DEMO-EMR Fingerprint Service.');
         }
         throw new Error('Fingerprint scanner not detected. Please ensure it is connected.');
       }
@@ -115,12 +115,12 @@ export default function PatientFingerprintIdentification({
         {status === 'scanning' && (
           <div className="flex flex-col items-center justify-center gap-3 py-8">
             <div className="relative">
-              <Fingerprint className="w-16 h-16 text-purple-600 dark:text-purple-400 animate-pulse" />
+              <Fingerprint className="w-16 h-16 text-green-600 dark:text-green-400 animate-pulse" />
               <div className="absolute inset-0 flex items-center justify-center">
-                <div className="w-20 h-20 border-4 border-purple-200 dark:border-purple-800 border-t-purple-600 dark:border-t-purple-400 rounded-full animate-spin"></div>
+                <div className="w-20 h-20 border-4 border-green-200 dark:border-green-800 border-t-green-600 dark:border-t-green-400 rounded-full animate-spin"></div>
               </div>
             </div>
-            <p className="text-purple-600 dark:text-purple-400 font-medium">
+            <p className="text-green-600 dark:text-green-400 font-medium">
               Place your finger on the scanner...
             </p>
           </div>

@@ -1,5 +1,5 @@
 // Fingerprint Service Client Library
-// Communicates with the local TIERS Fingerprint Service via HTTP
+// Communicates with the local DEMO-EMR Fingerprint Service via HTTP
 
 const FINGERPRINT_SERVICE_URL = 'http://localhost:3456';
 

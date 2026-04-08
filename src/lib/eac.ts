@@ -246,7 +246,7 @@ export const getEacTriggerColor = (trigger: EacTrigger): string => {
     'Missed Appointments': 'bg-orange-100 text-orange-800 dark:bg-orange-900/30 dark:text-orange-400',
     'Poor Adherence': 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900/30 dark:text-yellow-400',
     'Treatment Interruption': 'bg-amber-100 text-amber-800 dark:bg-amber-900/30 dark:text-amber-400',
-    'Clinical Deterioration': 'bg-purple-100 text-purple-800 dark:bg-purple-900/30 dark:text-purple-400',
+    'Clinical Deterioration': 'bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-400',
   };
   return colors[trigger];
 };

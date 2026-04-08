@@ -100,7 +100,7 @@ export default function HtsLabOrderingStep({
     return (
       <div className="flex items-center justify-center min-h-[400px]">
         <div className="text-center">
-          <Loader2 className="h-8 w-8 animate-spin text-[#5b21b6] mx-auto" />
+          <Loader2 className="h-8 w-8 animate-spin text-[#065f46] mx-auto" />
           <p className="mt-4 text-sm text-gray-500">Loading lab orders...</p>
         </div>
       </div>
@@ -112,11 +112,11 @@ export default function HtsLabOrderingStep({
       {/* Header */}
       <div className="rounded-xl border border-black/10 bg-white p-6">
         <div className="flex items-start gap-4">
-          <div className={`p-3 rounded-lg ${hasCompletedOrder ? 'bg-green-100' : 'bg-purple-100'}`}>
+          <div className={`p-3 rounded-lg ${hasCompletedOrder ? 'bg-green-100' : 'bg-green-100'}`}>
             {hasCompletedOrder ? (
               <CheckCircle className="h-6 w-6 text-green-600" />
             ) : (
-              <TestTube className="h-6 w-6 text-[#5b21b6]" />
+              <TestTube className="h-6 w-6 text-[#065f46]" />
             )}
           </div>
           <div className="flex-1">
@@ -165,7 +165,7 @@ export default function HtsLabOrderingStep({
                   type="checkbox"
                   checked={true}
                   disabled={true}
-                  className="h-4 w-4 text-[#5b21b6] border-gray-300 rounded mt-1 cursor-not-allowed opacity-50"
+                  className="h-4 w-4 text-[#065f46] border-gray-300 rounded mt-1 cursor-not-allowed opacity-50"
                 />
                 <div className="ml-3 flex-1">
                   <label className="text-sm font-medium text-gray-900">
@@ -189,7 +189,7 @@ export default function HtsLabOrderingStep({
                       id="includeSyphilis"
                       checked={includeSyphilis}
                       onChange={(e) => setIncludeSyphilis(e.target.checked)}
-                      className="h-4 w-4 text-[#5b21b6] border-gray-300 rounded focus:ring-[#5b21b6] mt-1"
+                      className="h-4 w-4 text-[#065f46] border-gray-300 rounded focus:ring-[#065f46] mt-1"
                     />
                     <div className="ml-3 flex-1">
                       <label htmlFor="includeSyphilis" className="text-sm font-medium text-gray-700 cursor-pointer">
@@ -207,7 +207,7 @@ export default function HtsLabOrderingStep({
                       id="includeHepB"
                       checked={includeHepB}
                       onChange={(e) => setIncludeHepB(e.target.checked)}
-                      className="h-4 w-4 text-[#5b21b6] border-gray-300 rounded focus:ring-[#5b21b6] mt-1"
+                      className="h-4 w-4 text-[#065f46] border-gray-300 rounded focus:ring-[#065f46] mt-1"
                     />
                     <div className="ml-3 flex-1">
                       <label htmlFor="includeHepB" className="text-sm font-medium text-gray-700 cursor-pointer">
@@ -225,7 +225,7 @@ export default function HtsLabOrderingStep({
                       id="includeHepC"
                       checked={includeHepC}
                       onChange={(e) => setIncludeHepC(e.target.checked)}
-                      className="h-4 w-4 text-[#5b21b6] border-gray-300 rounded focus:ring-[#5b21b6] mt-1"
+                      className="h-4 w-4 text-[#065f46] border-gray-300 rounded focus:ring-[#065f46] mt-1"
                     />
                     <div className="ml-3 flex-1">
                       <label htmlFor="includeHepC" className="text-sm font-medium text-gray-700 cursor-pointer">
@@ -244,7 +244,7 @@ export default function HtsLabOrderingStep({
               <button
                 onClick={handleCreateOrder}
                 disabled={creating || hasPendingOrder}
-                className="inline-flex items-center gap-2 px-6 py-3 rounded-lg bg-[#5b21b6] text-white font-medium hover:bg-[#4c1d95] transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                className="inline-flex items-center gap-2 px-6 py-3 rounded-lg bg-[#065f46] text-white font-medium hover:bg-[#064e3b] transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
               >
                 {creating ? (
                   <>
@@ -331,7 +331,7 @@ export default function HtsLabOrderingStep({
         <button
           onClick={onNext}
           disabled={orders.length === 0}
-          className="px-6 py-2.5 rounded-lg bg-[#5b21b6] text-white font-medium hover:bg-[#4c1d95] transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+          className="px-6 py-2.5 rounded-lg bg-[#065f46] text-white font-medium hover:bg-[#064e3b] transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
         >
           {hasCompletedOrder ? 'Review & Confirm Results' : 'Continue to Testing'}
         </button>

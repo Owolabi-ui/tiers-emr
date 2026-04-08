@@ -115,7 +115,7 @@ export default function ArtPage() {
     return (
       <div className="flex items-center justify-center min-h-[400px]">
         <div className="text-center">
-          <Loader2 className="h-8 w-8 animate-spin text-[#5b21b6] mx-auto" />
+          <Loader2 className="h-8 w-8 animate-spin text-[#065f46] mx-auto" />
           <p className="mt-4 text-sm text-gray-500">Loading ART data...</p>
         </div>
       </div>
@@ -141,14 +141,14 @@ export default function ArtPage() {
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div>
-          <h1 className="text-2xl font-bold text-[#5b21b6]">ART Management</h1>
+          <h1 className="text-2xl font-bold text-[#065f46]">ART Management</h1>
           <p className="text-sm text-gray-500 mt-1">
             Antiretroviral Therapy for HIV care and treatment
           </p>
         </div>
         <Link
           href="/dashboard/art/new"
-          className="inline-flex items-center justify-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-[#5b21b6] hover:bg-[#4c1d95] focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#5b21b6]"
+          className="inline-flex items-center justify-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-[#065f46] hover:bg-[#064e3b] focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#065f46]"
         >
           <Plus className="h-5 w-5 mr-2" />
           New ART Patient
@@ -216,7 +216,7 @@ export default function ArtPage() {
               placeholder="Search by patient name, hospital number, or ART number..."
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
-              className="w-full h-10 pl-10 pr-4 rounded-lg border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-neutral-800 text-sm text-gray-900 dark:text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-[#5b21b6]/50"
+              className="w-full h-10 pl-10 pr-4 rounded-lg border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-neutral-800 text-sm text-gray-900 dark:text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-[#065f46]/50"
             />
           </div>
         </div>
@@ -285,7 +285,7 @@ export default function ArtPage() {
                     <td className="px-4 py-3 text-sm">
                       <Link
                         href={`/dashboard/art/${record.id}`}
-                        className="text-[#5b21b6] hover:text-[#4c1d95] font-medium"
+                        className="text-[#065f46] hover:text-[#064e3b] font-medium"
                       >
                         View Details
                       </Link>

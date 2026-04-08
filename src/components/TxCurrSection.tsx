@@ -29,7 +29,7 @@ export default function TxCurrSection() {
           <button
             className={`px-4 py-2 text-sm font-medium transition-colors ${
               tab === "treatment"
-                ? "bg-[#5b21b6] text-white"
+                ? "bg-[#065f46] text-white"
                 : "bg-white hover:bg-black/5"
             }`}
             onClick={() => setTab("treatment")}
@@ -38,7 +38,7 @@ export default function TxCurrSection() {
           </button>
           <button
             className={`px-4 py-2 text-sm font-medium transition-colors border-l border-black/10 ${
-              tab === "vl" ? "bg-[#5b21b6] text-white" : "bg-white hover:bg-black/5"
+              tab === "vl" ? "bg-[#065f46] text-white" : "bg-white hover:bg-black/5"
             }`}
             onClick={() => setTab("vl")}
           >

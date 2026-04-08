@@ -154,14 +154,14 @@ export default function NewPrepPage() {
                 placeholder="Search by patient name or client code..."
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
-                className="w-full h-10 pl-10 pr-4 rounded-lg border border-gray-200 bg-white text-sm text-gray-900 placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-[#5b21b6]/50"
+                className="w-full h-10 pl-10 pr-4 rounded-lg border border-gray-200 bg-white text-sm text-gray-900 placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-[#065f46]/50"
               />
             </div>
 
             {/* HTS Records List */}
             {loadingHts ? (
               <div className="flex items-center justify-center py-12">
-                <Loader2 className="h-8 w-8 animate-spin text-[#5b21b6]" />
+                <Loader2 className="h-8 w-8 animate-spin text-[#065f46]" />
               </div>
             ) : filteredHtsRecords.length === 0 ? (
               <div className="text-center py-12 bg-gray-50 rounded-lg">
@@ -182,7 +182,7 @@ export default function NewPrepPage() {
                     onClick={() => setSelectedHtsId(record.id)}
                     className={`w-full text-left p-4 rounded-lg border-2 transition-all ${
                       selectedHtsId === record.id
-                        ? 'border-[#5b21b6] bg-purple-50'
+                        ? 'border-[#065f46] bg-green-50'
                         : 'border-gray-200 hover:border-gray-300'
                     }`}
                   >
@@ -193,7 +193,7 @@ export default function NewPrepPage() {
                             {record.patient_name || 'Unknown Patient'}
                           </h3>
                           {selectedHtsId === record.id && (
-                            <CheckCircle2 className="h-5 w-5 text-[#5b21b6]" />
+                            <CheckCircle2 className="h-5 w-5 text-[#065f46]" />
                           )}
                         </div>
                         <div className="grid grid-cols-2 gap-4 text-sm">
@@ -240,7 +240,7 @@ export default function NewPrepPage() {
                   required={isRequired('date_initial_adherence_counseling')}
                   value={formData.date_initial_adherence_counseling}
                   onChange={(e) => setFormData({ ...formData, date_initial_adherence_counseling: e.target.value })}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-md bg-white text-gray-900 focus:outline-none focus:ring-2 focus:ring-[#5b21b6]"
+                  className="w-full px-3 py-2 border border-gray-300 rounded-md bg-white text-gray-900 focus:outline-none focus:ring-2 focus:ring-[#065f46]"
                 />
               </div>
             )}
@@ -258,7 +258,7 @@ export default function NewPrepPage() {
                     id="date_prep_initiated"
                     value={formData.date_prep_initiated || ''}
                     onChange={(e) => setFormData({ ...formData, date_prep_initiated: e.target.value || null })}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-md bg-white text-gray-900 focus:outline-none focus:ring-2 focus:ring-[#5b21b6]"
+                    className="w-full px-3 py-2 border border-gray-300 rounded-md bg-white text-gray-900 focus:outline-none focus:ring-2 focus:ring-[#065f46]"
                   />
                 </div>
               )}
@@ -272,7 +272,7 @@ export default function NewPrepPage() {
                     id="prep_type_at_start"
                     value={formData.prep_type_at_start || ''}
                     onChange={(e) => setFormData({ ...formData, prep_type_at_start: (e.target.value as PrepType) || null })}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-md bg-white text-gray-900 focus:outline-none focus:ring-2 focus:ring-[#5b21b6]"
+                    className="w-full px-3 py-2 border border-gray-300 rounded-md bg-white text-gray-900 focus:outline-none focus:ring-2 focus:ring-[#065f46]"
                   >
                     <option value="">Select PrEP type...</option>
                     {getOptions('prep_type_at_start', ['ED PrEP', 'Injectable / CAB-LA', 'ORAL', 'RING']).map((option) => (
@@ -295,7 +295,7 @@ export default function NewPrepPage() {
                   id="history_of_drug_allergies"
                   checked={formData.history_of_drug_allergies}
                   onChange={(e) => setFormData({ ...formData, history_of_drug_allergies: e.target.checked })}
-                  className="h-4 w-4 text-[#5b21b6] focus:ring-[#5b21b6] border-gray-300 rounded"
+                  className="h-4 w-4 text-[#065f46] focus:ring-[#065f46] border-gray-300 rounded"
                 />
                 <label htmlFor="history_of_drug_allergies" className="ml-3 text-sm text-gray-700">
                   {getLabel('history_of_drug_allergies')}
@@ -313,7 +313,7 @@ export default function NewPrepPage() {
                     value={formData.allergy_details || ''}
                     onChange={(e) => setFormData({ ...formData, allergy_details: e.target.value || null })}
                     placeholder="Describe the drug allergies..."
-                    className="w-full px-3 py-2 border border-gray-300 rounded-md bg-white text-gray-900 focus:outline-none focus:ring-2 focus:ring-[#5b21b6]"
+                    className="w-full px-3 py-2 border border-gray-300 rounded-md bg-white text-gray-900 focus:outline-none focus:ring-2 focus:ring-[#065f46]"
                   />
                 </div>
               )}
@@ -329,7 +329,7 @@ export default function NewPrepPage() {
                   id="transferred_in"
                   checked={formData.transferred_in}
                   onChange={(e) => setFormData({ ...formData, transferred_in: e.target.checked })}
-                  className="h-4 w-4 text-[#5b21b6] focus:ring-[#5b21b6] border-gray-300 rounded"
+                  className="h-4 w-4 text-[#065f46] focus:ring-[#065f46] border-gray-300 rounded"
                 />
                 <label htmlFor="transferred_in" className="ml-3 text-sm text-gray-700">
                   {getLabel('transferred_in')}
@@ -349,7 +349,7 @@ export default function NewPrepPage() {
                       value={formData.previous_enrollment_id || ''}
                       onChange={(e) => setFormData({ ...formData, previous_enrollment_id: e.target.value || null })}
                       placeholder="Enter previous ID..."
-                      className="w-full px-3 py-2 border border-gray-300 rounded-md bg-white text-gray-900 focus:outline-none focus:ring-2 focus:ring-[#5b21b6]"
+                      className="w-full px-3 py-2 border border-gray-300 rounded-md bg-white text-gray-900 focus:outline-none focus:ring-2 focus:ring-[#065f46]"
                     />
                     </div>
                   )}
@@ -365,7 +365,7 @@ export default function NewPrepPage() {
                       value={formData.transferred_from_facility || ''}
                       onChange={(e) => setFormData({ ...formData, transferred_from_facility: e.target.value || null })}
                       placeholder="Enter facility name..."
-                      className="w-full px-3 py-2 border border-gray-300 rounded-md bg-white text-gray-900 focus:outline-none focus:ring-2 focus:ring-[#5b21b6]"
+                      className="w-full px-3 py-2 border border-gray-300 rounded-md bg-white text-gray-900 focus:outline-none focus:ring-2 focus:ring-[#065f46]"
                     />
                     </div>
                   )}
@@ -379,7 +379,7 @@ export default function NewPrepPage() {
               <button
                 type="submit"
                 disabled={loading}
-                className="inline-flex items-center px-6 py-3 border border-transparent text-base font-medium rounded-md shadow-sm text-white bg-[#5b21b6] hover:bg-[#4c1d95] focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#5b21b6] disabled:opacity-50 disabled:cursor-not-allowed"
+                className="inline-flex items-center px-6 py-3 border border-transparent text-base font-medium rounded-md shadow-sm text-white bg-[#065f46] hover:bg-[#064e3b] focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#065f46] disabled:opacity-50 disabled:cursor-not-allowed"
               >
                 {loading ? (
                   <>
@@ -415,8 +415,8 @@ export default function NewPrepPage() {
             Back to PrEP Management
           </button>
           <div className="flex items-center gap-3">
-            <div className="h-12 w-12 rounded-full bg-[#5b21b6]/10 flex items-center justify-center">
-              <Shield className="h-6 w-6 text-[#5b21b6]" />
+            <div className="h-12 w-12 rounded-full bg-[#065f46]/10 flex items-center justify-center">
+              <Shield className="h-6 w-6 text-[#065f46]" />
             </div>
             <div>
               <h1 className="text-3xl font-bold text-gray-900">New PrEP Enrollment</h1>
@@ -449,10 +449,10 @@ export default function NewPrepPage() {
                     <>
                       {stepIdx !== STEPS.length - 1 && (
                         <div className="absolute inset-0 flex items-center" aria-hidden="true">
-                          <div className="h-0.5 w-full bg-[#5b21b6]" />
+                          <div className="h-0.5 w-full bg-[#065f46]" />
                         </div>
                       )}
-                      <div className="relative flex items-center justify-center w-10 h-10 bg-[#5b21b6] rounded-full">
+                      <div className="relative flex items-center justify-center w-10 h-10 bg-[#065f46] rounded-full">
                         <CheckCircle2 className="h-6 w-6 text-white" />
                       </div>
                     </>
@@ -463,8 +463,8 @@ export default function NewPrepPage() {
                           <div className="h-0.5 w-full bg-gray-200" />
                         </div>
                       )}
-                      <div className="relative flex items-center justify-center w-10 h-10 bg-white border-2 border-[#5b21b6] rounded-full">
-                        <span className="text-[#5b21b6] font-semibold">{step.id}</span>
+                      <div className="relative flex items-center justify-center w-10 h-10 bg-white border-2 border-[#065f46] rounded-full">
+                        <span className="text-[#065f46] font-semibold">{step.id}</span>
                       </div>
                     </>
                   ) : (
@@ -500,7 +500,7 @@ export default function NewPrepPage() {
             <button
               onClick={handleNext}
               disabled={!selectedHtsId}
-              className="inline-flex items-center px-6 py-3 border border-transparent text-base font-medium rounded-md shadow-sm text-white bg-[#5b21b6] hover:bg-[#4c1d95] focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#5b21b6] disabled:opacity-50 disabled:cursor-not-allowed"
+              className="inline-flex items-center px-6 py-3 border border-transparent text-base font-medium rounded-md shadow-sm text-white bg-[#065f46] hover:bg-[#064e3b] focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#065f46] disabled:opacity-50 disabled:cursor-not-allowed"
             >
               Continue
               <ChevronRight className="ml-2 h-5 w-5" />
@@ -512,7 +512,7 @@ export default function NewPrepPage() {
           <div className="mt-6 flex justify-between">
             <button
               onClick={handlePrevious}
-              className="inline-flex items-center px-6 py-3 border border-gray-300 text-base font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#5b21b6]"
+              className="inline-flex items-center px-6 py-3 border border-gray-300 text-base font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#065f46]"
             >
               <ChevronLeft className="mr-2 h-5 w-5" />
               Previous

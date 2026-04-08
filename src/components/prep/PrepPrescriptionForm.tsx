@@ -194,8 +194,8 @@ ${formData.prescriber_notes ? '\nNotes: ' + formData.prescriber_notes : ''}`;
         {/* Header */}
         <div className="sticky top-0 bg-white border-b border-gray-200 px-6 py-4 flex items-center justify-between">
           <div className="flex items-center gap-3">
-            <div className="h-10 w-10 rounded-full bg-purple-100 flex items-center justify-center">
-              <Pill className="h-5 w-5 text-purple-600" />
+            <div className="h-10 w-10 rounded-full bg-green-100 flex items-center justify-center">
+              <Pill className="h-5 w-5 text-green-600" />
             </div>
             <div>
               <h2 className="text-xl font-semibold text-gray-900">Add PrEP Prescription</h2>
@@ -241,7 +241,7 @@ ${formData.prescriber_notes ? '\nNotes: ' + formData.prescriber_notes : ''}`;
                   }
                 }}
                 max={new Date().toISOString().split('T')[0]}
-                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500"
+                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500"
                 required
               />
             </div>
@@ -256,7 +256,7 @@ ${formData.prescriber_notes ? '\nNotes: ' + formData.prescriber_notes : ''}`;
                 value={formData.next_refill_date}
                 onChange={(e) => setFormData({ ...formData, next_refill_date: e.target.value })}
                 min={new Date().toISOString().split('T')[0]}
-                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500"
+                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500"
               />
             </div>
           </div>
@@ -268,7 +268,7 @@ ${formData.prescriber_notes ? '\nNotes: ' + formData.prescriber_notes : ''}`;
               <button
                 type="button"
                 onClick={addMedication}
-                className="flex items-center gap-2 px-3 py-2 text-sm text-purple-600 hover:bg-purple-50 rounded-md transition-colors"
+                className="flex items-center gap-2 px-3 py-2 text-sm text-green-600 hover:bg-green-50 rounded-md transition-colors"
               >
                 <Plus className="h-4 w-4" />
                 Add Medication
@@ -307,7 +307,7 @@ ${formData.prescriber_notes ? '\nNotes: ' + formData.prescriber_notes : ''}`;
                         }}
                         onFocus={() => setActiveSearchIndex(index)}
                         placeholder="Search from pharmacy inventory..."
-                        className="w-full pl-9 pr-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500"
+                        className="w-full pl-9 pr-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500"
                         required
                       />
                     </div>
@@ -336,7 +336,7 @@ ${formData.prescriber_notes ? '\nNotes: ' + formData.prescriber_notes : ''}`;
                                 setSearchTerm('');
                                 setActiveSearchIndex(null);
                               }}
-                              className="w-full text-left px-3 py-2 hover:bg-purple-50 border-b border-gray-100 last:border-0"
+                              className="w-full text-left px-3 py-2 hover:bg-green-50 border-b border-gray-100 last:border-0"
                             >
                               <div className="font-medium text-sm text-gray-900">{drug.commodity_name}</div>
                               <div className="text-xs text-gray-500">
@@ -370,7 +370,7 @@ ${formData.prescriber_notes ? '\nNotes: ' + formData.prescriber_notes : ''}`;
                       value={med.dosage}
                       onChange={(e) => updateMedication(index, 'dosage', e.target.value)}
                       placeholder="e.g., 300/200mg"
-                      className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500"
+                      className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500"
                       required
                     />
                   </div>
@@ -382,7 +382,7 @@ ${formData.prescriber_notes ? '\nNotes: ' + formData.prescriber_notes : ''}`;
                     <select
                       value={med.frequency}
                       onChange={(e) => updateMedication(index, 'frequency', e.target.value)}
-                      className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500"
+                      className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500"
                       required
                     >
                       <option value="Once Daily">Once daily</option>
@@ -404,7 +404,7 @@ ${formData.prescriber_notes ? '\nNotes: ' + formData.prescriber_notes : ''}`;
                       onChange={(e) => updateMedication(index, 'duration_days', e.target.value ? parseInt(e.target.value) : 0)}
                       min="1"
                       max="365"
-                      className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500"
+                      className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500"
                       required
                     />
                   </div>
@@ -419,7 +419,7 @@ ${formData.prescriber_notes ? '\nNotes: ' + formData.prescriber_notes : ''}`;
                       onChange={(e) => updateMedication(index, 'quantity_prescribed', e.target.value ? parseInt(e.target.value) : 0)}
                       min="1"
                       max="1000"
-                      className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500"
+                      className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500"
                       required
                     />
                   </div>
@@ -439,7 +439,7 @@ ${formData.prescriber_notes ? '\nNotes: ' + formData.prescriber_notes : ''}`;
               onChange={(e) => setFormData({ ...formData, prescriber_notes: e.target.value })}
               rows={3}
               placeholder="Additional notes or instructions..."
-              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500"
+              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500"
             />
           </div>
 
@@ -455,7 +455,7 @@ ${formData.prescriber_notes ? '\nNotes: ' + formData.prescriber_notes : ''}`;
             <button
               type="submit"
               disabled={loading}
-              className="px-4 py-2 text-sm font-medium text-white bg-purple-600 hover:bg-purple-700 rounded-md transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+              className="px-4 py-2 text-sm font-medium text-white bg-green-600 hover:bg-green-700 rounded-md transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
             >
               {loading ? 'Creating Prescription...' : 'Create Prescription'}
             </button>

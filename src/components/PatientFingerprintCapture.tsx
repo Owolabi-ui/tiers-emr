@@ -52,7 +52,7 @@ export default function PatientFingerprintCapture({
         // Check if service is running
         const isRunning = await service.healthCheck();
         if (!isRunning) {
-          throw new Error('Fingerprint service not running. Please start the TIERS Fingerprint Service.');
+          throw new Error('Fingerprint service not running. Please start the DEMO-EMR Fingerprint Service.');
         }
         throw new Error('Fingerprint scanner not detected. Please ensure it is connected.');
       }
@@ -141,8 +141,8 @@ export default function PatientFingerprintCapture({
 
         {/* Header */}
         <div className="text-center mb-6">
-          <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-purple-100 dark:bg-purple-900/30 mb-4">
-            <Fingerprint className="w-8 h-8 text-purple-600 dark:text-purple-400" />
+          <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-green-100 dark:bg-green-900/30 mb-4">
+            <Fingerprint className="w-8 h-8 text-green-600 dark:text-green-400" />
           </div>
           <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-2">
             Capture Patient Fingerprint
@@ -162,7 +162,7 @@ export default function PatientFingerprintCapture({
               value={selectedFinger}
               onChange={(e) => setSelectedFinger(e.target.value as BiometricType)}
               disabled={status === 'capturing' || status === 'saving'}
-              className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-purple-500 disabled:opacity-50"
+              className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-green-500 disabled:opacity-50"
             >
               {fingerOptions.map((finger) => (
                 <option key={finger} value={finger}>
@@ -182,7 +182,7 @@ export default function PatientFingerprintCapture({
         )}
 
         {status === 'capturing' && (
-          <div className="flex items-center justify-center gap-2 text-purple-600 dark:text-purple-400 mb-4 py-4">
+          <div className="flex items-center justify-center gap-2 text-green-600 dark:text-green-400 mb-4 py-4">
             <Loader2 className="w-5 h-5 animate-spin" />
             <span>Place {selectedFinger} on the scanner...</span>
           </div>
@@ -208,7 +208,7 @@ export default function PatientFingerprintCapture({
         {/* Captured Fingerprint */}
         {capturedImage && (
           <div className="mb-4">
-            <div className="relative border-2 border-purple-200 dark:border-purple-800 rounded-lg overflow-hidden bg-gray-100 dark:bg-gray-900">
+            <div className="relative border-2 border-green-200 dark:border-green-800 rounded-lg overflow-hidden bg-gray-100 dark:bg-gray-900">
               <img
                 src={capturedImage}
                 alt="Captured fingerprint"
@@ -236,7 +236,7 @@ export default function PatientFingerprintCapture({
             <>
               <button
                 onClick={handleCapture}
-                className="flex-1 px-4 py-3 bg-purple-600 hover:bg-purple-700 text-white rounded-lg font-medium transition-colors flex items-center justify-center gap-2"
+                className="flex-1 px-4 py-3 bg-green-600 hover:bg-green-700 text-white rounded-lg font-medium transition-colors flex items-center justify-center gap-2"
               >
                 <Fingerprint className="w-5 h-5" />
                 Capture Fingerprint

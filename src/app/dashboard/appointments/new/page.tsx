@@ -225,7 +225,7 @@ export default function NewAppointmentPage() {
           <ArrowLeft className="h-5 w-5" />
         </Link>
         <div>
-          <h1 className="text-2xl font-bold text-[#5b21b6]">New Appointment</h1>
+          <h1 className="text-2xl font-bold text-[#065f46]">New Appointment</h1>
           <p className="text-sm text-gray-500">Schedule a new patient appointment</p>
         </div>
       </div>
@@ -248,13 +248,13 @@ export default function NewAppointmentPage() {
       <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
         {/* Patient Selection */}
         <div className="rounded-xl border border-black/10 dark:border-white/15 bg-white dark:bg-neutral-900">
-          <div className="bg-[#5b21b6] px-5 py-3 flex items-center gap-2 rounded-t-xl">
+          <div className="bg-[#065f46] px-5 py-3 flex items-center gap-2 rounded-t-xl">
             <User className="h-5 w-5 text-white" />
             <h2 className="font-semibold text-white">Patient</h2>
           </div>
           <div className="p-5">
             {selectedPatient ? (
-              <div className="flex items-center justify-between p-4 rounded-lg bg-purple-50 dark:bg-[#5b21b6]/10 border border-purple-200 dark:border-purple-800">
+              <div className="flex items-center justify-between p-4 rounded-lg bg-green-50 dark:bg-[#065f46]/10 border border-green-200 dark:border-green-800">
                 <div>
                   <p className="font-medium text-gray-900 dark:text-white">
                     {getPatientFullName(selectedPatient)}
@@ -280,7 +280,7 @@ export default function NewAppointmentPage() {
                   placeholder="Search patient by name, hospital number..."
                   value={searchTerm}
                   onChange={(e) => setSearchTerm(e.target.value)}
-                  className="w-full h-10 pl-10 pr-4 rounded-lg border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-neutral-800 text-sm text-gray-900 dark:text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-[#5b21b6]/50"
+                  className="w-full h-10 pl-10 pr-4 rounded-lg border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-neutral-800 text-sm text-gray-900 dark:text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-[#065f46]/50"
                 />
                 {searching && (
                   <Loader2 className="absolute right-3 top-1/2 -translate-y-1/2 h-4 w-4 animate-spin text-gray-400" />
@@ -294,7 +294,7 @@ export default function NewAppointmentPage() {
                         key={patient.id}
                         type="button"
                         onClick={() => handleSelectPatient(patient)}
-                        className="w-full px-5 py-4 text-left hover:bg-purple-50 dark:hover:bg-[#5b21b6]/10 border-b border-gray-100 dark:border-gray-700 last:border-0 transition-colors"
+                        className="w-full px-5 py-4 text-left hover:bg-green-50 dark:hover:bg-[#065f46]/10 border-b border-gray-100 dark:border-gray-700 last:border-0 transition-colors"
                       >
                         <p className="font-semibold text-base text-gray-900 dark:text-white truncate">
                           {getPatientFullName(patient)}
@@ -318,7 +318,7 @@ export default function NewAppointmentPage() {
                     <p className="text-sm text-gray-500">No patients found</p>
                     <Link
                       href="/dashboard/patients/new"
-                      className="mt-2 inline-flex items-center gap-1 text-sm text-[#5b21b6] hover:underline"
+                      className="mt-2 inline-flex items-center gap-1 text-sm text-[#065f46] hover:underline"
                     >
                       Register new patient
                     </Link>
@@ -334,7 +334,7 @@ export default function NewAppointmentPage() {
 
         {/* Appointment Details */}
         <div className="rounded-xl border border-black/10 dark:border-white/15 bg-white dark:bg-neutral-900 overflow-hidden">
-          <div className="bg-[#5b21b6] px-5 py-3 flex items-center gap-2">
+          <div className="bg-[#065f46] px-5 py-3 flex items-center gap-2">
             <Calendar className="h-5 w-5 text-white" />
             <h2 className="font-semibold text-white">Appointment Details</h2>
           </div>
@@ -376,7 +376,7 @@ export default function NewAppointmentPage() {
                   <input
                     type="date"
                     {...register('appointment_date')}
-                    className="w-full h-10 pl-10 pr-4 rounded-lg border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-neutral-800 text-sm text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-[#5b21b6]/50"
+                    className="w-full h-10 pl-10 pr-4 rounded-lg border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-neutral-800 text-sm text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-[#065f46]/50"
                   />
                 </div>
                 {errors.appointment_date && (
@@ -393,7 +393,7 @@ export default function NewAppointmentPage() {
                   <input
                     type="time"
                     {...register('appointment_time')}
-                    className="w-full h-10 pl-10 pr-4 rounded-lg border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-neutral-800 text-sm text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-[#5b21b6]/50"
+                    className="w-full h-10 pl-10 pr-4 rounded-lg border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-neutral-800 text-sm text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-[#065f46]/50"
                   />
                 </div>
               </div>
@@ -406,7 +406,7 @@ export default function NewAppointmentPage() {
               </label>
               <select
                 {...register('service_type')}
-                className="w-full h-10 rounded-lg border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-neutral-800 px-3 text-sm text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-[#5b21b6]/50"
+                className="w-full h-10 rounded-lg border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-neutral-800 px-3 text-sm text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-[#065f46]/50"
               >
                 <option value="">Select service...</option>
                 {serviceTypeOptions.map((service) => (
@@ -421,7 +421,7 @@ export default function NewAppointmentPage() {
 
         {/* Notes */}
         <div className="rounded-xl border border-black/10 dark:border-white/15 bg-white dark:bg-neutral-900 overflow-hidden">
-          <div className="bg-[#5b21b6] px-5 py-3 flex items-center gap-2">
+          <div className="bg-[#065f46] px-5 py-3 flex items-center gap-2">
             <FileText className="h-5 w-5 text-white" />
             <h2 className="font-semibold text-white">Notes</h2>
           </div>
@@ -434,7 +434,7 @@ export default function NewAppointmentPage() {
                 type="text"
                 {...register('reason')}
                 placeholder="e.g., Monthly refill, Follow-up on lab results..."
-                className="w-full h-10 rounded-lg border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-neutral-800 px-3 text-sm text-gray-900 dark:text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-[#5b21b6]/50"
+                className="w-full h-10 rounded-lg border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-neutral-800 px-3 text-sm text-gray-900 dark:text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-[#065f46]/50"
               />
             </div>
 
@@ -446,7 +446,7 @@ export default function NewAppointmentPage() {
                 {...register('notes')}
                 rows={3}
                 placeholder="Any additional information..."
-                className="w-full rounded-lg border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-neutral-800 px-3 py-2 text-sm text-gray-900 dark:text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-[#5b21b6]/50 resize-none"
+                className="w-full rounded-lg border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-neutral-800 px-3 py-2 text-sm text-gray-900 dark:text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-[#065f46]/50 resize-none"
               />
             </div>
           </div>
@@ -463,7 +463,7 @@ export default function NewAppointmentPage() {
           <button
             type="submit"
             disabled={loading}
-            className="inline-flex items-center gap-2 px-6 py-2 rounded-lg bg-[#5b21b6] text-white text-sm font-medium hover:bg-[#4c1d95] disabled:opacity-50 transition-colors"
+            className="inline-flex items-center gap-2 px-6 py-2 rounded-lg bg-[#065f46] text-white text-sm font-medium hover:bg-[#064e3b] disabled:opacity-50 transition-colors"
           >
             {loading ? (
               <>

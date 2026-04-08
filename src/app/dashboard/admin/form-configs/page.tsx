@@ -119,7 +119,7 @@ export default function AdminFormConfigsPage() {
                 onClick={() => setSelectedForm(formKey)}
                 className={`w-full text-left px-3 py-2 rounded-md text-sm ${
                   selectedForm === formKey
-                    ? 'bg-[#5b21b6] text-white'
+                    ? 'bg-[#065f46] text-white'
                     : 'hover:bg-gray-100 dark:hover:bg-neutral-800 text-gray-700 dark:text-gray-300'
                 }`}
               >
@@ -202,10 +202,10 @@ export default function AdminFormConfigsPage() {
                       {getOptionValues(optionKey).map((value) => (
                         <span
                           key={value}
-                          className="inline-flex items-center gap-1 px-2 py-1 rounded-full text-xs bg-purple-50 text-purple-700 dark:bg-purple-900/30 dark:text-purple-300"
+                          className="inline-flex items-center gap-1 px-2 py-1 rounded-full text-xs bg-green-50 text-green-700 dark:bg-green-900/30 dark:text-green-300"
                         >
                           {value}
-                          <button type="button" onClick={() => removeOption(optionKey, value)} className="text-purple-700">
+                          <button type="button" onClick={() => removeOption(optionKey, value)} className="text-green-700">
                             <Trash2 className="h-3 w-3" />
                           </button>
                         </span>
@@ -238,7 +238,7 @@ export default function AdminFormConfigsPage() {
               type="button"
               onClick={() => saveMutation.mutate()}
               disabled={saveMutation.isPending}
-              className="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-[#5b21b6] text-white text-sm font-medium hover:bg-[#4c1d95] disabled:opacity-50"
+              className="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-[#065f46] text-white text-sm font-medium hover:bg-[#064e3b] disabled:opacity-50"
             >
               {saveMutation.isPending ? <Loader2 className="h-4 w-4 animate-spin" /> : <Save className="h-4 w-4" />}
               Save Changes

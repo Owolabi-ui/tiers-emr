@@ -99,7 +99,7 @@ export default function BulkUploadPage() {
   return (
     <div className="max-w-3xl mx-auto space-y-6">
       <div>
-        <h1 className="text-2xl font-bold text-[#5b21b6]">Bulk Upload - ART</h1>
+        <h1 className="text-2xl font-bold text-[#065f46]">Bulk Upload - ART</h1>
         <p className="text-sm text-gray-500 mt-1">
           Validate CSV first, then confirm import.
         </p>
@@ -111,7 +111,7 @@ export default function BulkUploadPage() {
           onClick={() => switchMode('patients')}
           className={`px-3 py-1.5 rounded-md text-sm font-medium transition-colors ${
             mode === 'patients'
-              ? 'bg-[#5b21b6] text-white'
+              ? 'bg-[#065f46] text-white'
               : 'text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-neutral-800'
           }`}
         >
@@ -122,7 +122,7 @@ export default function BulkUploadPage() {
           onClick={() => switchMode('visits')}
           className={`px-3 py-1.5 rounded-md text-sm font-medium transition-colors ${
             mode === 'visits'
-              ? 'bg-[#5b21b6] text-white'
+              ? 'bg-[#065f46] text-white'
               : 'text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-neutral-800'
           }`}
         >
@@ -141,10 +141,10 @@ export default function BulkUploadPage() {
         <div className="rounded-xl border border-black/10 dark:border-white/15 bg-white dark:bg-neutral-900 p-6 space-y-4">
           <div
             onClick={() => inputRef.current?.click()}
-            className="border-2 border-dashed border-gray-300 dark:border-gray-600 rounded-lg p-10 text-center cursor-pointer hover:border-[#5b21b6] transition-colors"
+            className="border-2 border-dashed border-gray-300 dark:border-gray-600 rounded-lg p-10 text-center cursor-pointer hover:border-[#065f46] transition-colors"
           >
             {file ? (
-              <div className="flex items-center justify-center gap-2 text-[#5b21b6]">
+              <div className="flex items-center justify-center gap-2 text-[#065f46]">
                 <FileText className="h-6 w-6" />
                 <span className="text-sm font-medium">{file.name}</span>
               </div>
@@ -170,7 +170,7 @@ export default function BulkUploadPage() {
           <button
             onClick={handleValidate}
             disabled={!file || loading}
-            className="w-full py-2.5 rounded-lg bg-[#5b21b6] text-white font-medium hover:bg-[#4c1d95] disabled:opacity-50 flex items-center justify-center gap-2"
+            className="w-full py-2.5 rounded-lg bg-[#065f46] text-white font-medium hover:bg-[#064e3b] disabled:opacity-50 flex items-center justify-center gap-2"
           >
               {loading && <Loader2 className="h-4 w-4 animate-spin" />}
               {loading ? 'Validating...' : 'Validate File'}
@@ -229,7 +229,7 @@ export default function BulkUploadPage() {
             <button
               onClick={handleConfirm}
               disabled={report.error_count > 0 || loading}
-              className="flex-1 py-2.5 rounded-lg bg-[#5b21b6] text-white font-medium hover:bg-[#4c1d95] disabled:opacity-50 flex items-center justify-center gap-2"
+              className="flex-1 py-2.5 rounded-lg bg-[#065f46] text-white font-medium hover:bg-[#064e3b] disabled:opacity-50 flex items-center justify-center gap-2"
             >
               {loading && <Loader2 className="h-4 w-4 animate-spin" />}
               {loading
@@ -259,7 +259,7 @@ export default function BulkUploadPage() {
           )}
           <button
             onClick={reset}
-            className="px-6 py-2 rounded-lg bg-[#5b21b6] text-white font-medium hover:bg-[#4c1d95]"
+            className="px-6 py-2 rounded-lg bg-[#065f46] text-white font-medium hover:bg-[#064e3b]"
           >
             Upload Another File
           </button>

@@ -125,7 +125,7 @@ export default function InventoryPage() {
     return (
       <div className="flex items-center justify-center min-h-[400px]">
         <div className="text-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-[#5b21b6] mx-auto"></div>
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-[#065f46] mx-auto"></div>
           <p className="mt-4 text-sm text-gray-500">Loading inventory...</p>
         </div>
       </div>
@@ -163,21 +163,21 @@ export default function InventoryPage() {
         <div>
           <button
             onClick={() => router.push('/dashboard/pharmacy')}
-            className="mb-4 text-[#5b21b6] hover:underline flex items-center text-sm"
+            className="mb-4 text-[#065f46] hover:underline flex items-center text-sm"
           >
             <svg className="w-5 h-5 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
             </svg>
             Back to Pharmacy
           </button>
-          <h1 className="text-2xl font-bold text-[#5b21b6]">Inventory Management</h1>
+          <h1 className="text-2xl font-bold text-[#065f46]">Inventory Management</h1>
           <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">
             Manage drug stock and inventory
           </p>
         </div>
         <button
           onClick={() => setShowAddForm(!showAddForm)}
-          className="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-[#5b21b6] text-white text-sm font-medium hover:bg-[#4c1d95] transition-colors"
+          className="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-[#065f46] text-white text-sm font-medium hover:bg-[#064e3b] transition-colors"
         >
           <svg className="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
@@ -189,7 +189,7 @@ export default function InventoryPage() {
       {/* Add Drug Form */}
       {showAddForm && (
         <div className="bg-white dark:bg-gray-800 rounded-xl shadow overflow-hidden mb-6">
-          <div className="bg-[#5b21b6] px-5 py-3 flex items-center gap-2">
+          <div className="bg-[#065f46] px-5 py-3 flex items-center gap-2">
             <svg className="h-5 w-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
             </svg>
@@ -334,7 +334,7 @@ export default function InventoryPage() {
               <button
                 onClick={handleAddDrug}
                 disabled={submitting}
-                className="px-6 py-2 rounded-lg bg-[#5b21b6] text-white font-medium hover:bg-[#4c1d95] transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
+                className="px-6 py-2 rounded-lg bg-[#065f46] text-white font-medium hover:bg-[#064e3b] transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
               >
                 {submitting ? (
                   <>
@@ -360,7 +360,7 @@ export default function InventoryPage() {
             onClick={() => setActiveTab('all')}
             className={`py-4 px-1 border-b-2 font-medium text-sm transition-colors ${
               activeTab === 'all'
-                ? 'border-[#5b21b6] text-[#5b21b6]'
+                ? 'border-[#065f46] text-[#065f46]'
                 : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300 dark:text-gray-400 dark:hover:text-gray-300'
             }`}
           >
@@ -370,7 +370,7 @@ export default function InventoryPage() {
             onClick={() => setActiveTab('low-stock')}
             className={`py-4 px-1 border-b-2 font-medium text-sm transition-colors ${
               activeTab === 'low-stock'
-                ? 'border-[#5b21b6] text-[#5b21b6]'
+                ? 'border-[#065f46] text-[#065f46]'
                 : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300 dark:text-gray-400 dark:hover:text-gray-300'
             }`}
           >
@@ -380,7 +380,7 @@ export default function InventoryPage() {
             onClick={() => setActiveTab('expiring')}
             className={`py-4 px-1 border-b-2 font-medium text-sm transition-colors ${
               activeTab === 'expiring'
-                ? 'border-[#5b21b6] text-[#5b21b6]'
+                ? 'border-[#065f46] text-[#065f46]'
                 : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300 dark:text-gray-400 dark:hover:text-gray-300'
             }`}
           >

@@ -296,7 +296,7 @@ export default function NewSessionPage() {
                   key={intervention}
                   type="button"
                   onClick={() => setInterventions([...interventions, intervention])}
-                  className="px-3 py-1 text-sm border border-gray-300 dark:border-gray-600 rounded-full hover:bg-purple-50 dark:hover:bg-purple-950/30 hover:border-purple-300 dark:hover:border-purple-700 transition-colors"
+                  className="px-3 py-1 text-sm border border-gray-300 dark:border-gray-600 rounded-full hover:bg-green-50 dark:hover:bg-green-950/30 hover:border-green-300 dark:hover:border-green-700 transition-colors"
                 >
                   {intervention}
                 </button>

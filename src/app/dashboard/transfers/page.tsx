@@ -212,7 +212,7 @@ export default function TransfersPage() {
               onClick={() => setViewMode('incoming')}
               className={`px-4 py-2 rounded-lg font-medium transition-colors ${
                 viewMode === 'incoming'
-                  ? 'bg-purple-600 text-white'
+                  ? 'bg-green-600 text-white'
                   : 'bg-gray-100 text-gray-700 dark:bg-neutral-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-neutral-600'
               }`}
             >
@@ -222,7 +222,7 @@ export default function TransfersPage() {
               onClick={() => setViewMode('outgoing')}
               className={`px-4 py-2 rounded-lg font-medium transition-colors ${
                 viewMode === 'outgoing'
-                  ? 'bg-purple-600 text-white'
+                  ? 'bg-green-600 text-white'
                   : 'bg-gray-100 text-gray-700 dark:bg-neutral-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-neutral-600'
               }`}
             >
@@ -247,7 +247,7 @@ export default function TransfersPage() {
 
             <Link
               href="/dashboard/transfers/new"
-              className="px-4 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 transition-colors font-medium whitespace-nowrap"
+              className="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors font-medium whitespace-nowrap"
             >
               + New Transfer
             </Link>
@@ -362,7 +362,7 @@ export default function TransfersPage() {
                           )}
                         <Link
                           href={`/dashboard/transfers/${transfer.id}`}
-                          className="text-purple-600 hover:text-purple-900 dark:text-purple-400 dark:hover:text-purple-300"
+                          className="text-green-600 hover:text-green-900 dark:text-green-400 dark:hover:text-green-300"
                         >
                           View
                         </Link>

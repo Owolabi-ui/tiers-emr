@@ -1,5 +1,5 @@
 {
-  "name": "tiers-emr",
+  "name": "demo-emr",
   "version": "0.1.0",
   "private": true,
   "scripts": {
@@ -9,8 +9,6 @@
     "lint": "eslint"
   },
   "dependencies": {
-    "@azure/msal-browser": "^4.27.0",
-    "@azure/msal-react": "^3.0.23",
     "@hookform/resolvers": "^5.2.2",
     "@tanstack/react-query": "^5.90.10",
     "axios": "^1.13.2",

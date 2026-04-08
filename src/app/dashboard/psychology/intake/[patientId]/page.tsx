@@ -156,7 +156,7 @@ export default function ViewIntakePage() {
         {/* GAD-2 Anxiety */}
         <div className="bg-white dark:bg-neutral-800 rounded-lg border border-gray-200 dark:border-gray-700 p-6">
           <div className="flex items-center gap-3 mb-4">
-            <Activity className="h-5 w-5 text-purple-600 dark:text-purple-400" />
+            <Activity className="h-5 w-5 text-green-600 dark:text-green-400" />
             <h3 className="font-semibold text-gray-900 dark:text-white">GAD-2 (Anxiety)</h3>
           </div>
           {intake.gad2_score !== null && gad2Severity ? (
@@ -171,16 +171,16 @@ export default function ViewIntakePage() {
                 {gad2Severity.description}
               </div>
               {intake.gad2_score > 2 && (
-                <div className="mt-4 p-3 bg-purple-50 dark:bg-purple-950/30 border border-purple-200 dark:border-purple-800 rounded-lg">
-                  <p className="text-sm font-semibold text-purple-900 dark:text-purple-100 mb-2">
+                <div className="mt-4 p-3 bg-green-50 dark:bg-green-950/30 border border-green-200 dark:border-green-800 rounded-lg">
+                  <p className="text-sm font-semibold text-green-900 dark:text-green-100 mb-2">
                     📋 Recommended Action
                   </p>
-                  <p className="text-sm text-purple-700 dark:text-purple-300 mb-3">
+                  <p className="text-sm text-green-700 dark:text-green-300 mb-3">
                     Administer full <strong>GAD-7</strong> assessment for detailed anxiety evaluation
                   </p>
                   <button
                     onClick={() => setShowGad7Modal(true)}
-                    className="inline-flex items-center gap-2 px-4 py-2 bg-purple-600 hover:bg-purple-700 text-white text-sm font-medium rounded-lg transition-colors"
+                    className="inline-flex items-center gap-2 px-4 py-2 bg-green-600 hover:bg-green-700 text-white text-sm font-medium rounded-lg transition-colors"
                   >
                     <QrCode className="h-4 w-4" />
                     Send GAD-7 Assessment

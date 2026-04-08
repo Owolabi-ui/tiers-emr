@@ -141,7 +141,7 @@ export default function EditAppointmentPage() {
     return (
       <div className="flex items-center justify-center min-h-[400px]">
         <div className="text-center">
-          <Loader2 className="h-8 w-8 animate-spin text-[#5b21b6] mx-auto" />
+          <Loader2 className="h-8 w-8 animate-spin text-[#065f46] mx-auto" />
           <p className="mt-4 text-sm text-gray-500">Loading appointment...</p>
         </div>
       </div>
@@ -161,7 +161,7 @@ export default function EditAppointmentPage() {
               <p className="text-sm text-red-700 dark:text-red-400 mt-1">{error}</p>
               <Link
                 href="/dashboard/appointments"
-                className="mt-4 inline-flex items-center gap-2 text-sm text-[#5b21b6] hover:underline"
+                className="mt-4 inline-flex items-center gap-2 text-sm text-[#065f46] hover:underline"
               >
                 <ArrowLeft className="h-4 w-4" />
                 Back to appointments
@@ -200,7 +200,7 @@ export default function EditAppointmentPage() {
           <ArrowLeft className="h-5 w-5" />
         </Link>
         <div>
-          <h1 className="text-2xl font-bold text-[#5b21b6]">Edit Appointment</h1>
+          <h1 className="text-2xl font-bold text-[#065f46]">Edit Appointment</h1>
           <p className="text-sm text-gray-500">
             #{appointment?.appointment_number}
           </p>
@@ -226,7 +226,7 @@ export default function EditAppointmentPage() {
         {/* Patient (Read-only) */}
         {patient && (
           <div className="rounded-xl border border-black/10 dark:border-white/15 bg-white dark:bg-neutral-900 overflow-hidden">
-            <div className="bg-[#5b21b6] px-5 py-3 flex items-center gap-2">
+            <div className="bg-[#065f46] px-5 py-3 flex items-center gap-2">
               <User className="h-5 w-5 text-white" />
               <h2 className="font-semibold text-white">Patient</h2>
             </div>
@@ -242,7 +242,7 @@ export default function EditAppointmentPage() {
                 </div>
                 <Link
                   href={`/dashboard/patients/${patient.id}`}
-                  className="text-sm text-[#5b21b6] hover:underline"
+                  className="text-sm text-[#065f46] hover:underline"
                 >
                   View Profile
                 </Link>
@@ -253,7 +253,7 @@ export default function EditAppointmentPage() {
 
         {/* Appointment Details */}
         <div className="rounded-xl border border-black/10 dark:border-white/15 bg-white dark:bg-neutral-900 overflow-hidden">
-          <div className="bg-[#5b21b6] px-5 py-3 flex items-center gap-2">
+          <div className="bg-[#065f46] px-5 py-3 flex items-center gap-2">
             <Calendar className="h-5 w-5 text-white" />
             <h2 className="font-semibold text-white">Appointment Details</h2>
           </div>
@@ -295,7 +295,7 @@ export default function EditAppointmentPage() {
                   <input
                     type="date"
                     {...register('appointment_date')}
-                    className="w-full h-10 pl-10 pr-4 rounded-lg border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-neutral-800 text-sm text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-[#5b21b6]/50"
+                    className="w-full h-10 pl-10 pr-4 rounded-lg border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-neutral-800 text-sm text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-[#065f46]/50"
                   />
                 </div>
                 {errors.appointment_date && (
@@ -312,7 +312,7 @@ export default function EditAppointmentPage() {
                   <input
                     type="time"
                     {...register('appointment_time')}
-                    className="w-full h-10 pl-10 pr-4 rounded-lg border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-neutral-800 text-sm text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-[#5b21b6]/50"
+                    className="w-full h-10 pl-10 pr-4 rounded-lg border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-neutral-800 text-sm text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-[#065f46]/50"
                   />
                 </div>
               </div>
@@ -322,7 +322,7 @@ export default function EditAppointmentPage() {
 
         {/* Notes */}
         <div className="rounded-xl border border-black/10 dark:border-white/15 bg-white dark:bg-neutral-900 overflow-hidden">
-          <div className="bg-[#5b21b6] px-5 py-3 flex items-center gap-2">
+          <div className="bg-[#065f46] px-5 py-3 flex items-center gap-2">
             <FileText className="h-5 w-5 text-white" />
             <h2 className="font-semibold text-white">Notes</h2>
           </div>
@@ -335,7 +335,7 @@ export default function EditAppointmentPage() {
                 type="text"
                 {...register('reason')}
                 placeholder="e.g., Monthly refill, Follow-up on lab results..."
-                className="w-full h-10 rounded-lg border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-neutral-800 px-3 text-sm text-gray-900 dark:text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-[#5b21b6]/50"
+                className="w-full h-10 rounded-lg border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-neutral-800 px-3 text-sm text-gray-900 dark:text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-[#065f46]/50"
               />
             </div>
 
@@ -347,7 +347,7 @@ export default function EditAppointmentPage() {
                 {...register('notes')}
                 rows={3}
                 placeholder="Any additional information..."
-                className="w-full rounded-lg border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-neutral-800 px-3 py-2 text-sm text-gray-900 dark:text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-[#5b21b6]/50 resize-none"
+                className="w-full rounded-lg border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-neutral-800 px-3 py-2 text-sm text-gray-900 dark:text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-[#065f46]/50 resize-none"
               />
             </div>
           </div>
@@ -364,7 +364,7 @@ export default function EditAppointmentPage() {
           <button
             type="submit"
             disabled={saving}
-            className="inline-flex items-center gap-2 px-6 py-2 rounded-lg bg-[#5b21b6] text-white text-sm font-medium hover:bg-[#4c1d95] disabled:opacity-50 transition-colors"
+            className="inline-flex items-center gap-2 px-6 py-2 rounded-lg bg-[#065f46] text-white text-sm font-medium hover:bg-[#064e3b] disabled:opacity-50 transition-colors"
           >
             {saving ? (
               <>

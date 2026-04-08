@@ -53,7 +53,7 @@ export default function TherapySessionDetailPage() {
   if (loading) {
     return (
       <div className="flex items-center justify-center h-64">
-        <Loader2 className="h-8 w-8 animate-spin text-purple-600 dark:text-purple-400" />
+        <Loader2 className="h-8 w-8 animate-spin text-green-600 dark:text-green-400" />
       </div>
     );
   }
@@ -98,7 +98,7 @@ export default function TherapySessionDetailPage() {
             <h1 className="text-3xl font-bold text-gray-900 dark:text-white">Therapy Session Details</h1>
             <p className="mt-2 text-sm text-gray-600 dark:text-gray-400">Session ID: {session.id}</p>
           </div>
-          <div className="px-3 py-1 bg-purple-100 dark:bg-purple-900/30 text-purple-700 dark:text-purple-300 rounded-full text-sm font-medium">
+          <div className="px-3 py-1 bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-300 rounded-full text-sm font-medium">
             {session.session_type}
           </div>
         </div>
@@ -152,8 +152,8 @@ export default function TherapySessionDetailPage() {
           </div>
 
           <div className="flex items-start gap-3">
-            <div className="p-2 bg-purple-100 dark:bg-purple-900/30 rounded-lg">
-              <Brain className="h-5 w-5 text-purple-600 dark:text-purple-400" />
+            <div className="p-2 bg-green-100 dark:bg-green-900/30 rounded-lg">
+              <Brain className="h-5 w-5 text-green-600 dark:text-green-400" />
             </div>
             <div>
               <p className="text-xs text-gray-500 dark:text-gray-400">Presenting Concerns</p>
@@ -161,7 +161,7 @@ export default function TherapySessionDetailPage() {
                 {(session.presenting_concerns || []).map((area, idx) => (
                   <span
                     key={`${area}-${idx}`}
-                    className="px-2 py-0.5 bg-purple-50 dark:bg-purple-900/20 text-purple-700 dark:text-purple-300 text-xs rounded"
+                    className="px-2 py-0.5 bg-green-50 dark:bg-green-900/20 text-green-700 dark:text-green-300 text-xs rounded"
                   >
                     {area}
                   </span>

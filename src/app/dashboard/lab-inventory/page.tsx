@@ -45,7 +45,7 @@ export default function LabInventoryPage() {
     <div className="space-y-6">
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
         <div>
-          <h1 className="text-2xl font-bold text-[#5b21b6]">Laboratory Inventory</h1>
+          <h1 className="text-2xl font-bold text-[#065f46]">Laboratory Inventory</h1>
           <p className="text-sm text-gray-500">Track reagent and consumable stock movements</p>
         </div>
         <div className="flex gap-2">
@@ -55,7 +55,7 @@ export default function LabInventoryPage() {
           <Link href="/dashboard/lab-inventory/reports/expiring" className="px-3 py-2 rounded-lg border text-sm">
             Expiring
           </Link>
-          <Link href="/dashboard/lab-inventory/new" className="px-3 py-2 rounded-lg bg-[#5b21b6] text-white text-sm">
+          <Link href="/dashboard/lab-inventory/new" className="px-3 py-2 rounded-lg bg-[#065f46] text-white text-sm">
             Add Item
           </Link>
         </div>
@@ -81,7 +81,7 @@ export default function LabInventoryPage() {
 
       <div className="rounded-xl border overflow-x-auto bg-white dark:bg-neutral-900">
         <table className="w-full text-sm">
-          <thead className="bg-[#5b21b6] text-white">
+          <thead className="bg-[#065f46] text-white">
             <tr>
               <th className="px-4 py-3 text-left font-medium">Product Code</th>
               <th className="px-4 py-3 text-left font-medium">Product Name</th>
@@ -114,7 +114,7 @@ export default function LabInventoryPage() {
                     <td className="px-4 py-3">{item.minimum_stock_level}</td>
                     <td className="px-4 py-3">
                       <div className="flex gap-2">
-                        <Link href={`/dashboard/lab-inventory/${item.id}`} className="underline text-[#5b21b6]">
+                        <Link href={`/dashboard/lab-inventory/${item.id}`} className="underline text-[#065f46]">
                           View
                         </Link>
                         <Link href={`/dashboard/lab-inventory/${item.id}/transactions/receive`} className="underline">

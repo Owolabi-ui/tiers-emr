@@ -82,7 +82,7 @@ export default function HtsPage() {
     return (
       <div className="flex items-center justify-center min-h-[400px]">
         <div className="text-center">
-          <Loader2 className="h-8 w-8 animate-spin text-[#5b21b6] mx-auto" />
+          <Loader2 className="h-8 w-8 animate-spin text-[#065f46] mx-auto" />
           <p className="mt-4 text-sm text-gray-500">Loading HTS data...</p>
         </div>
       </div>
@@ -108,14 +108,14 @@ export default function HtsPage() {
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div>
-          <h1 className="text-2xl font-bold text-[#5b21b6]">HIV Testing Services (HTS)</h1>
+          <h1 className="text-2xl font-bold text-[#065f46]">HIV Testing Services (HTS)</h1>
           <p className="text-sm text-gray-500 mt-1">
             Manage HIV testing and counseling services
           </p>
         </div>
         <Link
           href="/dashboard/hts/new"
-          className="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-[#5b21b6] text-white text-sm font-medium hover:bg-[#4c1d95] transition-colors"
+          className="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-[#065f46] text-white text-sm font-medium hover:bg-[#064e3b] transition-colors"
         >
           <Plus className="h-4 w-4" />
           New HTS Session
@@ -133,8 +133,8 @@ export default function HtsPage() {
                   {(statistics.total_tests_reactive + statistics.total_tests_non_reactive) || 0}
                 </p>
               </div>
-              <div className="p-3 rounded-lg bg-purple-100 dark:bg-purple-900/30">
-                <Activity className="h-6 w-6 text-[#5b21b6]" />
+              <div className="p-3 rounded-lg bg-green-100 dark:bg-green-900/30">
+                <Activity className="h-6 w-6 text-[#065f46]" />
               </div>
             </div>
           </div>
@@ -192,14 +192,14 @@ export default function HtsPage() {
             placeholder="Search by patient name, client code, or target group..."
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
-            className="w-full h-10 pl-10 pr-4 rounded-lg border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-neutral-800 text-sm text-gray-900 dark:text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-[#5b21b6]/50"
+            className="w-full h-10 pl-10 pr-4 rounded-lg border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-neutral-800 text-sm text-gray-900 dark:text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-[#065f46]/50"
           />
         </div>
       </div>
 
       {/* Records Table */}
       <div className="rounded-xl border border-black/10 dark:border-white/15 bg-white dark:bg-neutral-900 overflow-hidden">
-        <div className="bg-[#5b21b6] px-5 py-3 flex items-center gap-2">
+        <div className="bg-[#065f46] px-5 py-3 flex items-center gap-2">
           <FileText className="h-5 w-5 text-white" />
           <h2 className="font-semibold text-white">HTS Records</h2>
         </div>
@@ -212,7 +212,7 @@ export default function HtsPage() {
             </p>
             <Link
               href="/dashboard/hts/new"
-              className="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-[#5b21b6] text-white text-sm font-medium hover:bg-[#4c1d95] transition-colors"
+              className="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-[#065f46] text-white text-sm font-medium hover:bg-[#064e3b] transition-colors"
             >
               <Plus className="h-4 w-4" />
               Create First HTS Session
@@ -251,8 +251,8 @@ export default function HtsPage() {
                   <tr key={record.id} className="hover:bg-gray-50 dark:hover:bg-neutral-800 transition-colors">
                     <td className="px-6 py-4 whitespace-nowrap">
                       <div className="flex items-center gap-2">
-                        <div className="h-8 w-8 rounded-full bg-purple-100 dark:bg-purple-900/30 flex items-center justify-center">
-                          <User className="h-4 w-4 text-purple-600 dark:text-purple-400" />
+                        <div className="h-8 w-8 rounded-full bg-green-100 dark:bg-green-900/30 flex items-center justify-center">
+                          <User className="h-4 w-4 text-green-600 dark:text-green-400" />
                         </div>
                         <span className="text-sm font-medium text-gray-900 dark:text-white">{record.patient_name}</span>
                       </div>
@@ -292,7 +292,7 @@ export default function HtsPage() {
                         {record.status !== 'completed' && (
                           <Link
                             href={`/dashboard/hts/${record.id}/continue`}
-                            className="inline-flex items-center gap-1 text-[#5b21b6] font-medium hover:text-[#4c1d95] transition-colors"
+                            className="inline-flex items-center gap-1 text-[#065f46] font-medium hover:text-[#064e3b] transition-colors"
                           >
                             Continue
                           </Link>

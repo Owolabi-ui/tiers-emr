@@ -258,7 +258,7 @@ export default function EnhancedPatientPsychologyPage() {
                     </span>
                   )}
                 </div>
-                <Brain className="h-8 w-8 text-purple-600 dark:text-purple-400" />
+                <Brain className="h-8 w-8 text-green-600 dark:text-green-400" />
               </div>
             </div>
           </div>
@@ -282,10 +282,10 @@ export default function EnhancedPatientPsychologyPage() {
 
               <button
                 onClick={() => setShowGad7Modal(true)}
-                className="p-4 border-2 border-dashed border-gray-300 dark:border-gray-600 rounded-lg hover:border-purple-500 dark:hover:border-purple-400 transition-colors"
+                className="p-4 border-2 border-dashed border-gray-300 dark:border-gray-600 rounded-lg hover:border-green-500 dark:hover:border-green-400 transition-colors"
               >
                 <div className="flex items-center gap-3">
-                  <QrCode className="h-6 w-6 text-purple-600 dark:text-purple-400" />
+                  <QrCode className="h-6 w-6 text-green-600 dark:text-green-400" />
                   <div className="text-left">
                     <p className="font-medium text-gray-900 dark:text-white">GAD-7 Assessment</p>
                     <p className="text-sm text-gray-500 dark:text-gray-400">Anxiety screening</p>
@@ -386,7 +386,7 @@ export default function EnhancedPatientPsychologyPage() {
                   <div className="flex items-center justify-between mb-3">
                     <div>
                       <h4 className="font-semibold text-gray-900 dark:text-white flex items-center gap-2">
-                        <Brain className="h-5 w-5 text-purple-600 dark:text-purple-400" />
+                        <Brain className="h-5 w-5 text-green-600 dark:text-green-400" />
                         GAD-7 Anxiety Screening
                       </h4>
                       <p className="text-sm text-gray-500 dark:text-gray-400">
@@ -693,7 +693,7 @@ export default function EnhancedPatientPsychologyPage() {
                 </button>
                 <button
                   onClick={() => setShowGad7Modal(true)}
-                  className="inline-flex items-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-purple-600 hover:bg-purple-700"
+                  className="inline-flex items-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-green-600 hover:bg-green-700"
                 >
                   GAD-7 Assessment
                 </button>

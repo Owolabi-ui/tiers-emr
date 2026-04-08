@@ -44,7 +44,7 @@ const serviceColors: Record<ServiceType, string> = {
   PREP: 'bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-400',
   PEP: 'bg-orange-100 text-orange-700 dark:bg-orange-900/30 dark:text-orange-400',
   ART: 'bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-400',
-  'Mental Health': 'bg-purple-100 text-purple-700 dark:bg-purple-900/30 dark:text-purple-400',
+  'Mental Health': 'bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400',
 };
 
 // Short labels for compact display
@@ -173,7 +173,7 @@ export default function PatientsPage() {
       {/* Page Header */}
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div>
-          <h1 className="text-2xl sm:text-3xl font-bold text-[#5b21b6]">Patients</h1>
+          <h1 className="text-2xl sm:text-3xl font-bold text-[#065f46]">Patients</h1>
           <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">
             Manage patient records and demographics
           </p>
@@ -181,14 +181,14 @@ export default function PatientsPage() {
         <div className="flex items-center gap-2">
           <button
             onClick={() => setShowFingerprintScan(true)}
-            className="inline-flex items-center gap-2 rounded-lg bg-purple-600 px-4 py-2.5 text-sm font-medium text-white shadow-lg hover:bg-purple-700 transition-all"
+            className="inline-flex items-center gap-2 rounded-lg bg-green-600 px-4 py-2.5 text-sm font-medium text-white shadow-lg hover:bg-green-700 transition-all"
           >
             <Fingerprint className="h-4 w-4" />
             Quick Check-in
           </button>
           <Link
             href="/dashboard/patients/new"
-            className="inline-flex items-center gap-2 rounded-lg bg-[#5b21b6] px-4 py-2.5 text-sm font-medium text-white shadow-lg hover:bg-[#4c1d95] transition-all"
+            className="inline-flex items-center gap-2 rounded-lg bg-[#065f46] px-4 py-2.5 text-sm font-medium text-white shadow-lg hover:bg-[#064e3b] transition-all"
           >
             <UserPlus className="h-4 w-4" />
             New Patient
@@ -198,10 +198,10 @@ export default function PatientsPage() {
 
       {/* Stats Cards */}
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-        <div className="rounded-xl border border-black/10 dark:border-white/15 bg-purple-50/40 dark:bg-[#5b21b6]/10 p-4">
+        <div className="rounded-xl border border-black/10 dark:border-white/15 bg-green-50/40 dark:bg-[#065f46]/10 p-4">
           <div className="flex items-center gap-3">
-            <div className="p-2 rounded-lg bg-[#5b21b6]/10">
-              <Users className="h-5 w-5 text-[#5b21b6]" />
+            <div className="p-2 rounded-lg bg-[#065f46]/10">
+              <Users className="h-5 w-5 text-[#065f46]" />
             </div>
             <div>
               <p className="text-2xl font-bold text-gray-900 dark:text-white">{total}</p>
@@ -209,7 +209,7 @@ export default function PatientsPage() {
             </div>
           </div>
         </div>
-        <div className="rounded-xl border border-black/10 dark:border-white/15 bg-purple-50/40 dark:bg-[#5b21b6]/10 p-4">
+        <div className="rounded-xl border border-black/10 dark:border-white/15 bg-green-50/40 dark:bg-[#065f46]/10 p-4">
           <div className="flex items-center gap-3">
             <div className="p-2 rounded-lg bg-green-100 dark:bg-green-900/30">
               <UserPlus className="h-5 w-5 text-green-600" />
@@ -222,7 +222,7 @@ export default function PatientsPage() {
             </div>
           </div>
         </div>
-        <div className="rounded-xl border border-black/10 dark:border-white/15 bg-purple-50/40 dark:bg-[#5b21b6]/10 p-4">
+        <div className="rounded-xl border border-black/10 dark:border-white/15 bg-green-50/40 dark:bg-[#065f46]/10 p-4">
           <div className="flex items-center gap-3">
             <div className="p-2 rounded-lg bg-blue-100 dark:bg-blue-900/30">
               <Users className="h-5 w-5 text-blue-600" />
@@ -245,7 +245,7 @@ export default function PatientsPage() {
               placeholder="Search by name, hospital number, phone..."
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
-              className="w-full h-10 pl-10 pr-4 rounded-lg border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-neutral-800 text-sm text-gray-900 dark:text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-[#5b21b6]/50 focus:border-[#5b21b6]"
+              className="w-full h-10 pl-10 pr-4 rounded-lg border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-neutral-800 text-sm text-gray-900 dark:text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-[#065f46]/50 focus:border-[#065f46]"
             />
           </div>
           <button
@@ -253,7 +253,7 @@ export default function PatientsPage() {
             onClick={() => setShowFilters(!showFilters)}
             className={`inline-flex items-center gap-2 px-4 py-2 rounded-lg border text-sm font-medium transition-colors ${
               showFilters || sexFilter
-                ? 'border-[#5b21b6] text-[#5b21b6] bg-[#5b21b6]/10'
+                ? 'border-[#065f46] text-[#065f46] bg-[#065f46]/10'
                 : 'border-gray-200 dark:border-gray-700 text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800'
             }`}
           >
@@ -284,7 +284,7 @@ export default function PatientsPage() {
                     setSexFilter(e.target.value as SexType | '');
                     setPage(1);
                   }}
-                  className="w-full h-10 rounded-lg border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-neutral-800 px-3 text-sm text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-[#5b21b6]/50"
+                  className="w-full h-10 rounded-lg border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-neutral-800 px-3 text-sm text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-[#065f46]/50"
                 >
                   <option value="">All</option>
                   {sexOptions.map((sex) => (
@@ -302,7 +302,7 @@ export default function PatientsPage() {
                   setSexFilter('');
                   setPage(1);
                 }}
-                className="mt-3 text-sm text-[#5b21b6] hover:underline"
+                className="mt-3 text-sm text-[#065f46] hover:underline"
               >
                 Clear filters
               </button>
@@ -327,10 +327,10 @@ export default function PatientsPage() {
       )}
 
       {/* Patients Table */}
-      <div className="overflow-x-auto rounded-xl border border-black/10 dark:border-white/15 bg-purple-100 dark:bg-[#5b21b6]/10 backdrop-blur-sm">
+      <div className="overflow-x-auto rounded-xl border border-black/10 dark:border-white/15 bg-green-100 dark:bg-[#065f46]/10 backdrop-blur-sm">
         <table className="w-full text-sm">
           <thead>
-            <tr className="bg-[#5b21b6] text-white">
+            <tr className="bg-[#065f46] text-white">
               <th className="px-4 py-3 text-left font-medium">Hospital No.</th>
               <th className="px-4 py-3 text-left font-medium">Patient Name</th>
               <th className="px-4 py-3 text-left font-medium">Sex</th>
@@ -345,7 +345,7 @@ export default function PatientsPage() {
             {loading ? (
               <tr>
                 <td colSpan={8} className="px-4 py-12 text-center">
-                  <Loader2 className="h-8 w-8 animate-spin text-[#5b21b6] mx-auto" />
+                  <Loader2 className="h-8 w-8 animate-spin text-[#065f46] mx-auto" />
                   <p className="mt-2 text-sm text-gray-500">Loading patients...</p>
                 </td>
               </tr>
@@ -356,7 +356,7 @@ export default function PatientsPage() {
                   <p className="mt-2 text-sm text-gray-500">No patients found</p>
                   <Link
                     href="/dashboard/patients/new"
-                    className="mt-4 inline-flex items-center gap-2 text-sm text-[#5b21b6] hover:underline"
+                    className="mt-4 inline-flex items-center gap-2 text-sm text-[#065f46] hover:underline"
                   >
                     <Plus className="h-4 w-4" />
                     Add your first patient
@@ -367,7 +367,7 @@ export default function PatientsPage() {
               patients.map((patient) => (
                 <tr
                   key={patient.id}
-                  className="border-t border-black/5 dark:border-white/10 hover:bg-purple-50/50 dark:hover:bg-[#5b21b6]/5 transition-colors"
+                  className="border-t border-black/5 dark:border-white/10 hover:bg-green-50/50 dark:hover:bg-[#065f46]/5 transition-colors"
                 >
                   <td className="px-4 py-3">
                     <span className="font-mono text-xs bg-gray-100 dark:bg-gray-800 px-2 py-1 rounded">
@@ -393,7 +393,7 @@ export default function PatientsPage() {
                           ? 'bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-400'
                           : patient.sex === 'Female'
                           ? 'bg-pink-100 text-pink-700 dark:bg-pink-900/30 dark:text-pink-400'
-                          : 'bg-purple-100 text-purple-700 dark:bg-purple-900/30 dark:text-purple-400'
+                          : 'bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400'
                       }`}
                     >
                       {patient.sex}
@@ -424,7 +424,7 @@ export default function PatientsPage() {
                           ))}
                         </div>
                       ) : (
-                        <span className="text-xs text-gray-400 italic hover:text-[#5b21b6] transition-colors">
+                        <span className="text-xs text-gray-400 italic hover:text-[#065f46] transition-colors">
                           Not enrolled
                         </span>
                       )}
@@ -448,14 +448,14 @@ export default function PatientsPage() {
                     <div className="flex items-center justify-center gap-1">
                       <button
                         onClick={() => router.push(`/dashboard/patients/${patient.id}`)}
-                        className="p-1.5 rounded-lg text-gray-500 hover:text-[#5b21b6] hover:bg-[#5b21b6]/10 transition-colors"
+                        className="p-1.5 rounded-lg text-gray-500 hover:text-[#065f46] hover:bg-[#065f46]/10 transition-colors"
                         title="View details"
                       >
                         <Eye className="h-4 w-4" />
                       </button>
                       <button
                         onClick={() => router.push(`/dashboard/patients/${patient.id}/edit`)}
-                        className="p-1.5 rounded-lg text-gray-500 hover:text-[#5b21b6] hover:bg-[#5b21b6]/10 transition-colors"
+                        className="p-1.5 rounded-lg text-gray-500 hover:text-[#065f46] hover:bg-[#065f46]/10 transition-colors"
                         title="Edit patient"
                       >
                         <Edit className="h-4 w-4" />
@@ -544,7 +544,7 @@ export default function PatientsPage() {
 
               <div>
                 <div className="flex items-center gap-2 mb-3">
-                  <FlaskConical className="h-4 w-4 text-[#5b21b6]" />
+                  <FlaskConical className="h-4 w-4 text-[#065f46]" />
                   <h3 className="text-sm font-semibold text-gray-900 dark:text-white">Lab Tests</h3>
                 </div>
 
@@ -564,7 +564,7 @@ export default function PatientsPage() {
                           setSelectedPatient(null);
                           router.push(`/dashboard/laboratory/${order.id}`);
                         }}
-                        className="rounded-lg border border-gray-100 dark:border-gray-800 p-3 cursor-pointer hover:border-[#5b21b6]/40 hover:bg-purple-50/40 dark:hover:bg-[#5b21b6]/5 transition-colors"
+                        className="rounded-lg border border-gray-100 dark:border-gray-800 p-3 cursor-pointer hover:border-[#065f46]/40 hover:bg-green-50/40 dark:hover:bg-[#065f46]/5 transition-colors"
                       >
                         <div className="flex items-start justify-between gap-2">
                           <div>
@@ -617,7 +617,7 @@ export default function PatientsPage() {
                   setSelectedPatient(null);
                   router.push(`/dashboard/patients/${selectedPatient.id}`);
                 }}
-                className="w-full py-2 rounded-lg bg-[#5b21b6] text-white text-sm font-medium hover:bg-[#4c1d95] transition-colors"
+                className="w-full py-2 rounded-lg bg-[#065f46] text-white text-sm font-medium hover:bg-[#064e3b] transition-colors"
               >
                 View Full Record
               </button>

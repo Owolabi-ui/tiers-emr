@@ -15,7 +15,7 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "TIERs EMR | Modern Electronic Medical Record",
+  title: "DEMO-EMR | Electronic Medical Record",
   description:
     "A tailored EMR for secure client data, appointments, HTS/PrEP/STI/mental health modules, dispensing, reporting, and teleconsultation integration.",
 };

@@ -124,7 +124,7 @@ export default function EditArtPage() {
   if (loading) {
     return (
       <div className="flex items-center justify-center min-h-[320px]">
-        <Loader2 className="h-8 w-8 animate-spin text-[#5b21b6]" />
+        <Loader2 className="h-8 w-8 animate-spin text-[#065f46]" />
       </div>
     );
   }
@@ -136,7 +136,7 @@ export default function EditArtPage() {
           <ArrowLeft className="h-5 w-5 text-gray-600 dark:text-gray-400" />
         </Link>
         <div>
-          <h1 className="text-2xl font-bold text-[#5b21b6]">Edit ART Information</h1>
+          <h1 className="text-2xl font-bold text-[#065f46]">Edit ART Information</h1>
         </div>
       </div>
 
@@ -194,7 +194,7 @@ export default function EditArtPage() {
 
         <div className="flex justify-end gap-3">
           <Link href={`/dashboard/art/${id}`} className="px-4 py-2 rounded-lg border text-sm hover:bg-gray-50 dark:hover:bg-neutral-800">Cancel</Link>
-          <button type="submit" disabled={saving} className="px-4 py-2 rounded-lg bg-[#5b21b6] text-white text-sm font-medium hover:bg-[#4c1d95] disabled:opacity-50 inline-flex items-center gap-2">
+          <button type="submit" disabled={saving} className="px-4 py-2 rounded-lg bg-[#065f46] text-white text-sm font-medium hover:bg-[#064e3b] disabled:opacity-50 inline-flex items-center gap-2">
             {saving && <Loader2 className="h-4 w-4 animate-spin" />}
             <Save className="h-4 w-4" />
             Save Changes

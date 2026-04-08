@@ -275,7 +275,7 @@ export default function LabOrderDetailPage() {
     return (
       <div className="flex items-center justify-center min-h-[400px]">
         <div className="text-center">
-          <Loader2 className="h-8 w-8 animate-spin text-[#5b21b6] mx-auto" />
+          <Loader2 className="h-8 w-8 animate-spin text-[#065f46] mx-auto" />
           <p className="mt-4 text-sm text-gray-500">Loading lab order details...</p>
         </div>
       </div>
@@ -293,7 +293,7 @@ export default function LabOrderDetailPage() {
           >
             <ArrowLeft className="h-5 w-5 text-gray-500" />
           </button>
-          <h1 className="text-2xl font-bold text-[#5b21b6]">Lab Order Details</h1>
+          <h1 className="text-2xl font-bold text-[#065f46]">Lab Order Details</h1>
         </div>
         <div className="rounded-lg bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 p-6">
           <div className="flex items-start gap-3">
@@ -385,7 +385,7 @@ export default function LabOrderDetailPage() {
             <ArrowLeft className="h-5 w-5 text-gray-500" />
           </button>
           <div>
-            <h1 className="text-2xl font-bold text-[#5b21b6]">Lab Order Details</h1>
+            <h1 className="text-2xl font-bold text-[#065f46]">Lab Order Details</h1>
             <p className="text-sm text-gray-500 mt-1">{formatOrderNumber(order.order_number)}</p>
           </div>
         </div>
@@ -438,7 +438,7 @@ export default function LabOrderDetailPage() {
             <button
               onClick={handleCollectSample}
               disabled={actionLoading}
-              className="px-4 py-2 rounded-lg bg-purple-600 text-white text-sm font-medium hover:bg-purple-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
+              className="px-4 py-2 rounded-lg bg-green-600 text-white text-sm font-medium hover:bg-green-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
             >
               {actionLoading ? <Loader2 className="h-4 w-4 animate-spin" /> : <FlaskConical className="h-4 w-4" />}
               Collect Sample
@@ -515,7 +515,7 @@ export default function LabOrderDetailPage() {
         <div className="lg:col-span-2 space-y-6">
           {/* Test Information */}
           <div className="rounded-xl border border-black/10 dark:border-white/15 bg-white dark:bg-neutral-900">
-            <div className="bg-[#5b21b6] px-5 py-3 flex items-center gap-2 rounded-t-xl">
+            <div className="bg-[#065f46] px-5 py-3 flex items-center gap-2 rounded-t-xl">
               <FlaskConical className="h-5 w-5 text-white" />
               <h2 className="font-semibold text-white">Test Information</h2>
             </div>
@@ -544,7 +544,7 @@ export default function LabOrderDetailPage() {
           {/* Result Information */}
           {(order.result_value || order.result_data) && (
             <div className="rounded-xl border border-black/10 dark:border-white/15 bg-white dark:bg-neutral-900">
-              <div className="bg-[#5b21b6] px-5 py-3 flex items-center gap-2 rounded-t-xl">
+              <div className="bg-[#065f46] px-5 py-3 flex items-center gap-2 rounded-t-xl">
                 <FileText className="h-5 w-5 text-white" />
                 <h2 className="font-semibold text-white">Test Result</h2>
               </div>
@@ -600,7 +600,7 @@ export default function LabOrderDetailPage() {
 
           {repeatTests.length > 0 && (
             <div className="rounded-xl border border-black/10 dark:border-white/15 bg-white dark:bg-neutral-900">
-              <div className="bg-[#5b21b6] px-5 py-3 flex items-center gap-2 rounded-t-xl">
+              <div className="bg-[#065f46] px-5 py-3 flex items-center gap-2 rounded-t-xl">
                 <History className="h-5 w-5 text-white" />
                 <h2 className="font-semibold text-white">Repeat / Confirmatory Tests</h2>
               </div>
@@ -613,7 +613,7 @@ export default function LabOrderDetailPage() {
                     </div>
                     <Link
                       href={`/dashboard/laboratory/${test.id}`}
-                      className="text-sm font-medium text-[#5b21b6] hover:underline"
+                      className="text-sm font-medium text-[#065f46] hover:underline"
                     >
                       View Details
                     </Link>
@@ -646,7 +646,7 @@ export default function LabOrderDetailPage() {
           {/* Clinical Notes */}
           {order.clinical_notes && (
             <div className="rounded-xl border border-black/10 dark:border-white/15 bg-white dark:bg-neutral-900">
-              <div className="bg-[#5b21b6] px-5 py-3 flex items-center gap-2 rounded-t-xl">
+              <div className="bg-[#065f46] px-5 py-3 flex items-center gap-2 rounded-t-xl">
                 <FileText className="h-5 w-5 text-white" />
                 <h2 className="font-semibold text-white">Clinical Notes</h2>
               </div>
@@ -659,7 +659,7 @@ export default function LabOrderDetailPage() {
           {/* Result History */}
           {result_history && result_history.length > 0 && (
             <div className="rounded-xl border border-black/10 dark:border-white/15 bg-white dark:bg-neutral-900">
-              <div className="bg-[#5b21b6] px-5 py-3 flex items-center gap-2 rounded-t-xl">
+              <div className="bg-[#065f46] px-5 py-3 flex items-center gap-2 rounded-t-xl">
                 <History className="h-5 w-5 text-white" />
                 <h2 className="font-semibold text-white">Result History</h2>
               </div>
@@ -689,7 +689,7 @@ export default function LabOrderDetailPage() {
         <div className="space-y-6">
           {/* Patient Information */}
           <div className="rounded-xl border border-black/10 dark:border-white/15 bg-white dark:bg-neutral-900">
-            <div className="bg-[#5b21b6] px-5 py-3 flex items-center gap-2 rounded-t-xl">
+            <div className="bg-[#065f46] px-5 py-3 flex items-center gap-2 rounded-t-xl">
               <User className="h-5 w-5 text-white" />
               <h2 className="font-semibold text-white">Patient</h2>
             </div>
@@ -701,7 +701,7 @@ export default function LabOrderDetailPage() {
 
           {/* Timeline */}
           <div className="rounded-xl border border-black/10 dark:border-white/15 bg-white dark:bg-neutral-900">
-            <div className="bg-[#5b21b6] px-5 py-3 flex items-center gap-2 rounded-t-xl">
+            <div className="bg-[#065f46] px-5 py-3 flex items-center gap-2 rounded-t-xl">
               <Clock className="h-5 w-5 text-white" />
               <h2 className="font-semibold text-white">Timeline</h2>
             </div>
@@ -758,7 +758,7 @@ export default function LabOrderDetailPage() {
       {showResultModal && (
         <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4 no-print">
           <div className="bg-white dark:bg-neutral-900 rounded-xl max-w-md w-full border border-black/10 dark:border-white/15">
-            <div className="bg-[#5b21b6] px-5 py-3 flex items-center justify-between rounded-t-xl">
+            <div className="bg-[#065f46] px-5 py-3 flex items-center justify-between rounded-t-xl">
               <h3 className="font-semibold text-white">Enter Test Result</h3>
               <button
                 onClick={() => setShowResultModal(false)}
@@ -783,7 +783,7 @@ export default function LabOrderDetailPage() {
                   <select
                     value={(resultData as CategoricalResult | null)?.result || ''}
                     onChange={(e) => setResultData({ result: e.target.value })}
-                    className="w-full h-10 px-4 rounded-lg border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-neutral-800 text-sm text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-[#5b21b6]/50"
+                    className="w-full h-10 px-4 rounded-lg border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-neutral-800 text-sm text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-[#065f46]/50"
                   >
                     <option value="">Select result</option>
                     {getCategoricalOptions(data.order.test_info.test_code).map((option) => (
@@ -801,14 +801,14 @@ export default function LabOrderDetailPage() {
                       onChange={(e) => setResultValue(e.target.value)}
                       type="text"
                       placeholder="Enter result value..."
-                      className="w-full h-10 px-4 rounded-lg border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-neutral-800 text-sm text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-[#5b21b6]/50"
+                      className="w-full h-10 px-4 rounded-lg border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-neutral-800 text-sm text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-[#065f46]/50"
                     />
                     <input
                       value={resultUnit}
                       onChange={(e) => setResultUnit(e.target.value)}
                       type="text"
                       placeholder="Result unit (optional)"
-                      className="w-full h-10 px-4 rounded-lg border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-neutral-800 text-sm text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-[#5b21b6]/50"
+                      className="w-full h-10 px-4 rounded-lg border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-neutral-800 text-sm text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-[#065f46]/50"
                     />
                   </div>
                 )}
@@ -823,7 +823,7 @@ export default function LabOrderDetailPage() {
                           test_type: e.target.value as 'FBS' | 'RBS',
                         } as GlucoseResult)
                       }
-                      className="w-full h-10 px-4 rounded-lg border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-neutral-800 text-sm text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-[#5b21b6]/50"
+                      className="w-full h-10 px-4 rounded-lg border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-neutral-800 text-sm text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-[#065f46]/50"
                     >
                       <option value="">Select glucose type</option>
                       <option value="FBS">FBS (Fasting Blood Sugar)</option>
@@ -840,7 +840,7 @@ export default function LabOrderDetailPage() {
                         } as GlucoseResult)
                       }
                       placeholder="Enter glucose value (mg/dL)"
-                      className="w-full h-10 px-4 rounded-lg border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-neutral-800 text-sm text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-[#5b21b6]/50"
+                      className="w-full h-10 px-4 rounded-lg border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-neutral-800 text-sm text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-[#065f46]/50"
                     />
                   </div>
                 )}
@@ -870,7 +870,7 @@ export default function LabOrderDetailPage() {
                           })
                         }
                         placeholder={field.label}
-                        className="w-full h-10 px-3 rounded-lg border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-neutral-800 text-sm text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-[#5b21b6]/50"
+                        className="w-full h-10 px-3 rounded-lg border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-neutral-800 text-sm text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-[#065f46]/50"
                       />
                     ))}
                   </div>
@@ -892,7 +892,7 @@ export default function LabOrderDetailPage() {
                 <select
                   value={resultInterpretation}
                   onChange={(e) => setResultInterpretation(e.target.value as ResultInterpretation)}
-                  className="w-full h-10 px-4 rounded-lg border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-neutral-800 text-sm text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-[#5b21b6]/50"
+                  className="w-full h-10 px-4 rounded-lg border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-neutral-800 text-sm text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-[#065f46]/50"
                 >
                   {resultInterpretationOptions.map((option) => (
                     <option key={option} value={option}>
@@ -911,7 +911,7 @@ export default function LabOrderDetailPage() {
                   onChange={(e) => setResultNotes(e.target.value)}
                   rows={3}
                   placeholder="Enter any additional notes..."
-                  className="w-full px-4 py-2 rounded-lg border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-neutral-800 text-sm text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-[#5b21b6]/50"
+                  className="w-full px-4 py-2 rounded-lg border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-neutral-800 text-sm text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-[#065f46]/50"
                 />
               </div>
 
@@ -926,7 +926,7 @@ export default function LabOrderDetailPage() {
                 <button
                   type="submit"
                   disabled={actionLoading}
-                  className="px-4 py-2 rounded-lg bg-[#5b21b6] text-white text-sm font-medium hover:bg-[#4c1d95] disabled:opacity-50 flex items-center gap-2"
+                  className="px-4 py-2 rounded-lg bg-[#065f46] text-white text-sm font-medium hover:bg-[#064e3b] disabled:opacity-50 flex items-center gap-2"
                 >
                   {actionLoading && <Loader2 className="h-4 w-4 animate-spin" />}
                   Submit Result

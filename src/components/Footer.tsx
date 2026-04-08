@@ -3,7 +3,7 @@ export default function Footer() {
     <footer className="border-t border-black/5 dark:border-white/10 py-8 mt-16">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 text-sm opacity-80">
         <div className="flex flex-col md:flex-row items-center justify-between gap-4">
-          <p className="opacity-80">© {new Date().getFullYear()} TIERs Clinic • EMR Mock</p>
+          <p className="opacity-80">© {new Date().getFullYear()} DEMO-EMR Clinic • EMR Demo</p>
           <div className="flex items-center gap-6">
             <a href="/features" className="hover:opacity-80">Features</a>
             <a href="/modules" className="hover:opacity-80">Modules</a>

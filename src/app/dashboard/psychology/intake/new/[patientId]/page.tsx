@@ -152,7 +152,7 @@ export default function QuickPsychologyIntakeLauncherPage() {
           <button
             type="button"
             onClick={() => setShowManualModal(true)}
-            className="w-full inline-flex items-center justify-center gap-2 rounded-lg border border-purple-200 dark:border-purple-800 bg-purple-50 dark:bg-purple-900/20 px-4 py-3 text-sm font-medium text-purple-700 dark:text-purple-300 hover:bg-purple-100 dark:hover:bg-purple-900/30 transition-colors"
+            className="w-full inline-flex items-center justify-center gap-2 rounded-lg border border-green-200 dark:border-green-800 bg-green-50 dark:bg-green-900/20 px-4 py-3 text-sm font-medium text-green-700 dark:text-green-300 hover:bg-green-100 dark:hover:bg-green-900/30 transition-colors"
           >
             <FileText className="h-4 w-4" />
             Fill Now (Assisted)

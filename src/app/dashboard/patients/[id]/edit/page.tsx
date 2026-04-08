@@ -191,7 +191,7 @@ export default function EditPatientPage() {
     return (
       <div className="flex items-center justify-center min-h-[400px]">
         <div className="text-center">
-          <Loader2 className="h-8 w-8 animate-spin text-[#5b21b6] mx-auto" />
+          <Loader2 className="h-8 w-8 animate-spin text-[#065f46] mx-auto" />
           <p className="mt-4 text-sm text-gray-500">Loading patient data...</p>
         </div>
       </div>
@@ -208,7 +208,7 @@ export default function EditPatientPage() {
               <p className="text-lg font-medium text-red-800 dark:text-red-300">Patient not found</p>
               <Link
                 href="/dashboard/patients"
-                className="mt-4 inline-flex items-center gap-2 text-sm text-[#5b21b6] hover:underline"
+                className="mt-4 inline-flex items-center gap-2 text-sm text-[#065f46] hover:underline"
               >
                 <ArrowLeft className="h-4 w-4" />
                 Back to patients
@@ -231,7 +231,7 @@ export default function EditPatientPage() {
           <ArrowLeft className="h-5 w-5" />
         </Link>
         <div>
-          <h1 className="text-2xl font-bold text-[#5b21b6]">Edit Patient</h1>
+          <h1 className="text-2xl font-bold text-[#065f46]">Edit Patient</h1>
           <p className="text-sm text-gray-500">
             Hospital No: <span className="font-mono">{patient.hospital_no}</span>
           </p>
@@ -256,7 +256,7 @@ export default function EditPatientPage() {
       <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
         {/* Personal Information */}
         <div className="rounded-xl border border-black/10 dark:border-white/15 bg-white dark:bg-neutral-900 overflow-hidden">
-          <div className="bg-[#5b21b6] px-5 py-3 flex items-center gap-2">
+          <div className="bg-[#065f46] px-5 py-3 flex items-center gap-2">
             <User className="h-5 w-5 text-white" />
             <h2 className="font-semibold text-white">Personal Information</h2>
           </div>
@@ -267,7 +267,7 @@ export default function EditPatientPage() {
               </label>
               <input
                 {...register('first_name')}
-                className="w-full h-10 rounded-lg border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-neutral-800 px-3 text-sm focus:outline-none focus:ring-2 focus:ring-[#5b21b6]/50"
+                className="w-full h-10 rounded-lg border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-neutral-800 px-3 text-sm focus:outline-none focus:ring-2 focus:ring-[#065f46]/50"
               />
               {errors.first_name && (
                 <p className="mt-1 text-sm text-red-600">{errors.first_name.message}</p>
@@ -279,7 +279,7 @@ export default function EditPatientPage() {
               </label>
               <input
                 {...register('middle_name')}
-                className="w-full h-10 rounded-lg border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-neutral-800 px-3 text-sm focus:outline-none focus:ring-2 focus:ring-[#5b21b6]/50"
+                className="w-full h-10 rounded-lg border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-neutral-800 px-3 text-sm focus:outline-none focus:ring-2 focus:ring-[#065f46]/50"
               />
             </div>
             <div>
@@ -288,7 +288,7 @@ export default function EditPatientPage() {
               </label>
               <input
                 {...register('last_name')}
-                className="w-full h-10 rounded-lg border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-neutral-800 px-3 text-sm focus:outline-none focus:ring-2 focus:ring-[#5b21b6]/50"
+                className="w-full h-10 rounded-lg border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-neutral-800 px-3 text-sm focus:outline-none focus:ring-2 focus:ring-[#065f46]/50"
               />
               {errors.last_name && (
                 <p className="mt-1 text-sm text-red-600">{errors.last_name.message}</p>
@@ -300,7 +300,7 @@ export default function EditPatientPage() {
               </label>
               <input
                 {...register('preferred_name')}
-                className="w-full h-10 rounded-lg border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-neutral-800 px-3 text-sm focus:outline-none focus:ring-2 focus:ring-[#5b21b6]/50"
+                className="w-full h-10 rounded-lg border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-neutral-800 px-3 text-sm focus:outline-none focus:ring-2 focus:ring-[#065f46]/50"
               />
             </div>
             <div>
@@ -309,7 +309,7 @@ export default function EditPatientPage() {
               </label>
               <select
                 {...register('gender')}
-                className="w-full h-10 rounded-lg border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-neutral-800 px-3 text-sm focus:outline-none focus:ring-2 focus:ring-[#5b21b6]/50"
+                className="w-full h-10 rounded-lg border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-neutral-800 px-3 text-sm focus:outline-none focus:ring-2 focus:ring-[#065f46]/50"
               >
                 <option value="">Select gender</option>
                 {genderOptions.map((gender) => (
@@ -325,7 +325,7 @@ export default function EditPatientPage() {
               </label>
               <select
                 {...register('marital_status')}
-                className="w-full h-10 rounded-lg border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-neutral-800 px-3 text-sm focus:outline-none focus:ring-2 focus:ring-[#5b21b6]/50"
+                className="w-full h-10 rounded-lg border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-neutral-800 px-3 text-sm focus:outline-none focus:ring-2 focus:ring-[#065f46]/50"
               >
                 <option value="">Select status</option>
                 {maritalStatusOptions.map((status) => (
@@ -340,7 +340,7 @@ export default function EditPatientPage() {
 
         {/* Contact Information */}
         <div className="rounded-xl border border-black/10 dark:border-white/15 bg-white dark:bg-neutral-900 overflow-hidden">
-          <div className="bg-[#5b21b6] px-5 py-3 flex items-center gap-2">
+          <div className="bg-[#065f46] px-5 py-3 flex items-center gap-2">
             <Phone className="h-5 w-5 text-white" />
             <h2 className="font-semibold text-white">Contact Information</h2>
           </div>
@@ -352,7 +352,7 @@ export default function EditPatientPage() {
               <input
                 {...register('phone')}
                 type="tel"
-                className="w-full h-10 rounded-lg border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-neutral-800 px-3 text-sm focus:outline-none focus:ring-2 focus:ring-[#5b21b6]/50"
+                className="w-full h-10 rounded-lg border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-neutral-800 px-3 text-sm focus:outline-none focus:ring-2 focus:ring-[#065f46]/50"
               />
             </div>
             <div>
@@ -362,7 +362,7 @@ export default function EditPatientPage() {
               <input
                 {...register('email')}
                 type="email"
-                className="w-full h-10 rounded-lg border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-neutral-800 px-3 text-sm focus:outline-none focus:ring-2 focus:ring-[#5b21b6]/50"
+                className="w-full h-10 rounded-lg border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-neutral-800 px-3 text-sm focus:outline-none focus:ring-2 focus:ring-[#065f46]/50"
               />
             </div>
           </div>
@@ -370,7 +370,7 @@ export default function EditPatientPage() {
 
         {/* Address */}
         <div className="rounded-xl border border-black/10 dark:border-white/15 bg-white dark:bg-neutral-900 overflow-hidden">
-          <div className="bg-[#5b21b6] px-5 py-3 flex items-center gap-2">
+          <div className="bg-[#065f46] px-5 py-3 flex items-center gap-2">
             <MapPin className="h-5 w-5 text-white" />
             <h2 className="font-semibold text-white">Address</h2>
           </div>
@@ -381,7 +381,7 @@ export default function EditPatientPage() {
               </label>
               <input
                 {...register('address')}
-                className="w-full h-10 rounded-lg border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-neutral-800 px-3 text-sm focus:outline-none focus:ring-2 focus:ring-[#5b21b6]/50"
+                className="w-full h-10 rounded-lg border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-neutral-800 px-3 text-sm focus:outline-none focus:ring-2 focus:ring-[#065f46]/50"
               />
             </div>
             <div>
@@ -390,7 +390,7 @@ export default function EditPatientPage() {
               </label>
               <select
                 {...register('state_id', { valueAsNumber: true })}
-                className="w-full h-10 rounded-lg border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-neutral-800 px-3 text-sm focus:outline-none focus:ring-2 focus:ring-[#5b21b6]/50"
+                className="w-full h-10 rounded-lg border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-neutral-800 px-3 text-sm focus:outline-none focus:ring-2 focus:ring-[#065f46]/50"
               >
                 <option value="">Select state</option>
                 {states.map((state) => (
@@ -407,7 +407,7 @@ export default function EditPatientPage() {
               <select
                 {...register('lga_id', { valueAsNumber: true })}
                 disabled={!selectedStateId}
-                className="w-full h-10 rounded-lg border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-neutral-800 px-3 text-sm focus:outline-none focus:ring-2 focus:ring-[#5b21b6]/50 disabled:opacity-50"
+                className="w-full h-10 rounded-lg border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-neutral-800 px-3 text-sm focus:outline-none focus:ring-2 focus:ring-[#065f46]/50 disabled:opacity-50"
               >
                 <option value="">Select LGA</option>
                 {lgas.map((lga) => (
@@ -423,7 +423,7 @@ export default function EditPatientPage() {
               </label>
               <input
                 {...register('city')}
-                className="w-full h-10 rounded-lg border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-neutral-800 px-3 text-sm focus:outline-none focus:ring-2 focus:ring-[#5b21b6]/50"
+                className="w-full h-10 rounded-lg border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-neutral-800 px-3 text-sm focus:outline-none focus:ring-2 focus:ring-[#065f46]/50"
               />
             </div>
           </div>
@@ -431,7 +431,7 @@ export default function EditPatientPage() {
 
         {/* Education & Occupation */}
         <div className="rounded-xl border border-black/10 dark:border-white/15 bg-white dark:bg-neutral-900 overflow-hidden">
-          <div className="bg-[#5b21b6] px-5 py-3 flex items-center gap-2">
+          <div className="bg-[#065f46] px-5 py-3 flex items-center gap-2">
             <Briefcase className="h-5 w-5 text-white" />
             <h2 className="font-semibold text-white">Education & Occupation</h2>
           </div>
@@ -442,7 +442,7 @@ export default function EditPatientPage() {
               </label>
               <select
                 {...register('educational_level')}
-                className="w-full h-10 rounded-lg border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-neutral-800 px-3 text-sm focus:outline-none focus:ring-2 focus:ring-[#5b21b6]/50"
+                className="w-full h-10 rounded-lg border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-neutral-800 px-3 text-sm focus:outline-none focus:ring-2 focus:ring-[#065f46]/50"
               >
                 <option value="">Select level</option>
                 {educationalLevelOptions.map((level) => (
@@ -458,7 +458,7 @@ export default function EditPatientPage() {
               </label>
               <select
                 {...register('occupation')}
-                className="w-full h-10 rounded-lg border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-neutral-800 px-3 text-sm focus:outline-none focus:ring-2 focus:ring-[#5b21b6]/50"
+                className="w-full h-10 rounded-lg border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-neutral-800 px-3 text-sm focus:outline-none focus:ring-2 focus:ring-[#065f46]/50"
               >
                 <option value="">Select occupation</option>
                 {occupationOptions.map((occ) => (
@@ -474,7 +474,7 @@ export default function EditPatientPage() {
               </label>
               <input
                 {...register('occupation_specify')}
-                className="w-full h-10 rounded-lg border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-neutral-800 px-3 text-sm focus:outline-none focus:ring-2 focus:ring-[#5b21b6]/50"
+                className="w-full h-10 rounded-lg border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-neutral-800 px-3 text-sm focus:outline-none focus:ring-2 focus:ring-[#065f46]/50"
               />
             </div>
           </div>
@@ -482,7 +482,7 @@ export default function EditPatientPage() {
 
         {/* Emergency Contact */}
         <div className="rounded-xl border border-black/10 dark:border-white/15 bg-white dark:bg-neutral-900 overflow-hidden">
-          <div className="bg-[#5b21b6] px-5 py-3 flex items-center gap-2">
+          <div className="bg-[#065f46] px-5 py-3 flex items-center gap-2">
             <UserPlus className="h-5 w-5 text-white" />
             <h2 className="font-semibold text-white">Emergency Contact</h2>
           </div>
@@ -493,7 +493,7 @@ export default function EditPatientPage() {
               </label>
               <input
                 {...register('emergency_contact_name')}
-                className="w-full h-10 rounded-lg border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-neutral-800 px-3 text-sm focus:outline-none focus:ring-2 focus:ring-[#5b21b6]/50"
+                className="w-full h-10 rounded-lg border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-neutral-800 px-3 text-sm focus:outline-none focus:ring-2 focus:ring-[#065f46]/50"
               />
             </div>
             <div>
@@ -502,7 +502,7 @@ export default function EditPatientPage() {
               </label>
               <input
                 {...register('emergency_contact_relationship')}
-                className="w-full h-10 rounded-lg border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-neutral-800 px-3 text-sm focus:outline-none focus:ring-2 focus:ring-[#5b21b6]/50"
+                className="w-full h-10 rounded-lg border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-neutral-800 px-3 text-sm focus:outline-none focus:ring-2 focus:ring-[#065f46]/50"
               />
             </div>
             <div>
@@ -512,7 +512,7 @@ export default function EditPatientPage() {
               <input
                 {...register('emergency_contact_phone')}
                 type="tel"
-                className="w-full h-10 rounded-lg border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-neutral-800 px-3 text-sm focus:outline-none focus:ring-2 focus:ring-[#5b21b6]/50"
+                className="w-full h-10 rounded-lg border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-neutral-800 px-3 text-sm focus:outline-none focus:ring-2 focus:ring-[#065f46]/50"
               />
             </div>
           </div>
@@ -529,7 +529,7 @@ export default function EditPatientPage() {
           <button
             type="submit"
             disabled={saving || !isDirty}
-            className="inline-flex items-center gap-2 px-6 py-2.5 rounded-lg bg-[#5b21b6] text-white text-sm font-medium shadow-lg hover:bg-[#4c1d95] disabled:opacity-50 disabled:cursor-not-allowed transition-all"
+            className="inline-flex items-center gap-2 px-6 py-2.5 rounded-lg bg-[#065f46] text-white text-sm font-medium shadow-lg hover:bg-[#064e3b] disabled:opacity-50 disabled:cursor-not-allowed transition-all"
           >
             {saving ? (
               <>

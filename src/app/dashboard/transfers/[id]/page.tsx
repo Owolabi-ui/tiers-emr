@@ -141,7 +141,7 @@ export default function TransferDetailsPage() {
           </h1>
           <Link
             href="/dashboard/transfers"
-            className="text-purple-600 hover:text-purple-700 dark:text-purple-400"
+            className="text-green-600 hover:text-green-700 dark:text-green-400"
           >
             ← Back to Transfers
           </Link>
@@ -156,7 +156,7 @@ export default function TransferDetailsPage() {
       <div className="mb-6">
         <Link
           href="/dashboard/transfers"
-          className="text-purple-600 hover:text-purple-700 dark:text-purple-400 mb-4 inline-block"
+          className="text-green-600 hover:text-green-700 dark:text-green-400 mb-4 inline-block"
         >
           ← Back to Transfers
         </Link>
@@ -254,7 +254,7 @@ export default function TransferDetailsPage() {
               </div>
               <Link
                 href={`/dashboard/patients/${patient.id}`}
-                className="text-purple-600 hover:text-purple-700 dark:text-purple-400 text-sm"
+                className="text-green-600 hover:text-green-700 dark:text-green-400 text-sm"
               >
                 View Full Patient Record →
               </Link>
@@ -402,7 +402,7 @@ export default function TransferDetailsPage() {
 
             {transfer.completed_at && (
               <div className="flex items-start gap-3">
-                <div className="w-2 h-2 rounded-full bg-purple-500 mt-2"></div>
+                <div className="w-2 h-2 rounded-full bg-green-500 mt-2"></div>
                 <div className="flex-1">
                   <div className="font-medium text-gray-900 dark:text-white">
                     Transfer Completed

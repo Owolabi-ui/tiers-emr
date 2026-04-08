@@ -155,7 +155,7 @@ export default function ContinueHtsPage({ params }: { params: Promise<{ id: stri
     return (
       <div className="flex items-center justify-center min-h-screen">
         <div className="text-center">
-          <Loader2 className="h-8 w-8 animate-spin text-[#5b21b6] mx-auto" />
+          <Loader2 className="h-8 w-8 animate-spin text-[#065f46] mx-auto" />
           <p className="mt-4 text-sm text-gray-500">Loading HTS session...</p>
         </div>
       </div>
@@ -207,7 +207,7 @@ export default function ContinueHtsPage({ params }: { params: Promise<{ id: stri
                   <div
                     className={`w-10 h-10 rounded-full flex items-center justify-center text-sm font-semibold ${
                       currentStep === step.id
-                        ? "bg-[#5b21b6] text-white"
+                        ? "bg-[#065f46] text-white"
                         : currentStep > step.id
                         ? "bg-green-500 text-white"
                         : "bg-gray-200 text-gray-600"

@@ -122,7 +122,7 @@ export default function StockMovementsPage() {
       case 'Adjustment':
         return <Package className="h-5 w-5 text-yellow-600" />;
       case 'Transfer':
-        return <Package className="h-5 w-5 text-purple-600" />;
+        return <Package className="h-5 w-5 text-green-600" />;
       default:
         return <Package className="h-5 w-5 text-gray-600" />;
     }
@@ -201,7 +201,7 @@ export default function StockMovementsPage() {
   return (
     <div className="h-full flex flex-col bg-white dark:bg-neutral-950">
       {/* Header */}
-      <div className="bg-[#5b21b6] text-white px-4 py-3 sm:px-6 -mx-4 sm:-mx-6 lg:-mx-8 -mt-6">
+      <div className="bg-[#065f46] text-white px-4 py-3 sm:px-6 -mx-4 sm:-mx-6 lg:-mx-8 -mt-6">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-3">
             <Link href="/dashboard/inventory">
@@ -251,7 +251,7 @@ export default function StockMovementsPage() {
                 placeholder="Search item, code, batch..."
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
-                className="w-full pl-10 pr-3 py-2 border border-black/10 dark:border-white/15 rounded-lg bg-white dark:bg-neutral-800 text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-purple-600"
+                className="w-full pl-10 pr-3 py-2 border border-black/10 dark:border-white/15 rounded-lg bg-white dark:bg-neutral-800 text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-green-600"
               />
             </div>
 
@@ -262,7 +262,7 @@ export default function StockMovementsPage() {
                 onChange={(e) =>
                   setSelectedType(e.target.value as FilterMovementType)
                 }
-                className="w-full px-3 py-2 border border-black/10 dark:border-white/15 rounded-lg bg-white dark:bg-neutral-800 text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-purple-600"
+                className="w-full px-3 py-2 border border-black/10 dark:border-white/15 rounded-lg bg-white dark:bg-neutral-800 text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-green-600"
               >
                 {movementTypes.map((type) => (
                   <option key={type} value={type}>
@@ -278,7 +278,7 @@ export default function StockMovementsPage() {
                 type="date"
                 value={dateFrom}
                 onChange={(e) => setDateFrom(e.target.value)}
-                className="w-full px-3 py-2 border border-black/10 dark:border-white/15 rounded-lg bg-white dark:bg-neutral-800 text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-purple-600"
+                className="w-full px-3 py-2 border border-black/10 dark:border-white/15 rounded-lg bg-white dark:bg-neutral-800 text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-green-600"
               />
             </div>
 
@@ -288,7 +288,7 @@ export default function StockMovementsPage() {
                 type="date"
                 value={dateTo}
                 onChange={(e) => setDateTo(e.target.value)}
-                className="w-full px-3 py-2 border border-black/10 dark:border-white/15 rounded-lg bg-white dark:bg-neutral-800 text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-purple-600"
+                className="w-full px-3 py-2 border border-black/10 dark:border-white/15 rounded-lg bg-white dark:bg-neutral-800 text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-green-600"
               />
             </div>
           </div>
@@ -308,7 +308,7 @@ export default function StockMovementsPage() {
                   setDateFrom('');
                   setDateTo('');
                 }}
-                className="ml-2 text-purple-600 hover:text-purple-700 dark:text-purple-400 dark:hover:text-purple-300 underline"
+                className="ml-2 text-green-600 hover:text-green-700 dark:text-green-400 dark:hover:text-green-300 underline"
               >
                 Clear filters
               </button>
@@ -321,7 +321,7 @@ export default function StockMovementsPage() {
       <div className="px-4 py-6 sm:px-6">
         {loading ? (
           <div className="flex items-center justify-center py-12">
-            <Loader2 className="h-8 w-8 animate-spin text-purple-600" />
+            <Loader2 className="h-8 w-8 animate-spin text-green-600" />
           </div>
         ) : error ? (
           <div className="bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg p-4">

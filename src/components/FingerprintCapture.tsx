@@ -39,7 +39,7 @@ export default function FingerprintCapture({ onCapture, onCancel, minQuality = 5
         if (isRunning) {
           setError('Fingerprint scanner not detected. Please connect your device and try again.');
         } else {
-          setError('Fingerprint service not running. Please start the TIERS Fingerprint Service.');
+          setError('Fingerprint service not running. Please start the DEMO-EMR Fingerprint Service.');
         }
         setStatus('error');
       }
@@ -98,8 +98,8 @@ export default function FingerprintCapture({ onCapture, onCancel, minQuality = 5
   return (
     <div className="bg-white dark:bg-gray-800 rounded-lg p-6 max-w-md mx-auto">
       <div className="text-center mb-6">
-        <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-purple-100 dark:bg-purple-900/30 mb-4">
-          <Fingerprint className="w-8 h-8 text-purple-600 dark:text-purple-400" />
+        <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-green-100 dark:bg-green-900/30 mb-4">
+          <Fingerprint className="w-8 h-8 text-green-600 dark:text-green-400" />
         </div>
         <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-2">
           Fingerprint Capture
@@ -118,7 +118,7 @@ export default function FingerprintCapture({ onCapture, onCancel, minQuality = 5
       )}
 
       {status === 'capturing' && (
-        <div className="flex items-center justify-center gap-2 text-purple-600 dark:text-purple-400 mb-4">
+        <div className="flex items-center justify-center gap-2 text-green-600 dark:text-green-400 mb-4">
           <Loader2 className="w-5 h-5 animate-spin" />
           <span>Place your finger on the scanner...</span>
         </div>
@@ -137,7 +137,7 @@ export default function FingerprintCapture({ onCapture, onCancel, minQuality = 5
       {/* Captured Fingerprint Image */}
       {capturedImage && (
         <div className="mb-4">
-          <div className="relative border-2 border-purple-200 dark:border-purple-800 rounded-lg overflow-hidden">
+          <div className="relative border-2 border-green-200 dark:border-green-800 rounded-lg overflow-hidden">
             <img
               src={capturedImage}
               alt="Captured fingerprint"
@@ -164,7 +164,7 @@ export default function FingerprintCapture({ onCapture, onCancel, minQuality = 5
           <>
             <button
               onClick={handleCapture}
-              className="flex-1 px-4 py-2 bg-purple-600 hover:bg-purple-700 text-white rounded-lg font-medium transition-colors flex items-center justify-center gap-2"
+              className="flex-1 px-4 py-2 bg-green-600 hover:bg-green-700 text-white rounded-lg font-medium transition-colors flex items-center justify-center gap-2"
             >
               <Fingerprint className="w-5 h-5" />
               Capture Fingerprint
@@ -182,7 +182,7 @@ export default function FingerprintCapture({ onCapture, onCancel, minQuality = 5
           <>
             <button
               onClick={handleCapture}
-              className="flex-1 px-4 py-2 border border-purple-600 text-purple-600 dark:text-purple-400 rounded-lg font-medium hover:bg-purple-50 dark:hover:bg-purple-900/20 transition-colors"
+              className="flex-1 px-4 py-2 border border-green-600 text-green-600 dark:text-green-400 rounded-lg font-medium hover:bg-green-50 dark:hover:bg-green-900/20 transition-colors"
             >
               Capture Again
             </button>
@@ -210,7 +210,7 @@ export default function FingerprintCapture({ onCapture, onCancel, minQuality = 5
         <div className="mt-4 p-4 bg-gray-50 dark:bg-gray-900/50 rounded-lg">
           <p className="text-xs font-medium text-gray-700 dark:text-gray-300 mb-2">Troubleshooting:</p>
           <ul className="text-xs text-gray-600 dark:text-gray-400 space-y-1 list-disc list-inside">
-            <li>Make sure the TIERS Fingerprint Service is running</li>
+            <li>Make sure the DEMO-EMR Fingerprint Service is running</li>
             <li>Check that your fingerprint scanner is connected</li>
             <li>Try unplugging and replugging the device</li>
             <li>Restart the fingerprint service</li>

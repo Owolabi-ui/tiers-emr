@@ -199,7 +199,7 @@ export default function NewClinicPage() {
                 name="provides_hiv_services"
                 checked={formData.provides_hiv_services}
                 onChange={handleChange}
-                className="rounded border-gray-300 text-purple-600 focus:ring-purple-500"
+                className="rounded border-gray-300 text-green-600 focus:ring-green-500"
               />
               <span className="text-sm text-gray-700 dark:text-gray-300">HIV Services</span>
             </label>
@@ -210,7 +210,7 @@ export default function NewClinicPage() {
                 name="provides_tb_services"
                 checked={formData.provides_tb_services}
                 onChange={handleChange}
-                className="rounded border-gray-300 text-purple-600 focus:ring-purple-500"
+                className="rounded border-gray-300 text-green-600 focus:ring-green-500"
               />
               <span className="text-sm text-gray-700 dark:text-gray-300">TB Services</span>
             </label>
@@ -221,7 +221,7 @@ export default function NewClinicPage() {
                 name="provides_malaria_services"
                 checked={formData.provides_malaria_services}
                 onChange={handleChange}
-                className="rounded border-gray-300 text-purple-600 focus:ring-purple-500"
+                className="rounded border-gray-300 text-green-600 focus:ring-green-500"
               />
               <span className="text-sm text-gray-700 dark:text-gray-300">Malaria Services</span>
             </label>
@@ -232,7 +232,7 @@ export default function NewClinicPage() {
                 name="provides_maternal_health"
                 checked={formData.provides_maternal_health}
                 onChange={handleChange}
-                className="rounded border-gray-300 text-purple-600 focus:ring-purple-500"
+                className="rounded border-gray-300 text-green-600 focus:ring-green-500"
               />
               <span className="text-sm text-gray-700 dark:text-gray-300">Maternal Health</span>
             </label>
@@ -243,7 +243,7 @@ export default function NewClinicPage() {
                 name="provides_laboratory"
                 checked={formData.provides_laboratory}
                 onChange={handleChange}
-                className="rounded border-gray-300 text-purple-600 focus:ring-purple-500"
+                className="rounded border-gray-300 text-green-600 focus:ring-green-500"
               />
               <span className="text-sm text-gray-700 dark:text-gray-300">Laboratory Services</span>
             </label>
@@ -254,7 +254,7 @@ export default function NewClinicPage() {
                 name="provides_pharmacy"
                 checked={formData.provides_pharmacy}
                 onChange={handleChange}
-                className="rounded border-gray-300 text-purple-600 focus:ring-purple-500"
+                className="rounded border-gray-300 text-green-600 focus:ring-green-500"
               />
               <span className="text-sm text-gray-700 dark:text-gray-300">Pharmacy Services</span>
             </label>
@@ -339,7 +339,7 @@ export default function NewClinicPage() {
               name="is_active"
               checked={formData.is_active}
               onChange={handleChange}
-              className="rounded border-gray-300 text-purple-600 focus:ring-purple-500"
+              className="rounded border-gray-300 text-green-600 focus:ring-green-500"
             />
             <span className="text-sm font-medium text-gray-700 dark:text-gray-300">
               Active Clinic
@@ -359,7 +359,7 @@ export default function NewClinicPage() {
           <button
             type="submit"
             disabled={loading}
-            className="px-6 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+            className="px-6 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
           >
             {loading ? 'Creating...' : 'Create Clinic'}
           </button>

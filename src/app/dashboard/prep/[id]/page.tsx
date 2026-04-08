@@ -74,7 +74,7 @@ export default function PrepDetailPage({ params }: { params: Promise<{ id: strin
     return (
       <div className="flex items-center justify-center min-h-[400px]">
         <div className="text-center">
-          <Loader2 className="h-8 w-8 animate-spin text-[#5b21b6] mx-auto" />
+          <Loader2 className="h-8 w-8 animate-spin text-[#065f46] mx-auto" />
           <p className="mt-4 text-sm text-gray-500">Loading PrEP details...</p>
         </div>
       </div>
@@ -133,8 +133,8 @@ export default function PrepDetailPage({ params }: { params: Promise<{ id: strin
           
           <div className="flex items-start justify-between">
             <div className="flex items-center gap-3">
-              <div className="h-12 w-12 rounded-full bg-[#5b21b6]/10 flex items-center justify-center">
-                <Shield className="h-6 w-6 text-[#5b21b6]" />
+              <div className="h-12 w-12 rounded-full bg-[#065f46]/10 flex items-center justify-center">
+                <Shield className="h-6 w-6 text-[#065f46]" />
               </div>
               <div>
                 <h1 className="text-3xl font-bold text-gray-900 dark:text-white">
@@ -462,7 +462,7 @@ export default function PrepDetailPage({ params }: { params: Promise<{ id: strin
                       <div className="flex items-start justify-between">
                         <div className="flex-1">
                           <div className="flex items-center gap-2 mb-1">
-                            <p className="text-sm font-medium text-purple-600 dark:text-purple-400">
+                            <p className="text-sm font-medium text-green-600 dark:text-green-400">
                               {prescription.prescription_number}
                             </p>
                             <span className={`px-2 py-0.5 text-xs font-semibold rounded-full ${getPrescriptionStatusColor(prescription.status)}`}>
@@ -504,7 +504,7 @@ export default function PrepDetailPage({ params }: { params: Promise<{ id: strin
               <div className="space-y-4">
                 <div className="flex gap-3">
                   <div className="flex flex-col items-center">
-                    <div className="h-2 w-2 rounded-full bg-[#5b21b6]"></div>
+                    <div className="h-2 w-2 rounded-full bg-[#065f46]"></div>
                     <div className="w-px h-full bg-gray-200 dark:bg-gray-700"></div>
                   </div>
                   <div className="pb-4">

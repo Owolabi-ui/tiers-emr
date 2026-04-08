@@ -38,7 +38,7 @@ export default function ClinicDetailsPage() {
   if (loading) {
     return (
       <div className="flex items-center justify-center min-h-[50vh]">
-        <Loader2 className="h-7 w-7 animate-spin text-[#5b21b6]" />
+        <Loader2 className="h-7 w-7 animate-spin text-[#065f46]" />
       </div>
     );
   }
@@ -94,13 +94,13 @@ export default function ClinicDetailsPage() {
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-        <InfoCard icon={<Building2 className="h-4 w-4 text-[#5b21b6]" />} label="Facility Type" value={getFacilityTypeLabel(clinic.facility_type)} />
-        <InfoCard icon={<Building2 className="h-4 w-4 text-[#5b21b6]" />} label="Level of Care" value={getLevelOfCareLabel(clinic.level_of_care)} />
-        <InfoCard icon={<MapPin className="h-4 w-4 text-[#5b21b6]" />} label="Address" value={clinic.address || 'N/A'} />
-        <InfoCard icon={<MapPin className="h-4 w-4 text-[#5b21b6]" />} label="Location" value={[clinic.region, clinic.district, clinic.country].filter(Boolean).join(', ') || 'N/A'} />
-        <InfoCard icon={<Phone className="h-4 w-4 text-[#5b21b6]" />} label="Phone" value={clinic.phone || 'N/A'} />
-        <InfoCard icon={<Mail className="h-4 w-4 text-[#5b21b6]" />} label="Email" value={clinic.email || 'N/A'} />
-        <InfoCard icon={<Globe className="h-4 w-4 text-[#5b21b6]" />} label="Website" value={clinic.website || 'N/A'} />
+        <InfoCard icon={<Building2 className="h-4 w-4 text-[#065f46]" />} label="Facility Type" value={getFacilityTypeLabel(clinic.facility_type)} />
+        <InfoCard icon={<Building2 className="h-4 w-4 text-[#065f46]" />} label="Level of Care" value={getLevelOfCareLabel(clinic.level_of_care)} />
+        <InfoCard icon={<MapPin className="h-4 w-4 text-[#065f46]" />} label="Address" value={clinic.address || 'N/A'} />
+        <InfoCard icon={<MapPin className="h-4 w-4 text-[#065f46]" />} label="Location" value={[clinic.region, clinic.district, clinic.country].filter(Boolean).join(', ') || 'N/A'} />
+        <InfoCard icon={<Phone className="h-4 w-4 text-[#065f46]" />} label="Phone" value={clinic.phone || 'N/A'} />
+        <InfoCard icon={<Mail className="h-4 w-4 text-[#065f46]" />} label="Email" value={clinic.email || 'N/A'} />
+        <InfoCard icon={<Globe className="h-4 w-4 text-[#065f46]" />} label="Website" value={clinic.website || 'N/A'} />
       </div>
 
       <div className="rounded-xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-neutral-900 p-6">

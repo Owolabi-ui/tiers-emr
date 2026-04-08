@@ -97,7 +97,7 @@ export default function PharmacyPage() {
     return (
       <div className="flex items-center justify-center min-h-[400px]">
         <div className="text-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-[#5b21b6] mx-auto"></div>
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-[#065f46] mx-auto"></div>
           <p className="mt-4 text-sm text-gray-500">Loading pharmacy data...</p>
         </div>
       </div>
@@ -134,14 +134,14 @@ export default function PharmacyPage() {
       <div className="mb-6">
         <div className="flex justify-between items-start">
           <div>
-            <h1 className="text-2xl font-bold text-[#5b21b6]">Pharmacy</h1>
+            <h1 className="text-2xl font-bold text-[#065f46]">Pharmacy</h1>
             <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">
               Manage prescriptions and medication dispensing
             </p>
           </div>
           <button
             onClick={() => router.push('/dashboard/pharmacy/new')}
-            className="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-[#5b21b6] text-white text-sm font-medium hover:bg-[#4c1d95] transition-colors"
+            className="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-[#065f46] text-white text-sm font-medium hover:bg-[#064e3b] transition-colors"
           >
             <svg className="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
@@ -158,7 +158,7 @@ export default function PharmacyPage() {
             onClick={() => { setActiveTab('pending'); setCurrentPage(1); }}
             className={`py-4 px-1 border-b-2 font-medium text-sm transition-colors ${
               activeTab === 'pending'
-                ? 'border-[#5b21b6] text-[#5b21b6]'
+                ? 'border-[#065f46] text-[#065f46]'
                 : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300 dark:text-gray-400 dark:hover:text-gray-300'
             }`}
           >
@@ -168,7 +168,7 @@ export default function PharmacyPage() {
             onClick={() => { setActiveTab('all'); setCurrentPage(1); }}
             className={`py-4 px-1 border-b-2 font-medium text-sm transition-colors ${
               activeTab === 'all'
-                ? 'border-[#5b21b6] text-[#5b21b6]'
+                ? 'border-[#065f46] text-[#065f46]'
                 : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300 dark:text-gray-400 dark:hover:text-gray-300'
             }`}
           >
@@ -178,7 +178,7 @@ export default function PharmacyPage() {
             onClick={() => { setActiveTab('alerts'); setCurrentPage(1); }}
             className={`py-4 px-1 border-b-2 font-medium text-sm transition-colors ${
               activeTab === 'alerts'
-                ? 'border-[#5b21b6] text-[#5b21b6]'
+                ? 'border-[#065f46] text-[#065f46]'
                 : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300 dark:text-gray-400 dark:hover:text-gray-300'
             }`}
           >
@@ -219,14 +219,14 @@ export default function PharmacyPage() {
             <option value="Cancelled">Cancelled</option>
             <option value="Expired">Expired</option>
           </select>
-          <label className="flex items-center gap-2 px-4 py-2 bg-purple-50 dark:bg-purple-900/20 border border-purple-200 dark:border-purple-800 rounded-lg cursor-pointer">
+          <label className="flex items-center gap-2 px-4 py-2 bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800 rounded-lg cursor-pointer">
             <input
               type="checkbox"
               checked={showPrepOnly}
               onChange={(e) => setShowPrepOnly(e.target.checked)}
-              className="w-4 h-4 text-purple-600 rounded focus:ring-purple-500"
+              className="w-4 h-4 text-green-600 rounded focus:ring-green-500"
             />
-            <span className="text-sm font-medium text-purple-900 dark:text-purple-300">PrEP Only</span>
+            <span className="text-sm font-medium text-green-900 dark:text-green-300">PrEP Only</span>
           </label>
           <label className="flex items-center gap-2 px-4 py-2 bg-amber-50 dark:bg-amber-900/20 border border-amber-200 dark:border-amber-800 rounded-lg cursor-pointer">
             <input
@@ -359,7 +359,7 @@ export default function PharmacyPage() {
                     className="hover:bg-gray-50 dark:hover:bg-gray-700 cursor-pointer"
                     onClick={() => handleViewPrescription(prescription.id)}
                   >
-                    <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-[#5b21b6]">
+                    <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-[#065f46]">
                       {formatPrescriptionNumber(prescription.prescription_number)}
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-white">
@@ -380,7 +380,7 @@ export default function PharmacyPage() {
                           {prescription.status}
                         </span>
                         {(prescription.diagnosis?.includes('PrEP') || prescription.diagnosis?.includes('Pre-Exposure Prophylaxis')) && (
-                          <span className="px-2 py-1 text-xs font-semibold rounded-full bg-purple-100 text-purple-800 dark:bg-purple-900/30 dark:text-purple-400">
+                          <span className="px-2 py-1 text-xs font-semibold rounded-full bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-400">
                             PrEP
                           </span>
                         )}
@@ -400,7 +400,7 @@ export default function PharmacyPage() {
                       <div className="flex justify-end space-x-2" onClick={(e) => e.stopPropagation()}>
                         <button
                           onClick={() => handleViewPrescription(prescription.id)}
-                          className="text-sm text-[#5b21b6] hover:underline"
+                          className="text-sm text-[#065f46] hover:underline"
                         >
                           View
                         </button>

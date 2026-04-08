@@ -51,7 +51,7 @@ export default function ProtectedRoute({ children, allowedRoles }: ProtectedRout
     return (
       <div className="min-h-screen flex items-center justify-center bg-gray-50 dark:bg-neutral-950">
         <div className="text-center">
-          <Loader2 className="h-8 w-8 animate-spin text-[#5b21b6] mx-auto" />
+          <Loader2 className="h-8 w-8 animate-spin text-[#065f46] mx-auto" />
           <p className="mt-4 text-sm text-gray-500 dark:text-gray-400">
             Verifying authentication...
           </p>
@@ -88,7 +88,7 @@ export default function ProtectedRoute({ children, allowedRoles }: ProtectedRout
           </p>
           <button
             onClick={() => router.push('/dashboard')}
-            className="inline-flex items-center rounded-lg bg-[#5b21b6] px-4 py-2 text-sm font-medium text-white hover:bg-[#4c1d95] transition-colors"
+            className="inline-flex items-center rounded-lg bg-[#065f46] px-4 py-2 text-sm font-medium text-white hover:bg-[#064e3b] transition-colors"
           >
             Go to Dashboard
           </button>
@@ -101,7 +101,7 @@ export default function ProtectedRoute({ children, allowedRoles }: ProtectedRout
   if (!isAuthenticated || !user) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-gray-50 dark:bg-neutral-950">
-        <Loader2 className="h-8 w-8 animate-spin text-[#5b21b6]" />
+        <Loader2 className="h-8 w-8 animate-spin text-[#065f46]" />
       </div>
     );
   }

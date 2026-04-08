@@ -111,7 +111,7 @@ export default function NotificationBell() {
                 </h3>
                 <Link
                   href="/dashboard/inventory"
-                  className="text-sm text-[#5b21b6] hover:text-[#4c1d95]"
+                  className="text-sm text-[#065f46] hover:text-[#064e3b]"
                   onClick={() => setShowDropdown(false)}
                 >
                   View All
@@ -196,7 +196,7 @@ export default function NotificationBell() {
               <div className="p-3 border-t border-gray-200 bg-gray-50">
                 <Link
                   href="/dashboard/inventory?tab=alerts"
-                  className="block text-center text-sm text-[#5b21b6] hover:text-[#4c1d95] font-medium"
+                  className="block text-center text-sm text-[#065f46] hover:text-[#064e3b] font-medium"
                   onClick={() => setShowDropdown(false)}
                 >
                   View All Alerts ({totalAlerts})

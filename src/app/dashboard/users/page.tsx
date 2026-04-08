@@ -86,7 +86,7 @@ export default function UsersPage() {
           <div className="flex items-center justify-between">
             <div>
               <h1 className="text-3xl font-bold text-gray-900 dark:text-white flex items-center gap-3">
-                <Users className="w-8 h-8 text-purple-600" />
+                <Users className="w-8 h-8 text-green-600" />
                 User Management
               </h1>
               <p className="text-gray-600 dark:text-gray-400 mt-1">
@@ -95,7 +95,7 @@ export default function UsersPage() {
             </div>
             <button
               onClick={() => setShowCreateModal(true)}
-              className="flex items-center gap-2 px-4 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 transition-colors shadow-lg hover:shadow-xl"
+              className="flex items-center gap-2 px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors shadow-lg hover:shadow-xl"
             >
               <UserPlus className="w-5 h-5" />
               Add User
@@ -114,7 +114,7 @@ export default function UsersPage() {
                 placeholder="Search users..."
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                className="w-full pl-10 pr-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-purple-500"
+                className="w-full pl-10 pr-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-green-500"
               />
             </div>
 
@@ -124,7 +124,7 @@ export default function UsersPage() {
               <select
                 value={filterRole}
                 onChange={(e) => setFilterRole(e.target.value as UserRole | 'All')}
-                className="w-full pl-10 pr-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-purple-500"
+                className="w-full pl-10 pr-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-green-500"
               >
                 <option value="All">All Roles</option>
                 <option value="Admin">Administrator</option>
@@ -144,7 +144,7 @@ export default function UsersPage() {
               <select
                 value={filterActive}
                 onChange={(e) => setFilterActive(e.target.value as 'all' | 'active' | 'inactive')}
-                className="w-full pl-10 pr-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-purple-500"
+                className="w-full pl-10 pr-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-green-500"
               >
                 <option value="all">All Status</option>
                 <option value="active">Active Only</option>
@@ -195,8 +195,8 @@ export default function UsersPage() {
                     <tr key={u.id} className="hover:bg-gray-50 dark:hover:bg-gray-700/50 transition-colors">
                       <td className="px-6 py-4">
                         <div className="flex items-center gap-3">
-                          <div className="w-10 h-10 rounded-full bg-purple-100 dark:bg-purple-900/30 flex items-center justify-center">
-                            <span className="text-purple-600 dark:text-purple-400 font-semibold">
+                          <div className="w-10 h-10 rounded-full bg-green-100 dark:bg-green-900/30 flex items-center justify-center">
+                            <span className="text-green-600 dark:text-green-400 font-semibold">
                               {u.full_name.charAt(0).toUpperCase()}
                             </span>
                           </div>
@@ -414,7 +414,7 @@ function CreateUserModal({ onClose }: { onClose: () => void }) {
             <button
               type="submit"
               disabled={createMutation.isPending}
-              className="flex-1 px-4 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 disabled:opacity-50"
+              className="flex-1 px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 disabled:opacity-50"
             >
               {createMutation.isPending ? 'Creating...' : 'Create User'}
             </button>
@@ -543,7 +543,7 @@ function EditUserModal({ user, onClose }: { user: User; onClose: () => void }) {
               id="is_active"
               checked={formData.is_active}
               onChange={(e) => setFormData({ ...formData, is_active: e.target.checked })}
-              className="w-4 h-4 text-purple-600 rounded focus:ring-purple-500"
+              className="w-4 h-4 text-green-600 rounded focus:ring-green-500"
             />
             <label htmlFor="is_active" className="text-sm font-medium text-gray-700 dark:text-gray-300">
               Active User
@@ -561,7 +561,7 @@ function EditUserModal({ user, onClose }: { user: User; onClose: () => void }) {
             <button
               type="submit"
               disabled={updateMutation.isPending}
-              className="flex-1 px-4 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 disabled:opacity-50"
+              className="flex-1 px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 disabled:opacity-50"
             >
               {updateMutation.isPending ? 'Updating...' : 'Update User'}
             </button>

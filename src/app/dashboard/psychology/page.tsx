@@ -228,9 +228,9 @@ export default function PsychologyPage() {
           </div>
         </div>
 
-        <div className="bg-gradient-to-br from-purple-50 to-purple-100 dark:from-purple-950/30 dark:to-purple-900/20 rounded-lg border border-purple-200 dark:border-purple-800 p-6">
+        <div className="bg-gradient-to-br from-green-50 to-green-100 dark:from-green-950/30 dark:to-green-900/20 rounded-lg border border-green-200 dark:border-green-800 p-6">
           <div className="flex items-start gap-4">
-            <div className="bg-purple-600 dark:bg-purple-500 p-3 rounded-lg">
+            <div className="bg-green-600 dark:bg-green-500 p-3 rounded-lg">
               <Activity className="h-6 w-6 text-white" />
             </div>
             <div className="flex-1">
@@ -240,7 +240,7 @@ export default function PsychologyPage() {
               <p className="text-sm text-gray-600 dark:text-gray-400 mb-3">
                 Evaluate anxiety levels with the 7-item scale
               </p>
-              <p className="text-xs text-purple-700 dark:text-purple-300">
+              <p className="text-xs text-green-700 dark:text-green-300">
                 Search for a patient above to begin assessment
               </p>
             </div>
@@ -295,8 +295,8 @@ export default function PsychologyPage() {
                 {stats.activeGoals}
               </p>
             </div>
-            <div className="bg-purple-100 dark:bg-purple-900/30 p-3 rounded-lg">
-              <Target className="h-6 w-6 text-purple-600 dark:text-purple-400" />
+            <div className="bg-green-100 dark:bg-green-900/30 p-3 rounded-lg">
+              <Target className="h-6 w-6 text-green-600 dark:text-green-400" />
             </div>
           </div>
         </div>
@@ -372,7 +372,7 @@ export default function PsychologyPage() {
                 <span><strong>PHQ-9:</strong> Patient Health Questionnaire - Depression severity (0-27 scale)</span>
               </li>
               <li className="flex items-start gap-2">
-                <span className="text-purple-600 dark:text-purple-400">•</span>
+                <span className="text-green-600 dark:text-green-400">•</span>
                 <span><strong>GAD-7:</strong> Generalized Anxiety Disorder assessment (0-21 scale)</span>
               </li>
               <li className="flex items-start gap-2">

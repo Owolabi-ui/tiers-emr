@@ -48,10 +48,10 @@ export default function AdjustLabStockPage() {
   return (
     <div className="max-w-3xl mx-auto space-y-6">
       <div>
-        <Link href={`/dashboard/lab-inventory/${id}`} className="text-sm text-[#5b21b6] underline">
+        <Link href={`/dashboard/lab-inventory/${id}`} className="text-sm text-[#065f46] underline">
           Back to Item
         </Link>
-        <h1 className="text-2xl font-bold text-[#5b21b6] mt-2">Adjust Stock</h1>
+        <h1 className="text-2xl font-bold text-[#065f46] mt-2">Adjust Stock</h1>
       </div>
       {error && <div className="rounded-lg border border-red-200 bg-red-50 p-3 text-sm text-red-700">{error}</div>}
       <form onSubmit={onSubmit} className="rounded-xl border bg-white dark:bg-neutral-900 p-6 space-y-4">
@@ -64,7 +64,7 @@ export default function AdjustLabStockPage() {
           <input type="number" step="0.001" required placeholder="Quantity (+/-)" className="h-10 rounded-lg border px-3" value={form.quantity} onChange={(e) => setForm({ ...form, quantity: e.target.value })} />
         </div>
         <textarea placeholder="Reason / Notes" className="w-full rounded-lg border px-3 py-2" rows={3} value={form.notes} onChange={(e) => setForm({ ...form, notes: e.target.value })} />
-        <button disabled={loading} className="px-4 py-2 rounded-lg bg-[#5b21b6] text-white text-sm disabled:opacity-60">
+        <button disabled={loading} className="px-4 py-2 rounded-lg bg-[#065f46] text-white text-sm disabled:opacity-60">
           {loading ? 'Saving...' : 'Save Adjustment'}
         </button>
       </form>

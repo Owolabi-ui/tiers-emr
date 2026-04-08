@@ -83,7 +83,7 @@ export default function LaboratoryPage() {
     return (
       <div className="flex items-center justify-center min-h-[400px]">
         <div className="text-center">
-          <Loader2 className="h-8 w-8 animate-spin text-[#5b21b6] mx-auto" />
+          <Loader2 className="h-8 w-8 animate-spin text-[#065f46] mx-auto" />
           <p className="mt-4 text-sm text-gray-500">Loading laboratory data...</p>
         </div>
       </div>
@@ -109,14 +109,14 @@ export default function LaboratoryPage() {
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div>
-          <h1 className="text-2xl font-bold text-[#5b21b6]">Laboratory</h1>
+          <h1 className="text-2xl font-bold text-[#065f46]">Laboratory</h1>
           <p className="text-sm text-gray-500 mt-1">
             Manage lab test orders, sample collection, and results
           </p>
         </div>
         <Link
           href="/dashboard/laboratory/new"
-          className="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-[#5b21b6] text-white text-sm font-medium hover:bg-[#4c1d95] transition-colors"
+          className="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-[#065f46] text-white text-sm font-medium hover:bg-[#064e3b] transition-colors"
         >
           <Plus className="h-4 w-4" />
           New Lab Order
@@ -134,8 +134,8 @@ export default function LaboratoryPage() {
                   {statistics.total_orders || 0}
                 </p>
               </div>
-              <div className="p-3 rounded-lg bg-purple-100 dark:bg-purple-900/30">
-                <FlaskConical className="h-6 w-6 text-[#5b21b6]" />
+              <div className="p-3 rounded-lg bg-green-100 dark:bg-green-900/30">
+                <FlaskConical className="h-6 w-6 text-[#065f46]" />
               </div>
             </div>
           </div>
@@ -212,7 +212,7 @@ export default function LaboratoryPage() {
               placeholder="Search by order number, test name, or patient..."
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
-              className="w-full h-10 pl-10 pr-4 rounded-lg border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-neutral-800 text-sm text-gray-900 dark:text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-[#5b21b6]/50"
+              className="w-full h-10 pl-10 pr-4 rounded-lg border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-neutral-800 text-sm text-gray-900 dark:text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-[#065f46]/50"
             />
           </div>
         </div>
@@ -224,7 +224,7 @@ export default function LaboratoryPage() {
             <select
               value={statusFilter}
               onChange={(e) => setStatusFilter(e.target.value as LabTestStatus | 'all')}
-              className="w-full h-10 pl-10 pr-4 rounded-lg border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-neutral-800 text-sm text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-[#5b21b6]/50"
+              className="w-full h-10 pl-10 pr-4 rounded-lg border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-neutral-800 text-sm text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-[#065f46]/50"
             >
               <option value="all">All Statuses</option>
               <option value="Ordered">Ordered</option>
@@ -245,7 +245,7 @@ export default function LaboratoryPage() {
             <select
               value={priorityFilter}
               onChange={(e) => setPriorityFilter(e.target.value as LabTestPriority | 'all')}
-              className="w-full h-10 pl-10 pr-4 rounded-lg border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-neutral-800 text-sm text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-[#5b21b6]/50"
+              className="w-full h-10 pl-10 pr-4 rounded-lg border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-neutral-800 text-sm text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-[#065f46]/50"
             >
               <option value="all">All Priorities</option>
               <option value="Routine">Routine</option>
@@ -258,7 +258,7 @@ export default function LaboratoryPage() {
 
       {/* Orders Table */}
       <div className="rounded-xl border border-black/10 dark:border-white/15 bg-white dark:bg-neutral-900 overflow-hidden">
-        <div className="bg-[#5b21b6] px-5 py-3 flex items-center gap-2">
+        <div className="bg-[#065f46] px-5 py-3 flex items-center gap-2">
           <FileText className="h-5 w-5 text-white" />
           <h2 className="font-semibold text-white">Lab Test Orders</h2>
         </div>
@@ -273,7 +273,7 @@ export default function LaboratoryPage() {
             </p>
             <Link
               href="/dashboard/laboratory/new"
-              className="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-[#5b21b6] text-white text-sm font-medium hover:bg-[#4c1d95] transition-colors"
+              className="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-[#065f46] text-white text-sm font-medium hover:bg-[#064e3b] transition-colors"
             >
               <Plus className="h-4 w-4" />
               Create First Lab Order
@@ -344,7 +344,7 @@ export default function LaboratoryPage() {
                     <td className="px-4 py-3 text-right">
                       <Link
                         href={`/dashboard/laboratory/${order.id}`}
-                        className="text-sm text-[#5b21b6] hover:underline"
+                        className="text-sm text-[#065f46] hover:underline"
                       >
                         View Details
                       </Link>

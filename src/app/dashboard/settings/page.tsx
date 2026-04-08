@@ -144,7 +144,7 @@ export default function SettingsPage() {
   if (isLoading) {
     return (
       <div className="h-full flex items-center justify-center">
-        <Loader2 className="h-8 w-8 animate-spin text-[#5b21b6]" />
+        <Loader2 className="h-8 w-8 animate-spin text-[#065f46]" />
       </div>
     );
   }
@@ -163,7 +163,7 @@ export default function SettingsPage() {
           <button
             onClick={handleSave}
             disabled={updateMutation.isPending || updateIntegrationMutation.isPending}
-            className="flex items-center gap-2 px-4 py-2 bg-[#5b21b6] text-white rounded-lg hover:bg-[#4c1d95] transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+            className="flex items-center gap-2 px-4 py-2 bg-[#065f46] text-white rounded-lg hover:bg-[#064e3b] transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
           >
             {(updateMutation.isPending || updateIntegrationMutation.isPending) ? (
               <>
@@ -190,7 +190,7 @@ export default function SettingsPage() {
               onClick={() => setActiveTab(tab.id)}
               className={`flex items-center gap-2 px-4 py-2 rounded-lg whitespace-nowrap transition-colors ${
                 activeTab === tab.id
-                  ? 'bg-[#5b21b6] text-white'
+                  ? 'bg-[#065f46] text-white'
                   : 'bg-white dark:bg-neutral-800 text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-neutral-700 border border-gray-200 dark:border-gray-700'
               }`}
             >
@@ -263,7 +263,7 @@ function FacilityTab({ formData, onChange }: TabProps) {
               type="text"
               value={formData.facility_name || ''}
               onChange={(e) => onChange('facility_name', e.target.value)}
-              className="w-full px-4 py-2 border border-gray-200 dark:border-gray-700 rounded-lg bg-white dark:bg-neutral-800 text-gray-900 dark:text-white focus:ring-2 focus:ring-[#5b21b6] focus:border-transparent"
+              className="w-full px-4 py-2 border border-gray-200 dark:border-gray-700 rounded-lg bg-white dark:bg-neutral-800 text-gray-900 dark:text-white focus:ring-2 focus:ring-[#065f46] focus:border-transparent"
             />
           </div>
 
@@ -275,7 +275,7 @@ function FacilityTab({ formData, onChange }: TabProps) {
               type="text"
               value={formData.facility_code || ''}
               onChange={(e) => onChange('facility_code', e.target.value)}
-              className="w-full px-4 py-2 border border-gray-200 dark:border-gray-700 rounded-lg bg-white dark:bg-neutral-800 text-gray-900 dark:text-white focus:ring-2 focus:ring-[#5b21b6] focus:border-transparent"
+              className="w-full px-4 py-2 border border-gray-200 dark:border-gray-700 rounded-lg bg-white dark:bg-neutral-800 text-gray-900 dark:text-white focus:ring-2 focus:ring-[#065f46] focus:border-transparent"
             />
           </div>
 
@@ -287,7 +287,7 @@ function FacilityTab({ formData, onChange }: TabProps) {
               value={formData.facility_address || ''}
               onChange={(e) => onChange('facility_address', e.target.value)}
               rows={3}
-              className="w-full px-4 py-2 border border-gray-200 dark:border-gray-700 rounded-lg bg-white dark:bg-neutral-800 text-gray-900 dark:text-white focus:ring-2 focus:ring-[#5b21b6] focus:border-transparent"
+              className="w-full px-4 py-2 border border-gray-200 dark:border-gray-700 rounded-lg bg-white dark:bg-neutral-800 text-gray-900 dark:text-white focus:ring-2 focus:ring-[#065f46] focus:border-transparent"
             />
           </div>
 
@@ -299,7 +299,7 @@ function FacilityTab({ formData, onChange }: TabProps) {
               type="text"
               value={formData.facility_city || ''}
               onChange={(e) => onChange('facility_city', e.target.value)}
-              className="w-full px-4 py-2 border border-gray-200 dark:border-gray-700 rounded-lg bg-white dark:bg-neutral-800 text-gray-900 dark:text-white focus:ring-2 focus:ring-[#5b21b6] focus:border-transparent"
+              className="w-full px-4 py-2 border border-gray-200 dark:border-gray-700 rounded-lg bg-white dark:bg-neutral-800 text-gray-900 dark:text-white focus:ring-2 focus:ring-[#065f46] focus:border-transparent"
             />
           </div>
 
@@ -311,7 +311,7 @@ function FacilityTab({ formData, onChange }: TabProps) {
               type="text"
               value={formData.facility_state || ''}
               onChange={(e) => onChange('facility_state', e.target.value)}
-              className="w-full px-4 py-2 border border-gray-200 dark:border-gray-700 rounded-lg bg-white dark:bg-neutral-800 text-gray-900 dark:text-white focus:ring-2 focus:ring-[#5b21b6] focus:border-transparent"
+              className="w-full px-4 py-2 border border-gray-200 dark:border-gray-700 rounded-lg bg-white dark:bg-neutral-800 text-gray-900 dark:text-white focus:ring-2 focus:ring-[#065f46] focus:border-transparent"
             />
           </div>
 
@@ -323,7 +323,7 @@ function FacilityTab({ formData, onChange }: TabProps) {
               type="text"
               value={formData.facility_country || ''}
               onChange={(e) => onChange('facility_country', e.target.value)}
-              className="w-full px-4 py-2 border border-gray-200 dark:border-gray-700 rounded-lg bg-white dark:bg-neutral-800 text-gray-900 dark:text-white focus:ring-2 focus:ring-[#5b21b6] focus:border-transparent"
+              className="w-full px-4 py-2 border border-gray-200 dark:border-gray-700 rounded-lg bg-white dark:bg-neutral-800 text-gray-900 dark:text-white focus:ring-2 focus:ring-[#065f46] focus:border-transparent"
             />
           </div>
 
@@ -335,7 +335,7 @@ function FacilityTab({ formData, onChange }: TabProps) {
               type="text"
               value={formData.facility_postal_code || ''}
               onChange={(e) => onChange('facility_postal_code', e.target.value)}
-              className="w-full px-4 py-2 border border-gray-200 dark:border-gray-700 rounded-lg bg-white dark:bg-neutral-800 text-gray-900 dark:text-white focus:ring-2 focus:ring-[#5b21b6] focus:border-transparent"
+              className="w-full px-4 py-2 border border-gray-200 dark:border-gray-700 rounded-lg bg-white dark:bg-neutral-800 text-gray-900 dark:text-white focus:ring-2 focus:ring-[#065f46] focus:border-transparent"
             />
           </div>
         </div>
@@ -354,7 +354,7 @@ function FacilityTab({ formData, onChange }: TabProps) {
               type="email"
               value={formData.contact_email || ''}
               onChange={(e) => onChange('contact_email', e.target.value)}
-              className="w-full px-4 py-2 border border-gray-200 dark:border-gray-700 rounded-lg bg-white dark:bg-neutral-800 text-gray-900 dark:text-white focus:ring-2 focus:ring-[#5b21b6] focus:border-transparent"
+              className="w-full px-4 py-2 border border-gray-200 dark:border-gray-700 rounded-lg bg-white dark:bg-neutral-800 text-gray-900 dark:text-white focus:ring-2 focus:ring-[#065f46] focus:border-transparent"
             />
           </div>
 
@@ -366,7 +366,7 @@ function FacilityTab({ formData, onChange }: TabProps) {
               type="tel"
               value={formData.contact_phone || ''}
               onChange={(e) => onChange('contact_phone', e.target.value)}
-              className="w-full px-4 py-2 border border-gray-200 dark:border-gray-700 rounded-lg bg-white dark:bg-neutral-800 text-gray-900 dark:text-white focus:ring-2 focus:ring-[#5b21b6] focus:border-transparent"
+              className="w-full px-4 py-2 border border-gray-200 dark:border-gray-700 rounded-lg bg-white dark:bg-neutral-800 text-gray-900 dark:text-white focus:ring-2 focus:ring-[#065f46] focus:border-transparent"
             />
           </div>
 
@@ -378,7 +378,7 @@ function FacilityTab({ formData, onChange }: TabProps) {
               type="tel"
               value={formData.contact_fax || ''}
               onChange={(e) => onChange('contact_fax', e.target.value)}
-              className="w-full px-4 py-2 border border-gray-200 dark:border-gray-700 rounded-lg bg-white dark:bg-neutral-800 text-gray-900 dark:text-white focus:ring-2 focus:ring-[#5b21b6] focus:border-transparent"
+              className="w-full px-4 py-2 border border-gray-200 dark:border-gray-700 rounded-lg bg-white dark:bg-neutral-800 text-gray-900 dark:text-white focus:ring-2 focus:ring-[#065f46] focus:border-transparent"
             />
           </div>
 
@@ -390,7 +390,7 @@ function FacilityTab({ formData, onChange }: TabProps) {
               type="url"
               value={formData.contact_website || ''}
               onChange={(e) => onChange('contact_website', e.target.value)}
-              className="w-full px-4 py-2 border border-gray-200 dark:border-gray-700 rounded-lg bg-white dark:bg-neutral-800 text-gray-900 dark:text-white focus:ring-2 focus:ring-[#5b21b6] focus:border-transparent"
+              className="w-full px-4 py-2 border border-gray-200 dark:border-gray-700 rounded-lg bg-white dark:bg-neutral-800 text-gray-900 dark:text-white focus:ring-2 focus:ring-[#065f46] focus:border-transparent"
             />
           </div>
         </div>
@@ -413,7 +413,7 @@ function RegionalTab({ formData, onChange }: TabProps) {
           <select
             value={formData.timezone || 'Africa/Lagos'}
             onChange={(e) => onChange('timezone', e.target.value)}
-            className="w-full px-4 py-2 border border-gray-200 dark:border-gray-700 rounded-lg bg-white dark:bg-neutral-800 text-gray-900 dark:text-white focus:ring-2 focus:ring-[#5b21b6] focus:border-transparent"
+            className="w-full px-4 py-2 border border-gray-200 dark:border-gray-700 rounded-lg bg-white dark:bg-neutral-800 text-gray-900 dark:text-white focus:ring-2 focus:ring-[#065f46] focus:border-transparent"
           >
             <option value="Africa/Lagos">Africa/Lagos</option>
             <option value="Africa/Abuja">Africa/Abuja</option>
@@ -428,7 +428,7 @@ function RegionalTab({ formData, onChange }: TabProps) {
           <select
             value={formData.date_format || 'DD/MM/YYYY'}
             onChange={(e) => onChange('date_format', e.target.value)}
-            className="w-full px-4 py-2 border border-gray-200 dark:border-gray-700 rounded-lg bg-white dark:bg-neutral-800 text-gray-900 dark:text-white focus:ring-2 focus:ring-[#5b21b6] focus:border-transparent"
+            className="w-full px-4 py-2 border border-gray-200 dark:border-gray-700 rounded-lg bg-white dark:bg-neutral-800 text-gray-900 dark:text-white focus:ring-2 focus:ring-[#065f46] focus:border-transparent"
           >
             <option value="DD/MM/YYYY">DD/MM/YYYY</option>
             <option value="MM/DD/YYYY">MM/DD/YYYY</option>
@@ -443,7 +443,7 @@ function RegionalTab({ formData, onChange }: TabProps) {
           <select
             value={formData.time_format || '12_HOUR'}
             onChange={(e) => onChange('time_format', e.target.value)}
-            className="w-full px-4 py-2 border border-gray-200 dark:border-gray-700 rounded-lg bg-white dark:bg-neutral-800 text-gray-900 dark:text-white focus:ring-2 focus:ring-[#5b21b6] focus:border-transparent"
+            className="w-full px-4 py-2 border border-gray-200 dark:border-gray-700 rounded-lg bg-white dark:bg-neutral-800 text-gray-900 dark:text-white focus:ring-2 focus:ring-[#065f46] focus:border-transparent"
           >
             <option value="12_HOUR">12 Hour</option>
             <option value="24_HOUR">24 Hour</option>
@@ -459,7 +459,7 @@ function RegionalTab({ formData, onChange }: TabProps) {
             value={formData.currency_code || ''}
             onChange={(e) => onChange('currency_code', e.target.value)}
             placeholder="NGN"
-            className="w-full px-4 py-2 border border-gray-200 dark:border-gray-700 rounded-lg bg-white dark:bg-neutral-800 text-gray-900 dark:text-white focus:ring-2 focus:ring-[#5b21b6] focus:border-transparent"
+            className="w-full px-4 py-2 border border-gray-200 dark:border-gray-700 rounded-lg bg-white dark:bg-neutral-800 text-gray-900 dark:text-white focus:ring-2 focus:ring-[#065f46] focus:border-transparent"
           />
         </div>
 
@@ -472,7 +472,7 @@ function RegionalTab({ formData, onChange }: TabProps) {
             value={formData.language || ''}
             onChange={(e) => onChange('language', e.target.value)}
             placeholder="en"
-            className="w-full px-4 py-2 border border-gray-200 dark:border-gray-700 rounded-lg bg-white dark:bg-neutral-800 text-gray-900 dark:text-white focus:ring-2 focus:ring-[#5b21b6] focus:border-transparent"
+            className="w-full px-4 py-2 border border-gray-200 dark:border-gray-700 rounded-lg bg-white dark:bg-neutral-800 text-gray-900 dark:text-white focus:ring-2 focus:ring-[#065f46] focus:border-transparent"
           />
         </div>
       </div>
@@ -495,7 +495,7 @@ function AppointmentsTab({ formData, onChange }: TabProps) {
             type="number"
             value={formData.default_appointment_duration_minutes || 30}
             onChange={(e) => onChange('default_appointment_duration_minutes', parseInt(e.target.value))}
-            className="w-full px-4 py-2 border border-gray-200 dark:border-gray-700 rounded-lg bg-white dark:bg-neutral-800 text-gray-900 dark:text-white focus:ring-2 focus:ring-[#5b21b6] focus:border-transparent"
+            className="w-full px-4 py-2 border border-gray-200 dark:border-gray-700 rounded-lg bg-white dark:bg-neutral-800 text-gray-900 dark:text-white focus:ring-2 focus:ring-[#065f46] focus:border-transparent"
           />
         </div>
 
@@ -507,7 +507,7 @@ function AppointmentsTab({ formData, onChange }: TabProps) {
             type="number"
             value={formData.appointment_reminder_hours || 24}
             onChange={(e) => onChange('appointment_reminder_hours', parseInt(e.target.value))}
-            className="w-full px-4 py-2 border border-gray-200 dark:border-gray-700 rounded-lg bg-white dark:bg-neutral-800 text-gray-900 dark:text-white focus:ring-2 focus:ring-[#5b21b6] focus:border-transparent"
+            className="w-full px-4 py-2 border border-gray-200 dark:border-gray-700 rounded-lg bg-white dark:bg-neutral-800 text-gray-900 dark:text-white focus:ring-2 focus:ring-[#065f46] focus:border-transparent"
           />
         </div>
 
@@ -519,7 +519,7 @@ function AppointmentsTab({ formData, onChange }: TabProps) {
             type="number"
             value={formData.max_appointments_per_slot || 5}
             onChange={(e) => onChange('max_appointments_per_slot', parseInt(e.target.value))}
-            className="w-full px-4 py-2 border border-gray-200 dark:border-gray-700 rounded-lg bg-white dark:bg-neutral-800 text-gray-900 dark:text-white focus:ring-2 focus:ring-[#5b21b6] focus:border-transparent"
+            className="w-full px-4 py-2 border border-gray-200 dark:border-gray-700 rounded-lg bg-white dark:bg-neutral-800 text-gray-900 dark:text-white focus:ring-2 focus:ring-[#065f46] focus:border-transparent"
           />
         </div>
 
@@ -529,7 +529,7 @@ function AppointmentsTab({ formData, onChange }: TabProps) {
             id="enable_reminders"
             checked={formData.enable_appointment_reminders || false}
             onChange={(e) => onChange('enable_appointment_reminders', e.target.checked)}
-            className="w-4 h-4 text-[#5b21b6] bg-gray-100 border-gray-300 rounded focus:ring-[#5b21b6] dark:focus:ring-[#5b21b6] dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"
+            className="w-4 h-4 text-[#065f46] bg-gray-100 border-gray-300 rounded focus:ring-[#065f46] dark:focus:ring-[#065f46] dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"
           />
           <label htmlFor="enable_reminders" className="ml-2 text-sm font-medium text-gray-700 dark:text-gray-300">
             Enable Appointment Reminders
@@ -555,7 +555,7 @@ function ClinicalTab({ formData, onChange }: TabProps) {
             type="number"
             value={formData.default_vitals_interval_hours || 8}
             onChange={(e) => onChange('default_vitals_interval_hours', parseInt(e.target.value))}
-            className="w-full px-4 py-2 border border-gray-200 dark:border-gray-700 rounded-lg bg-white dark:bg-neutral-800 text-gray-900 dark:text-white focus:ring-2 focus:ring-[#5b21b6] focus:border-transparent"
+            className="w-full px-4 py-2 border border-gray-200 dark:border-gray-700 rounded-lg bg-white dark:bg-neutral-800 text-gray-900 dark:text-white focus:ring-2 focus:ring-[#065f46] focus:border-transparent"
           />
         </div>
 
@@ -565,7 +565,7 @@ function ClinicalTab({ formData, onChange }: TabProps) {
             id="require_vitals"
             checked={formData.require_vitals_before_consultation || false}
             onChange={(e) => onChange('require_vitals_before_consultation', e.target.checked)}
-            className="w-4 h-4 text-[#5b21b6] bg-gray-100 border-gray-300 rounded focus:ring-[#5b21b6] dark:focus:ring-[#5b21b6] dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"
+            className="w-4 h-4 text-[#065f46] bg-gray-100 border-gray-300 rounded focus:ring-[#065f46] dark:focus:ring-[#065f46] dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"
           />
           <label htmlFor="require_vitals" className="ml-2 text-sm font-medium text-gray-700 dark:text-gray-300">
             Require Vitals Before Consultation
@@ -578,7 +578,7 @@ function ClinicalTab({ formData, onChange }: TabProps) {
             id="enable_biometric"
             checked={formData.enable_biometric_verification || false}
             onChange={(e) => onChange('enable_biometric_verification', e.target.checked)}
-            className="w-4 h-4 text-[#5b21b6] bg-gray-100 border-gray-300 rounded focus:ring-[#5b21b6] dark:focus:ring-[#5b21b6] dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"
+            className="w-4 h-4 text-[#065f46] bg-gray-100 border-gray-300 rounded focus:ring-[#065f46] dark:focus:ring-[#065f46] dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"
           />
           <label htmlFor="enable_biometric" className="ml-2 text-sm font-medium text-gray-700 dark:text-gray-300">
             Enable Biometric Verification
@@ -604,7 +604,7 @@ function InventoryTab({ formData, onChange }: TabProps) {
             type="number"
             value={formData.low_stock_threshold || 10}
             onChange={(e) => onChange('low_stock_threshold', parseInt(e.target.value))}
-            className="w-full px-4 py-2 border border-gray-200 dark:border-gray-700 rounded-lg bg-white dark:bg-neutral-800 text-gray-900 dark:text-white focus:ring-2 focus:ring-[#5b21b6] focus:border-transparent"
+            className="w-full px-4 py-2 border border-gray-200 dark:border-gray-700 rounded-lg bg-white dark:bg-neutral-800 text-gray-900 dark:text-white focus:ring-2 focus:ring-[#065f46] focus:border-transparent"
           />
         </div>
 
@@ -616,7 +616,7 @@ function InventoryTab({ formData, onChange }: TabProps) {
             type="number"
             value={formData.expiry_alert_days || 30}
             onChange={(e) => onChange('expiry_alert_days', parseInt(e.target.value))}
-            className="w-full px-4 py-2 border border-gray-200 dark:border-gray-700 rounded-lg bg-white dark:bg-neutral-800 text-gray-900 dark:text-white focus:ring-2 focus:ring-[#5b21b6] focus:border-transparent"
+            className="w-full px-4 py-2 border border-gray-200 dark:border-gray-700 rounded-lg bg-white dark:bg-neutral-800 text-gray-900 dark:text-white focus:ring-2 focus:ring-[#065f46] focus:border-transparent"
           />
         </div>
 
@@ -626,7 +626,7 @@ function InventoryTab({ formData, onChange }: TabProps) {
             id="enable_auto_reorder"
             checked={formData.enable_auto_reorder || false}
             onChange={(e) => onChange('enable_auto_reorder', e.target.checked)}
-            className="w-4 h-4 text-[#5b21b6] bg-gray-100 border-gray-300 rounded focus:ring-[#5b21b6] dark:focus:ring-[#5b21b6] dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"
+            className="w-4 h-4 text-[#065f46] bg-gray-100 border-gray-300 rounded focus:ring-[#065f46] dark:focus:ring-[#065f46] dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"
           />
           <label htmlFor="enable_auto_reorder" className="ml-2 text-sm font-medium text-gray-700 dark:text-gray-300">
             Enable Auto-Reorder
@@ -651,7 +651,7 @@ function ReportsTab({ formData, onChange }: TabProps) {
           <select
             value={formData.default_report_format || 'PDF'}
             onChange={(e) => onChange('default_report_format', e.target.value)}
-            className="w-full px-4 py-2 border border-gray-200 dark:border-gray-700 rounded-lg bg-white dark:bg-neutral-800 text-gray-900 dark:text-white focus:ring-2 focus:ring-[#5b21b6] focus:border-transparent"
+            className="w-full px-4 py-2 border border-gray-200 dark:border-gray-700 rounded-lg bg-white dark:bg-neutral-800 text-gray-900 dark:text-white focus:ring-2 focus:ring-[#065f46] focus:border-transparent"
           >
             <option value="PDF">PDF</option>
             <option value="EXCEL">Excel</option>
@@ -666,7 +666,7 @@ function ReportsTab({ formData, onChange }: TabProps) {
             id="include_logo"
             checked={formData.include_facility_logo_in_reports || false}
             onChange={(e) => onChange('include_facility_logo_in_reports', e.target.checked)}
-            className="w-4 h-4 text-[#5b21b6] bg-gray-100 border-gray-300 rounded focus:ring-[#5b21b6] dark:focus:ring-[#5b21b6] dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"
+            className="w-4 h-4 text-[#065f46] bg-gray-100 border-gray-300 rounded focus:ring-[#065f46] dark:focus:ring-[#065f46] dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"
           />
           <label htmlFor="include_logo" className="ml-2 text-sm font-medium text-gray-700 dark:text-gray-300">
             Include Logo in Reports
@@ -682,7 +682,7 @@ function ReportsTab({ formData, onChange }: TabProps) {
             onChange={(e) => onChange('report_footer_text', e.target.value)}
             rows={3}
             placeholder="Optional footer text for reports..."
-            className="w-full px-4 py-2 border border-gray-200 dark:border-gray-700 rounded-lg bg-white dark:bg-neutral-800 text-gray-900 dark:text-white focus:ring-2 focus:ring-[#5b21b6] focus:border-transparent"
+            className="w-full px-4 py-2 border border-gray-200 dark:border-gray-700 rounded-lg bg-white dark:bg-neutral-800 text-gray-900 dark:text-white focus:ring-2 focus:ring-[#065f46] focus:border-transparent"
           />
         </div>
       </div>
@@ -705,7 +705,7 @@ function SystemTab({ formData, onChange }: TabProps) {
             type="number"
             value={formData.session_timeout_minutes || 30}
             onChange={(e) => onChange('session_timeout_minutes', parseInt(e.target.value))}
-            className="w-full px-4 py-2 border border-gray-200 dark:border-gray-700 rounded-lg bg-white dark:bg-neutral-800 text-gray-900 dark:text-white focus:ring-2 focus:ring-[#5b21b6] focus:border-transparent"
+            className="w-full px-4 py-2 border border-gray-200 dark:border-gray-700 rounded-lg bg-white dark:bg-neutral-800 text-gray-900 dark:text-white focus:ring-2 focus:ring-[#065f46] focus:border-transparent"
           />
         </div>
 
@@ -717,7 +717,7 @@ function SystemTab({ formData, onChange }: TabProps) {
             type="number"
             value={formData.password_expiry_days || 90}
             onChange={(e) => onChange('password_expiry_days', parseInt(e.target.value))}
-            className="w-full px-4 py-2 border border-gray-200 dark:border-gray-700 rounded-lg bg-white dark:bg-neutral-800 text-gray-900 dark:text-white focus:ring-2 focus:ring-[#5b21b6] focus:border-transparent"
+            className="w-full px-4 py-2 border border-gray-200 dark:border-gray-700 rounded-lg bg-white dark:bg-neutral-800 text-gray-900 dark:text-white focus:ring-2 focus:ring-[#065f46] focus:border-transparent"
           />
         </div>
 
@@ -729,7 +729,7 @@ function SystemTab({ formData, onChange }: TabProps) {
             type="number"
             value={formData.min_password_length || 8}
             onChange={(e) => onChange('min_password_length', parseInt(e.target.value))}
-            className="w-full px-4 py-2 border border-gray-200 dark:border-gray-700 rounded-lg bg-white dark:bg-neutral-800 text-gray-900 dark:text-white focus:ring-2 focus:ring-[#5b21b6] focus:border-transparent"
+            className="w-full px-4 py-2 border border-gray-200 dark:border-gray-700 rounded-lg bg-white dark:bg-neutral-800 text-gray-900 dark:text-white focus:ring-2 focus:ring-[#065f46] focus:border-transparent"
           />
         </div>
 
@@ -739,7 +739,7 @@ function SystemTab({ formData, onChange }: TabProps) {
             id="require_password_change"
             checked={formData.require_password_change_on_first_login || false}
             onChange={(e) => onChange('require_password_change_on_first_login', e.target.checked)}
-            className="w-4 h-4 text-[#5b21b6] bg-gray-100 border-gray-300 rounded focus:ring-[#5b21b6] dark:focus:ring-[#5b21b6] dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"
+            className="w-4 h-4 text-[#065f46] bg-gray-100 border-gray-300 rounded focus:ring-[#065f46] dark:focus:ring-[#065f46] dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"
           />
           <label htmlFor="require_password_change" className="ml-2 text-sm font-medium text-gray-700 dark:text-gray-300">
             Require Password Change on First Login
@@ -752,7 +752,7 @@ function SystemTab({ formData, onChange }: TabProps) {
             id="enable_2fa"
             checked={formData.enable_two_factor_auth || false}
             onChange={(e) => onChange('enable_two_factor_auth', e.target.checked)}
-            className="w-4 h-4 text-[#5b21b6] bg-gray-100 border-gray-300 rounded focus:ring-[#5b21b6] dark:focus:ring-[#5b21b6] dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"
+            className="w-4 h-4 text-[#065f46] bg-gray-100 border-gray-300 rounded focus:ring-[#065f46] dark:focus:ring-[#065f46] dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"
           />
           <label htmlFor="enable_2fa" className="ml-2 text-sm font-medium text-gray-700 dark:text-gray-300">
             Enable Two-Factor Authentication
@@ -778,7 +778,7 @@ function BackupTab({ formData, onChange }: TabProps) {
             type="number"
             value={formData.backup_frequency_hours || 24}
             onChange={(e) => onChange('backup_frequency_hours', parseInt(e.target.value))}
-            className="w-full px-4 py-2 border border-gray-200 dark:border-gray-700 rounded-lg bg-white dark:bg-neutral-800 text-gray-900 dark:text-white focus:ring-2 focus:ring-[#5b21b6] focus:border-transparent"
+            className="w-full px-4 py-2 border border-gray-200 dark:border-gray-700 rounded-lg bg-white dark:bg-neutral-800 text-gray-900 dark:text-white focus:ring-2 focus:ring-[#065f46] focus:border-transparent"
           />
         </div>
 
@@ -790,7 +790,7 @@ function BackupTab({ formData, onChange }: TabProps) {
             type="number"
             value={formData.backup_retention_days || 30}
             onChange={(e) => onChange('backup_retention_days', parseInt(e.target.value))}
-            className="w-full px-4 py-2 border border-gray-200 dark:border-gray-700 rounded-lg bg-white dark:bg-neutral-800 text-gray-900 dark:text-white focus:ring-2 focus:ring-[#5b21b6] focus:border-transparent"
+            className="w-full px-4 py-2 border border-gray-200 dark:border-gray-700 rounded-lg bg-white dark:bg-neutral-800 text-gray-900 dark:text-white focus:ring-2 focus:ring-[#065f46] focus:border-transparent"
           />
         </div>
 
@@ -800,7 +800,7 @@ function BackupTab({ formData, onChange }: TabProps) {
             id="enable_auto_backup"
             checked={formData.enable_auto_backup || false}
             onChange={(e) => onChange('enable_auto_backup', e.target.checked)}
-            className="w-4 h-4 text-[#5b21b6] bg-gray-100 border-gray-300 rounded focus:ring-[#5b21b6] dark:focus:ring-[#5b21b6] dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"
+            className="w-4 h-4 text-[#065f46] bg-gray-100 border-gray-300 rounded focus:ring-[#065f46] dark:focus:ring-[#065f46] dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"
           />
           <label htmlFor="enable_auto_backup" className="ml-2 text-sm font-medium text-gray-700 dark:text-gray-300">
             Enable Automatic Backups
@@ -826,7 +826,7 @@ function ComplianceTab({ formData, onChange }: TabProps) {
             type="number"
             value={formData.audit_log_retention_days || 365}
             onChange={(e) => onChange('audit_log_retention_days', parseInt(e.target.value))}
-            className="w-full px-4 py-2 border border-gray-200 dark:border-gray-700 rounded-lg bg-white dark:bg-neutral-800 text-gray-900 dark:text-white focus:ring-2 focus:ring-[#5b21b6] focus:border-transparent"
+            className="w-full px-4 py-2 border border-gray-200 dark:border-gray-700 rounded-lg bg-white dark:bg-neutral-800 text-gray-900 dark:text-white focus:ring-2 focus:ring-[#065f46] focus:border-transparent"
           />
         </div>
 
@@ -838,7 +838,7 @@ function ComplianceTab({ formData, onChange }: TabProps) {
             type="number"
             value={formData.patient_data_retention_years || 7}
             onChange={(e) => onChange('patient_data_retention_years', parseInt(e.target.value))}
-            className="w-full px-4 py-2 border border-gray-200 dark:border-gray-700 rounded-lg bg-white dark:bg-neutral-800 text-gray-900 dark:text-white focus:ring-2 focus:ring-[#5b21b6] focus:border-transparent"
+            className="w-full px-4 py-2 border border-gray-200 dark:border-gray-700 rounded-lg bg-white dark:bg-neutral-800 text-gray-900 dark:text-white focus:ring-2 focus:ring-[#065f46] focus:border-transparent"
           />
         </div>
 
@@ -848,7 +848,7 @@ function ComplianceTab({ formData, onChange }: TabProps) {
             id="enable_audit"
             checked={formData.enable_audit_logs || false}
             onChange={(e) => onChange('enable_audit_logs', e.target.checked)}
-            className="w-4 h-4 text-[#5b21b6] bg-gray-100 border-gray-300 rounded focus:ring-[#5b21b6] dark:focus:ring-[#5b21b6] dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"
+            className="w-4 h-4 text-[#065f46] bg-gray-100 border-gray-300 rounded focus:ring-[#065f46] dark:focus:ring-[#065f46] dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"
           />
           <label htmlFor="enable_audit" className="ml-2 text-sm font-medium text-gray-700 dark:text-gray-300">
             Enable Audit Logs
@@ -861,7 +861,7 @@ function ComplianceTab({ formData, onChange }: TabProps) {
             id="require_reason"
             checked={formData.require_reason_for_record_modification || false}
             onChange={(e) => onChange('require_reason_for_record_modification', e.target.checked)}
-            className="w-4 h-4 text-[#5b21b6] bg-gray-100 border-gray-300 rounded focus:ring-[#5b21b6] dark:focus:ring-[#5b21b6] dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"
+            className="w-4 h-4 text-[#065f46] bg-gray-100 border-gray-300 rounded focus:ring-[#065f46] dark:focus:ring-[#065f46] dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"
           />
           <label htmlFor="require_reason" className="ml-2 text-sm font-medium text-gray-700 dark:text-gray-300">
             Require Reason for Modifications
@@ -874,7 +874,7 @@ function ComplianceTab({ formData, onChange }: TabProps) {
             id="enable_anonymization"
             checked={formData.enable_data_anonymization || false}
             onChange={(e) => onChange('enable_data_anonymization', e.target.checked)}
-            className="w-4 h-4 text-[#5b21b6] bg-gray-100 border-gray-300 rounded focus:ring-[#5b21b6] dark:focus:ring-[#5b21b6] dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"
+            className="w-4 h-4 text-[#065f46] bg-gray-100 border-gray-300 rounded focus:ring-[#065f46] dark:focus:ring-[#065f46] dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"
           />
           <label htmlFor="enable_anonymization" className="ml-2 text-sm font-medium text-gray-700 dark:text-gray-300">
             Enable Data Anonymization
@@ -887,7 +887,7 @@ function ComplianceTab({ formData, onChange }: TabProps) {
             id="hipaa_mode"
             checked={formData.hipaa_compliance_mode || false}
             onChange={(e) => onChange('hipaa_compliance_mode', e.target.checked)}
-            className="w-4 h-4 text-[#5b21b6] bg-gray-100 border-gray-300 rounded focus:ring-[#5b21b6] dark:focus:ring-[#5b21b6] dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"
+            className="w-4 h-4 text-[#065f46] bg-gray-100 border-gray-300 rounded focus:ring-[#065f46] dark:focus:ring-[#065f46] dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"
           />
           <label htmlFor="hipaa_mode" className="ml-2 text-sm font-medium text-gray-700 dark:text-gray-300">
             HIPAA Compliance Mode
@@ -922,7 +922,7 @@ function IntegrationsTab({ formData, onChange }: TabProps) {
               value={formData.smtp_host || ''}
               onChange={(e) => onChange('smtp_host', e.target.value)}
               placeholder="smtp.example.com"
-              className="w-full px-4 py-2 border border-gray-200 dark:border-gray-700 rounded-lg bg-white dark:bg-neutral-800 text-gray-900 dark:text-white focus:ring-2 focus:ring-[#5b21b6] focus:border-transparent"
+              className="w-full px-4 py-2 border border-gray-200 dark:border-gray-700 rounded-lg bg-white dark:bg-neutral-800 text-gray-900 dark:text-white focus:ring-2 focus:ring-[#065f46] focus:border-transparent"
             />
           </div>
 
@@ -935,7 +935,7 @@ function IntegrationsTab({ formData, onChange }: TabProps) {
               value={formData.smtp_port || ''}
               onChange={(e) => onChange('smtp_port', parseInt(e.target.value))}
               placeholder="587"
-              className="w-full px-4 py-2 border border-gray-200 dark:border-gray-700 rounded-lg bg-white dark:bg-neutral-800 text-gray-900 dark:text-white focus:ring-2 focus:ring-[#5b21b6] focus:border-transparent"
+              className="w-full px-4 py-2 border border-gray-200 dark:border-gray-700 rounded-lg bg-white dark:bg-neutral-800 text-gray-900 dark:text-white focus:ring-2 focus:ring-[#065f46] focus:border-transparent"
             />
           </div>
 
@@ -947,7 +947,7 @@ function IntegrationsTab({ formData, onChange }: TabProps) {
               type="text"
               value={formData.smtp_username || ''}
               onChange={(e) => onChange('smtp_username', e.target.value)}
-              className="w-full px-4 py-2 border border-gray-200 dark:border-gray-700 rounded-lg bg-white dark:bg-neutral-800 text-gray-900 dark:text-white focus:ring-2 focus:ring-[#5b21b6] focus:border-transparent"
+              className="w-full px-4 py-2 border border-gray-200 dark:border-gray-700 rounded-lg bg-white dark:bg-neutral-800 text-gray-900 dark:text-white focus:ring-2 focus:ring-[#065f46] focus:border-transparent"
             />
           </div>
 
@@ -957,7 +957,7 @@ function IntegrationsTab({ formData, onChange }: TabProps) {
               id="smtp_tls"
               checked={formData.smtp_use_tls || false}
               onChange={(e) => onChange('smtp_use_tls', e.target.checked)}
-              className="w-4 h-4 text-[#5b21b6] bg-gray-100 border-gray-300 rounded focus:ring-[#5b21b6] dark:focus:ring-[#5b21b6] dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"
+              className="w-4 h-4 text-[#065f46] bg-gray-100 border-gray-300 rounded focus:ring-[#065f46] dark:focus:ring-[#065f46] dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"
             />
             <label htmlFor="smtp_tls" className="ml-2 text-sm font-medium text-gray-700 dark:text-gray-300">
               Use TLS
@@ -974,7 +974,7 @@ function IntegrationsTab({ formData, onChange }: TabProps) {
             <input
               type="password"
               placeholder="Leave empty to keep existing"
-              className="w-full px-4 py-2 border border-gray-200 dark:border-gray-700 rounded-lg bg-white dark:bg-neutral-800 text-gray-900 dark:text-white focus:ring-2 focus:ring-[#5b21b6] focus:border-transparent"
+              className="w-full px-4 py-2 border border-gray-200 dark:border-gray-700 rounded-lg bg-white dark:bg-neutral-800 text-gray-900 dark:text-white focus:ring-2 focus:ring-[#065f46] focus:border-transparent"
             />
           </div>
         </div>
@@ -995,7 +995,7 @@ function IntegrationsTab({ formData, onChange }: TabProps) {
               value={formData.sms_provider || ''}
               onChange={(e) => onChange('sms_provider', e.target.value)}
               placeholder="Twilio, AWS SNS, etc."
-              className="w-full px-4 py-2 border border-gray-200 dark:border-gray-700 rounded-lg bg-white dark:bg-neutral-800 text-gray-900 dark:text-white focus:ring-2 focus:ring-[#5b21b6] focus:border-transparent"
+              className="w-full px-4 py-2 border border-gray-200 dark:border-gray-700 rounded-lg bg-white dark:bg-neutral-800 text-gray-900 dark:text-white focus:ring-2 focus:ring-[#065f46] focus:border-transparent"
             />
           </div>
 
@@ -1007,7 +1007,7 @@ function IntegrationsTab({ formData, onChange }: TabProps) {
               type="text"
               value={formData.sms_sender_id || ''}
               onChange={(e) => onChange('sms_sender_id', e.target.value)}
-              className="w-full px-4 py-2 border border-gray-200 dark:border-gray-700 rounded-lg bg-white dark:bg-neutral-800 text-gray-900 dark:text-white focus:ring-2 focus:ring-[#5b21b6] focus:border-transparent"
+              className="w-full px-4 py-2 border border-gray-200 dark:border-gray-700 rounded-lg bg-white dark:bg-neutral-800 text-gray-900 dark:text-white focus:ring-2 focus:ring-[#065f46] focus:border-transparent"
             />
           </div>
 
@@ -1017,7 +1017,7 @@ function IntegrationsTab({ formData, onChange }: TabProps) {
               id="enable_sms"
               checked={formData.enable_sms_notifications || false}
               onChange={(e) => onChange('enable_sms_notifications', e.target.checked)}
-              className="w-4 h-4 text-[#5b21b6] bg-gray-100 border-gray-300 rounded focus:ring-[#5b21b6] dark:focus:ring-[#5b21b6] dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"
+              className="w-4 h-4 text-[#065f46] bg-gray-100 border-gray-300 rounded focus:ring-[#065f46] dark:focus:ring-[#065f46] dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"
             />
             <label htmlFor="enable_sms" className="ml-2 text-sm font-medium text-gray-700 dark:text-gray-300">
               Enable SMS Notifications
@@ -1034,7 +1034,7 @@ function IntegrationsTab({ formData, onChange }: TabProps) {
             <input
               type="password"
               placeholder="Leave empty to keep existing"
-              className="w-full px-4 py-2 border border-gray-200 dark:border-gray-700 rounded-lg bg-white dark:bg-neutral-800 text-gray-900 dark:text-white focus:ring-2 focus:ring-[#5b21b6] focus:border-transparent"
+              className="w-full px-4 py-2 border border-gray-200 dark:border-gray-700 rounded-lg bg-white dark:bg-neutral-800 text-gray-900 dark:text-white focus:ring-2 focus:ring-[#065f46] focus:border-transparent"
             />
           </div>
         </div>
@@ -1055,7 +1055,7 @@ function IntegrationsTab({ formData, onChange }: TabProps) {
               value={formData.dhis2_api_url || ''}
               onChange={(e) => onChange('dhis2_api_url', e.target.value)}
               placeholder="https://dhis2.example.com/api"
-              className="w-full px-4 py-2 border border-gray-200 dark:border-gray-700 rounded-lg bg-white dark:bg-neutral-800 text-gray-900 dark:text-white focus:ring-2 focus:ring-[#5b21b6] focus:border-transparent"
+              className="w-full px-4 py-2 border border-gray-200 dark:border-gray-700 rounded-lg bg-white dark:bg-neutral-800 text-gray-900 dark:text-white focus:ring-2 focus:ring-[#065f46] focus:border-transparent"
             />
           </div>
 
@@ -1067,7 +1067,7 @@ function IntegrationsTab({ formData, onChange }: TabProps) {
               type="text"
               value={formData.dhis2_username || ''}
               onChange={(e) => onChange('dhis2_username', e.target.value)}
-              className="w-full px-4 py-2 border border-gray-200 dark:border-gray-700 rounded-lg bg-white dark:bg-neutral-800 text-gray-900 dark:text-white focus:ring-2 focus:ring-[#5b21b6] focus:border-transparent"
+              className="w-full px-4 py-2 border border-gray-200 dark:border-gray-700 rounded-lg bg-white dark:bg-neutral-800 text-gray-900 dark:text-white focus:ring-2 focus:ring-[#065f46] focus:border-transparent"
             />
           </div>
 
@@ -1079,7 +1079,7 @@ function IntegrationsTab({ formData, onChange }: TabProps) {
               type="text"
               value={formData.dhis2_org_unit_id || ''}
               onChange={(e) => onChange('dhis2_org_unit_id', e.target.value)}
-              className="w-full px-4 py-2 border border-gray-200 dark:border-gray-700 rounded-lg bg-white dark:bg-neutral-800 text-gray-900 dark:text-white focus:ring-2 focus:ring-[#5b21b6] focus:border-transparent"
+              className="w-full px-4 py-2 border border-gray-200 dark:border-gray-700 rounded-lg bg-white dark:bg-neutral-800 text-gray-900 dark:text-white focus:ring-2 focus:ring-[#065f46] focus:border-transparent"
             />
           </div>
 
@@ -1089,7 +1089,7 @@ function IntegrationsTab({ formData, onChange }: TabProps) {
               id="enable_dhis2"
               checked={formData.enable_dhis2_sync || false}
               onChange={(e) => onChange('enable_dhis2_sync', e.target.checked)}
-              className="w-4 h-4 text-[#5b21b6] bg-gray-100 border-gray-300 rounded focus:ring-[#5b21b6] dark:focus:ring-[#5b21b6] dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"
+              className="w-4 h-4 text-[#065f46] bg-gray-100 border-gray-300 rounded focus:ring-[#065f46] dark:focus:ring-[#065f46] dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"
             />
             <label htmlFor="enable_dhis2" className="ml-2 text-sm font-medium text-gray-700 dark:text-gray-300">
               Enable DHIS2 Sync
@@ -1106,7 +1106,7 @@ function IntegrationsTab({ formData, onChange }: TabProps) {
             <input
               type="password"
               placeholder="Leave empty to keep existing"
-              className="w-full px-4 py-2 border border-gray-200 dark:border-gray-700 rounded-lg bg-white dark:bg-neutral-800 text-gray-900 dark:text-white focus:ring-2 focus:ring-[#5b21b6] focus:border-transparent"
+              className="w-full px-4 py-2 border border-gray-200 dark:border-gray-700 rounded-lg bg-white dark:bg-neutral-800 text-gray-900 dark:text-white focus:ring-2 focus:ring-[#065f46] focus:border-transparent"
             />
           </div>
         </div>

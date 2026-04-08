@@ -199,7 +199,7 @@ export default function HtsInitialForm({ initialData, onSave, loading, preselect
             placeholder="Search by name or hospital number..."
             disabled={!!(preselectedPatientId && selectedPatient)}
             className="block w-full pl-10 pr-10 py-2.5 text-sm border border-gray-300 dark:border-gray-600 rounded-lg
-                     focus:ring-2 focus:ring-purple-500 focus:border-purple-500
+                     focus:ring-2 focus:ring-green-500 focus:border-green-500
                      dark:bg-gray-700 dark:text-white dark:placeholder-gray-400
                      disabled:opacity-70 disabled:cursor-not-allowed
                      transition-all duration-200 ease-in-out
@@ -214,7 +214,7 @@ export default function HtsInitialForm({ initialData, onSave, loading, preselect
           {/* Loading/Clear Icon */}
           {loadingPatients && patientSearch.length >= 2 ? (
             <div className="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none">
-              <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-purple-600"></div>
+              <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-green-600"></div>
             </div>
           ) : patientSearch && (
             <button
@@ -250,7 +250,7 @@ export default function HtsInitialForm({ initialData, onSave, loading, preselect
         {showPatientDropdown && loadingPatients && patientSearch.length >= 2 && (
           <div className="absolute z-10 mt-2 w-full bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-600 rounded-lg shadow-xl p-4 text-center animate-fadeIn">
             <div className="flex items-center justify-center space-x-3">
-              <div className="animate-spin rounded-full h-5 w-5 border-2 border-purple-600 border-t-transparent"></div>
+              <div className="animate-spin rounded-full h-5 w-5 border-2 border-green-600 border-t-transparent"></div>
               <span className="text-sm text-gray-600 dark:text-gray-300 font-medium">Searching patients...</span>
             </div>
           </div>
@@ -265,15 +265,15 @@ export default function HtsInitialForm({ initialData, onSave, loading, preselect
                   key={patient.id}
                   type="button"
                   onClick={() => handlePatientSelect(patient)}
-                  className="w-full text-left px-4 py-3 hover:bg-purple-50 dark:hover:bg-purple-900/20 focus:bg-purple-50 dark:focus:bg-purple-900/20 focus:outline-none transition-colors duration-150 ease-in-out border-b border-gray-100 dark:border-gray-700 last:border-b-0 group"
+                  className="w-full text-left px-4 py-3 hover:bg-green-50 dark:hover:bg-green-900/20 focus:bg-green-50 dark:focus:bg-green-900/20 focus:outline-none transition-colors duration-150 ease-in-out border-b border-gray-100 dark:border-gray-700 last:border-b-0 group"
                 >
                   <div className="flex items-start justify-between">
                     <div className="flex-1 min-w-0">
                       <div className="flex items-center space-x-2">
-                        <svg className="h-4 w-4 text-purple-500 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <svg className="h-4 w-4 text-green-500 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
                         </svg>
-                        <div className="font-medium text-gray-900 dark:text-white truncate group-hover:text-purple-600 dark:group-hover:text-purple-400 transition-colors">
+                        <div className="font-medium text-gray-900 dark:text-white truncate group-hover:text-green-600 dark:group-hover:text-green-400 transition-colors">
                           {patient.first_name} {patient.middle_name || ''} {patient.last_name}
                         </div>
                       </div>
@@ -290,7 +290,7 @@ export default function HtsInitialForm({ initialData, onSave, loading, preselect
                         <span>Age: {patient.age || 'N/A'}</span>
                       </div>
                     </div>
-                    <svg className="h-5 w-5 text-gray-400 group-hover:text-purple-500 dark:group-hover:text-purple-400 transition-colors flex-shrink-0 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <svg className="h-5 w-5 text-gray-400 group-hover:text-green-500 dark:group-hover:text-green-400 transition-colors flex-shrink-0 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
                     </svg>
                   </div>
@@ -342,7 +342,7 @@ export default function HtsInitialForm({ initialData, onSave, loading, preselect
             required: isRequired("date_of_visit") ? `${getLabel("date_of_visit")} is required` : false,
           })}
           className="block w-full px-4 py-2.5 text-sm border border-gray-300 dark:border-gray-600 rounded-lg
-                   focus:ring-2 focus:ring-purple-500 focus:border-purple-500
+                   focus:ring-2 focus:ring-green-500 focus:border-green-500
                    dark:bg-gray-700 dark:text-white
                    transition-all duration-200 ease-in-out
                    hover:border-gray-400 dark:hover:border-gray-500"
@@ -371,7 +371,7 @@ export default function HtsInitialForm({ initialData, onSave, loading, preselect
           readOnly
           className="block w-full px-4 py-2.5 text-sm border border-gray-300 dark:border-gray-600 rounded-lg
                    bg-gray-50 dark:bg-gray-800 text-gray-600 dark:text-gray-400 cursor-not-allowed
-                   focus:ring-2 focus:ring-purple-500 focus:border-purple-500"
+                   focus:ring-2 focus:ring-green-500 focus:border-green-500"
           placeholder="Client code will be auto-generated"
         />
         {errors.client_code && (
@@ -398,7 +398,7 @@ export default function HtsInitialForm({ initialData, onSave, loading, preselect
                 : false,
             })}
             className="block w-full px-4 py-2.5 text-sm border border-gray-300 dark:border-gray-600 rounded-lg
-                     focus:ring-2 focus:ring-purple-500 focus:border-purple-500
+                     focus:ring-2 focus:ring-green-500 focus:border-green-500
                      dark:bg-gray-700 dark:text-white
                      transition-all duration-200 ease-in-out
                      hover:border-gray-400 dark:hover:border-gray-500 cursor-pointer"
@@ -430,7 +430,7 @@ export default function HtsInitialForm({ initialData, onSave, loading, preselect
               required: isRequired("marital_status") ? `${getLabel("marital_status")} is required` : false,
             })}
             className="block w-full px-4 py-2.5 text-sm border border-gray-300 dark:border-gray-600 rounded-lg
-                     focus:ring-2 focus:ring-purple-500 focus:border-purple-500
+                     focus:ring-2 focus:ring-green-500 focus:border-green-500
                      dark:bg-gray-700 dark:text-white
                      transition-all duration-200 ease-in-out
                      hover:border-gray-400 dark:hover:border-gray-500 cursor-pointer"
@@ -462,7 +462,7 @@ export default function HtsInitialForm({ initialData, onSave, loading, preselect
               required: isRequired("type_of_hts") ? `${getLabel("type_of_hts")} is required` : false,
             })}
             className="block w-full px-4 py-2.5 text-sm border border-gray-300 dark:border-gray-600 rounded-lg
-                     focus:ring-2 focus:ring-purple-500 focus:border-purple-500
+                     focus:ring-2 focus:ring-green-500 focus:border-green-500
                      dark:bg-gray-700 dark:text-white
                      transition-all duration-200 ease-in-out
                      hover:border-gray-400 dark:hover:border-gray-500 cursor-pointer"
@@ -494,7 +494,7 @@ export default function HtsInitialForm({ initialData, onSave, loading, preselect
               required: isRequired("settings") ? `${getLabel("settings")} is required` : false,
             })}
             className="block w-full px-4 py-2.5 text-sm border border-gray-300 dark:border-gray-600 rounded-lg
-                     focus:ring-2 focus:ring-purple-500 focus:border-purple-500
+                     focus:ring-2 focus:ring-green-500 focus:border-green-500
                      dark:bg-gray-700 dark:text-white
                      transition-all duration-200 ease-in-out
                      hover:border-gray-400 dark:hover:border-gray-500 cursor-pointer"
@@ -528,7 +528,7 @@ export default function HtsInitialForm({ initialData, onSave, loading, preselect
                 : false,
             })}
             className="block w-full px-4 py-2.5 text-sm border border-gray-300 dark:border-gray-600 rounded-lg
-                     focus:ring-2 focus:ring-purple-500 focus:border-purple-500
+                     focus:ring-2 focus:ring-green-500 focus:border-green-500
                      dark:bg-gray-700 dark:text-white
                      transition-all duration-200 ease-in-out
                      hover:border-gray-400 dark:hover:border-gray-500 cursor-pointer"
@@ -560,7 +560,7 @@ export default function HtsInitialForm({ initialData, onSave, loading, preselect
               required: isRequired("type_of_session") ? `${getLabel("type_of_session")} is required` : false,
             })}
             className="block w-full px-4 py-2.5 text-sm border border-gray-300 dark:border-gray-600 rounded-lg
-                     focus:ring-2 focus:ring-purple-500 focus:border-purple-500
+                     focus:ring-2 focus:ring-green-500 focus:border-green-500
                      dark:bg-gray-700 dark:text-white
                      transition-all duration-200 ease-in-out
                      hover:border-gray-400 dark:hover:border-gray-500 cursor-pointer"
@@ -597,7 +597,7 @@ export default function HtsInitialForm({ initialData, onSave, loading, preselect
               valueAsNumber: true,
             })}
             className="block w-full px-4 py-2.5 text-sm border border-gray-300 dark:border-gray-600 rounded-lg
-                     focus:ring-2 focus:ring-purple-500 focus:border-purple-500
+                     focus:ring-2 focus:ring-green-500 focus:border-green-500
                      dark:bg-gray-700 dark:text-white
                      transition-all duration-200 ease-in-out
                      hover:border-gray-400 dark:hover:border-gray-500"
@@ -624,7 +624,7 @@ export default function HtsInitialForm({ initialData, onSave, loading, preselect
                 : false,
             })}
             className="block w-full px-4 py-2.5 text-sm border border-gray-300 dark:border-gray-600 rounded-lg
-                     focus:ring-2 focus:ring-purple-500 focus:border-purple-500
+                     focus:ring-2 focus:ring-green-500 focus:border-green-500
                      dark:bg-gray-700 dark:text-white
                      transition-all duration-200 ease-in-out
                      hover:border-gray-400 dark:hover:border-gray-500 cursor-pointer"
@@ -656,7 +656,7 @@ export default function HtsInitialForm({ initialData, onSave, loading, preselect
               required: isRequired("sex_partners") ? `${getLabel("sex_partners")} is required` : false,
             })}
             className="block w-full px-4 py-2.5 text-sm border border-gray-300 dark:border-gray-600 rounded-lg
-                     focus:ring-2 focus:ring-purple-500 focus:border-purple-500
+                     focus:ring-2 focus:ring-green-500 focus:border-green-500
                      dark:bg-gray-700 dark:text-white
                      transition-all duration-200 ease-in-out
                      hover:border-gray-400 dark:hover:border-gray-500 cursor-pointer"
@@ -690,7 +690,7 @@ export default function HtsInitialForm({ initialData, onSave, loading, preselect
                 : false,
             })}
             className="block w-full px-4 py-2.5 text-sm border border-gray-300 dark:border-gray-600 rounded-lg
-                     focus:ring-2 focus:ring-purple-500 focus:border-purple-500
+                     focus:ring-2 focus:ring-green-500 focus:border-green-500
                      dark:bg-gray-700 dark:text-white
                      transition-all duration-200 ease-in-out
                      hover:border-gray-400 dark:hover:border-gray-500 cursor-pointer"
@@ -722,7 +722,7 @@ export default function HtsInitialForm({ initialData, onSave, loading, preselect
               required: isRequired("occupation") ? `${getLabel("occupation")} is required` : false,
             })}
             className="block w-full px-4 py-2.5 text-sm border border-gray-300 dark:border-gray-600 rounded-lg
-                     focus:ring-2 focus:ring-purple-500 focus:border-purple-500
+                     focus:ring-2 focus:ring-green-500 focus:border-green-500
                      dark:bg-gray-700 dark:text-white
                      transition-all duration-200 ease-in-out
                      hover:border-gray-400 dark:hover:border-gray-500 cursor-pointer"
@@ -751,7 +751,7 @@ export default function HtsInitialForm({ initialData, onSave, loading, preselect
           id="first_time_visit"
           type="checkbox"
           {...register("first_time_visit")}
-          className="h-5 w-5 text-purple-600 focus:ring-2 focus:ring-purple-500 focus:ring-offset-2 border-gray-300 dark:border-gray-600 rounded cursor-pointer transition-all duration-150"
+          className="h-5 w-5 text-green-600 focus:ring-2 focus:ring-green-500 focus:ring-offset-2 border-gray-300 dark:border-gray-600 rounded cursor-pointer transition-all duration-150"
         />
         <label htmlFor="first_time_visit" className="ml-3 block text-sm font-medium text-gray-700 dark:text-gray-300 cursor-pointer select-none">
           {getLabel("first_time_visit")}
@@ -763,7 +763,7 @@ export default function HtsInitialForm({ initialData, onSave, loading, preselect
         <button
           type="submit"
           disabled={loading}
-          className="inline-flex items-center px-6 py-3 border border-transparent text-base font-semibold rounded-lg shadow-md text-white bg-gradient-to-r from-purple-600 to-purple-700 hover:from-purple-700 hover:to-purple-800 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-purple-500 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200 ease-in-out transform hover:scale-105 active:scale-95 disabled:hover:scale-100"
+          className="inline-flex items-center px-6 py-3 border border-transparent text-base font-semibold rounded-lg shadow-md text-white bg-gradient-to-r from-green-600 to-green-700 hover:from-green-700 hover:to-green-800 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200 ease-in-out transform hover:scale-105 active:scale-95 disabled:hover:scale-100"
         >
           {loading ? (
             <>

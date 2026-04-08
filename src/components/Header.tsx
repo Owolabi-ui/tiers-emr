@@ -1,8 +1,8 @@
 "use client";
 
-import Image from "next/image";
 import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
+import BrandLogo from "@/components/BrandLogo";
 
 // Inline icon set (no external dependency)
 function Icon({ name, className = "h-5 w-5" }: { name: string; className?: string }) {
@@ -196,13 +196,7 @@ export function Header() {
       >
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
           <Link href="/" className="flex items-center gap-3">
-            <Image
-              src="/images/TIERs-Logo-good.png"
-              alt="TIERs Clinic Logo"
-              width={400}
-              height={400}
-              priority
-            />
+            <BrandLogo size="md" />
           </Link>
 
           <div className="flex items-center gap-2">
@@ -210,33 +204,33 @@ export function Header() {
             {/* Messages icon with dropdown */}
             <div className="relative" ref={messagesRef}>
               <button
-                className="relative inline-flex items-center justify-center h-9 w-9 rounded-md hover:bg-[#5b21b6]/10 transition group"
+                className="relative inline-flex items-center justify-center h-9 w-9 rounded-md hover:bg-[#065f46]/10 transition group"
                 title="Messages"
                 aria-haspopup="menu"
                 aria-expanded={messagesOpen}
                 onClick={() => setMessagesOpen((v) => !v)}
               >
-                <Icon name="messages" className="h-5 w-5 text-[#5b21b6]" />
-                <span className="absolute -top-1.5 -right-1.5 inline-flex items-center justify-center h-4 w-4 rounded-full bg-[#5b21b6] text-white text-xs font-bold shadow">4</span>
+                <Icon name="messages" className="h-5 w-5 text-[#065f46]" />
+                <span className="absolute -top-1.5 -right-1.5 inline-flex items-center justify-center h-4 w-4 rounded-full bg-[#065f46] text-white text-xs font-bold shadow">4</span>
               </button>
               {messagesOpen && (
                 <div className="absolute right-0 mt-2 w-72 rounded-xl border border-black/10 bg-white shadow-lg animate-fade-up z-50 overflow-hidden">
                   <div className="px-4 py-2 text-xs text-gray-500 font-semibold">Recent Messages</div>
                   <ul className="divide-y divide-black/10">
-                    <li className="px-4 py-2 hover:bg-[#5b21b6]/10 cursor-pointer">
+                    <li className="px-4 py-2 hover:bg-[#065f46]/10 cursor-pointer">
                       <div className="font-medium text-sm">Lab Results Ready</div>
                       <div className="text-xs text-gray-500">View the latest lab results for patient John Doe.</div>
                     </li>
-                    <li className="px-4 py-2 hover:bg-[#5b21b6]/10 cursor-pointer">
+                    <li className="px-4 py-2 hover:bg-[#065f46]/10 cursor-pointer">
                       <div className="font-medium text-sm">New Appointment Request</div>
                       <div className="text-xs text-gray-500">A new appointment has been requested.</div>
                     </li>
-                    <li className="px-4 py-2 hover:bg-[#5b21b6]/10 cursor-pointer">
+                    <li className="px-4 py-2 hover:bg-[#065f46]/10 cursor-pointer">
                       <div className="font-medium text-sm">Message from Admin</div>
                       <div className="text-xs text-gray-500">Please review the updated protocols.</div>
                     </li>
                   </ul>
-                  <Link href="/messages" className="block text-center text-[#5b21b6] font-semibold py-2 hover:underline">View all messages</Link>
+                  <Link href="/messages" className="block text-center text-[#065f46] font-semibold py-2 hover:underline">View all messages</Link>
                 </div>
               )}
             </div>
@@ -244,31 +238,31 @@ export function Header() {
             {/* Notifications icon with dropdown */}
             <div className="relative" ref={notificationsRef}>
               <button
-                className="relative inline-flex items-center justify-center h-9 w-9 rounded-md hover:bg-[#5b21b6]/10 transition group"
+                className="relative inline-flex items-center justify-center h-9 w-9 rounded-md hover:bg-[#065f46]/10 transition group"
                 title="Notifications"
                 aria-haspopup="menu"
                 aria-expanded={notificationsOpen}
                 onClick={() => setNotificationsOpen((v) => !v)}
               >
-                <svg className="h-5 w-5 text-[#5b21b6]" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2">
+                <svg className="h-5 w-5 text-[#065f46]" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2">
                   <path strokeLinecap="round" strokeLinejoin="round" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" />
                 </svg>
-                <span className="absolute -top-1.5 -right-1.5 inline-flex items-center justify-center h-4 w-4 rounded-full bg-[#5b21b6] text-white text-xs font-bold shadow">2</span>
+                <span className="absolute -top-1.5 -right-1.5 inline-flex items-center justify-center h-4 w-4 rounded-full bg-[#065f46] text-white text-xs font-bold shadow">2</span>
               </button>
               {notificationsOpen && (
                 <div className="absolute right-0 mt-2 w-72 rounded-xl border border-black/10 bg-white shadow-lg animate-fade-up z-50 overflow-hidden">
                   <div className="px-4 py-2 text-xs text-gray-500 font-semibold">Notifications</div>
                   <ul className="divide-y divide-black/10">
-                    <li className="px-4 py-2 hover:bg-[#5b21b6]/10 cursor-pointer">
+                    <li className="px-4 py-2 hover:bg-[#065f46]/10 cursor-pointer">
                       <div className="font-medium text-sm">2 Missed Appointments</div>
                       <div className="text-xs text-gray-500">You have 2 missed appointments to review.</div>
                     </li>
-                    <li className="px-4 py-2 hover:bg-[#5b21b6]/10 cursor-pointer">
+                    <li className="px-4 py-2 hover:bg-[#065f46]/10 cursor-pointer">
                       <div className="font-medium text-sm">Inventory Low</div>
                       <div className="text-xs text-gray-500">Some drugs are running low in inventory.</div>
                     </li>
                   </ul>
-                  <Link href="/pending" className="block text-center text-[#5b21b6] font-semibold py-2 hover:underline">View all notifications</Link>
+                  <Link href="/pending" className="block text-center text-[#065f46] font-semibold py-2 hover:underline">View all notifications</Link>
                 </div>
               )}
             </div>
@@ -276,43 +270,43 @@ export function Header() {
             {/* Profile dropdown */}
             <div className="relative" ref={profileRef}>
               <button
-                className="inline-flex items-center gap-2 h-9 rounded-md px-2 hover:bg-[#5b21b6]/10 transition focus:outline-none"
+                className="inline-flex items-center gap-2 h-9 rounded-md px-2 hover:bg-[#065f46]/10 transition focus:outline-none"
                 onClick={() => setProfileOpen((v) => !v)}
                 aria-haspopup="menu"
                 aria-expanded={profileOpen}
               >
-                <span className="inline-flex items-center justify-center h-8 w-8 rounded-full bg-[#5b21b6] text-white font-bold text-base">A</span>
-                <span className="hidden sm:inline text-sm font-medium text-[#5b21b6]">Admin</span>
-                <svg className={`h-4 w-4 text-[#5b21b6] transition-transform ${profileOpen ? "rotate-180" : "rotate-0"}`} viewBox="0 0 20 20" fill="currentColor">
+                <span className="inline-flex items-center justify-center h-8 w-8 rounded-full bg-[#065f46] text-white font-bold text-base">A</span>
+                <span className="hidden sm:inline text-sm font-medium text-[#065f46]">Admin</span>
+                <svg className={`h-4 w-4 text-[#065f46] transition-transform ${profileOpen ? "rotate-180" : "rotate-0"}`} viewBox="0 0 20 20" fill="currentColor">
                   <path fillRule="evenodd" d="M5.23 7.21a.75.75 0 011.06.02L10 11.293l3.71-4.06a.75.75 0 111.08 1.04l-4.25 4.65a.75.75 0 01-1.08 0l-4.25-4.65a.75.75 0 01.02-1.06z" clipRule="evenodd" />
                 </svg>
               </button>
               {profileOpen && (
                 <div className="absolute right-0 mt-2 w-44 rounded-xl border border-black/10 bg-white shadow-lg animate-fade-up z-50 overflow-hidden">
-                  <div className="px-4 py-2 text-xs text-gray-500">Signed in as <span className="font-semibold text-[#5b21b6]">admin</span></div>
-                  <button className="w-full text-left px-4 py-2 text-sm hover:bg-[#5b21b6]/10 transition">Profile</button>
-                  <button className="w-full text-left px-4 py-2 text-sm hover:bg-[#5b21b6]/10 transition">Settings</button>
+                  <div className="px-4 py-2 text-xs text-gray-500">Signed in as <span className="font-semibold text-[#065f46]">admin</span></div>
+                  <button className="w-full text-left px-4 py-2 text-sm hover:bg-[#065f46]/10 transition">Profile</button>
+                  <button className="w-full text-left px-4 py-2 text-sm hover:bg-[#065f46]/10 transition">Settings</button>
                   <div className="border-t border-black/10 my-1" />
-                  <button className="w-full text-left px-4 py-2 text-sm hover:bg-[#5b21b6]/10 transition">Login</button>
-                  <button className="w-full text-left px-4 py-2 text-sm hover:bg-[#5b21b6]/10 transition">Logout</button>
+                  <button className="w-full text-left px-4 py-2 text-sm hover:bg-[#065f46]/10 transition">Login</button>
+                  <button className="w-full text-left px-4 py-2 text-sm hover:bg-[#065f46]/10 transition">Logout</button>
                 </div>
               )}
             </div>
             <Link
               href="/#dashboard"
-              className="hidden md:inline-flex items-center rounded-md bg-[#5b21b6] text-white text-sm font-medium px-3 py-2 hover:opacity-90"
+              className="hidden md:inline-flex items-center rounded-md bg-[#065f46] text-white text-sm font-medium px-3 py-2 hover:opacity-90"
             >
               Dashboard
             </Link>
             <Link
               href="/contact"
-              className="hidden md:inline-flex items-center rounded-md bg-[#5b21b6] text-white text-sm font-medium px-3 py-2 hover:opacity-90"
+              className="hidden md:inline-flex items-center rounded-md bg-[#065f46] text-white text-sm font-medium px-3 py-2 hover:opacity-90"
             >
               Book a call
             </Link>
 
             <button
-              className="relative overflow-hidden inline-flex items-center justify-center h-9 w-9 rounded-md bg-[#5b21b6] text-white hover:opacity-90 active:scale-95 transition-transform focus:outline-none focus:ring-2 focus:ring-[#5b21b6]/40 focus:ring-offset-2 focus:ring-offset-white"
+              className="relative overflow-hidden inline-flex items-center justify-center h-9 w-9 rounded-md bg-[#065f46] text-white hover:opacity-90 active:scale-95 transition-transform focus:outline-none focus:ring-2 focus:ring-[#065f46]/40 focus:ring-offset-2 focus:ring-offset-white"
               onClick={() => {
                 setQuickFx(true);
                 setSidebarOpen((v) => !v);

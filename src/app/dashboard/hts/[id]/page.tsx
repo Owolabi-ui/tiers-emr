@@ -9,6 +9,7 @@ import PrintablePageWrapper from "@/components/common/PrintablePageWrapper";
 import PrintButton from "@/components/common/PrintButton";
 import PrintHeader from "@/components/common/PrintHeader";
 import PrintSection from "@/components/common/PrintSection";
+import BrandLogo from "@/components/BrandLogo";
 
 // Type helper for dynamic property access
 type PreTestRecord = Record<string, any>;
@@ -266,7 +267,7 @@ export default function HtsDetailPage({ params }: { params: Promise<{ id: string
               {htsData.initial.status !== "completed" && (
                 <button
                   onClick={() => router.push(`/dashboard/hts/${id}/continue`)}
-                  className="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-[#5b21b6] text-white text-sm font-medium hover:bg-[#4c1d95] transition-colors"
+                  className="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-[#065f46] text-white text-sm font-medium hover:bg-[#064e3b] transition-colors"
                 >
                   <Edit className="h-4 w-4" />
                   Continue Session
@@ -338,7 +339,7 @@ export default function HtsDetailPage({ params }: { params: Promise<{ id: string
         {htsData.pre_test && (
           <PrintSection pageBreakBefore className="bg-white shadow rounded-lg p-6 mb-6">
             <div className="print-repeat-header">
-              <img src="/images/TIERs-Logo-good.png" alt="TIERS Logo" />
+              <BrandLogo size="sm" />
               <p className="print-subtitle">Client Code: {htsData.initial.client_code}</p>
             </div>
             <h2 className="text-xl font-semibold text-gray-900 mb-4">Pre-Test Counseling Last 3 Months</h2>
@@ -523,7 +524,7 @@ export default function HtsDetailPage({ params }: { params: Promise<{ id: string
         {htsData.testing && (
           <PrintSection pageBreakBefore className="bg-white shadow rounded-lg p-6 mb-6">
             <div className="print-repeat-header">
-              <img src="/images/TIERs-Logo-good.png" alt="TIERS Logo" />
+              <BrandLogo size="sm" />
               <p className="print-subtitle">Client Code: {htsData.initial.client_code}</p>
             </div>
             <h2 className="text-xl font-semibold text-gray-900 mb-4 flex items-center">
@@ -569,7 +570,7 @@ export default function HtsDetailPage({ params }: { params: Promise<{ id: string
         {htsData.prep_eligibility && (
           <PrintSection pageBreakBefore className="bg-white shadow rounded-lg p-6 mb-6">
             <div className="print-repeat-header">
-              <img src="/images/TIERs-Logo-good.png" alt="TIERS Logo" />
+              <BrandLogo size="sm" />
               <p className="print-subtitle">Client Code: {htsData.initial.client_code}</p>
             </div>
             <h2 className="text-xl font-semibold text-gray-900 mb-4">PrEP Eligibility Assessment</h2>
@@ -606,7 +607,7 @@ export default function HtsDetailPage({ params }: { params: Promise<{ id: string
         {htsData.post_test && (
           <PrintSection pageBreakBefore className="bg-white shadow rounded-lg p-6 mb-6">
             <div className="print-repeat-header">
-              <img src="/images/TIERs-Logo-good.png" alt="TIERS Logo" />
+              <BrandLogo size="sm" />
               <p className="print-subtitle">Client Code: {htsData.initial.client_code}</p>
             </div>
             <h2 className="text-xl font-semibold text-gray-900 mb-4">Post-Test Counseling</h2>
@@ -643,7 +644,7 @@ export default function HtsDetailPage({ params }: { params: Promise<{ id: string
         {htsData.referral && (
           <PrintSection pageBreakBefore className="bg-white shadow rounded-lg p-6">
             <div className="print-repeat-header">
-              <img src="/images/TIERs-Logo-good.png" alt="TIERS Logo" />
+              <BrandLogo size="sm" />
               <p className="print-subtitle">Client Code: {htsData.initial.client_code}</p>
             </div>
             <h2 className="text-xl font-semibold text-gray-900 mb-4">Referral Information</h2>

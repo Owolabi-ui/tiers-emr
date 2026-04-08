@@ -423,14 +423,14 @@ export default function InventoryPage() {
                   ? 'bg-amber-100 dark:bg-amber-900/30'
                   : stat.changeType === 'error'
                   ? 'bg-red-100 dark:bg-red-900/30'
-                  : 'bg-[#5b21b6]/10'
+                  : 'bg-[#065f46]/10'
               }`}>
                 <stat.icon className={`h-5 w-5 ${
                   stat.changeType === 'warning'
                     ? 'text-amber-600 dark:text-amber-400'
                     : stat.changeType === 'error'
                     ? 'text-red-600 dark:text-red-400'
-                    : 'text-[#5b21b6]'
+                    : 'text-[#065f46]'
                 }`} />
               </div>
               <span
@@ -459,14 +459,14 @@ export default function InventoryPage() {
         <div className="flex flex-wrap gap-3">
           <button
             onClick={() => setShowReceiveStock(true)}
-            className="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-[#5b21b6] text-white text-sm font-medium hover:bg-[#4c1d95] transition-colors"
+            className="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-[#065f46] text-white text-sm font-medium hover:bg-[#064e3b] transition-colors"
           >
             <Plus className="h-4 w-4" />
             Receive Stock
           </button>
           <button
             onClick={() => setShowBulkUpload(true)}
-            className="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-[#5b21b6] text-white text-sm font-medium hover:bg-[#4c1d95] transition-colors"
+            className="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-[#065f46] text-white text-sm font-medium hover:bg-[#064e3b] transition-colors"
           >
             <Upload className="h-4 w-4" />
             Bulk Upload
@@ -480,7 +480,7 @@ export default function InventoryPage() {
           </Link>
           <Link
             href="/dashboard/pharmacy/inventory"
-            className="inline-flex items-center gap-2 px-4 py-2 rounded-lg border border-[#5b21b6] text-[#5b21b6] text-sm font-medium hover:bg-[#5b21b6]/10 transition-colors"
+            className="inline-flex items-center gap-2 px-4 py-2 rounded-lg border border-[#065f46] text-[#065f46] text-sm font-medium hover:bg-[#065f46]/10 transition-colors"
           >
             <ExternalLink className="h-4 w-4" />
             Pharmacy Inventory
@@ -522,7 +522,7 @@ export default function InventoryPage() {
               {loading ? (
                 <tr>
                   <td colSpan={6} className="px-6 py-12 text-center">
-                    <Loader2 className="h-8 w-8 animate-spin mx-auto text-[#5b21b6]" />
+                    <Loader2 className="h-8 w-8 animate-spin mx-auto text-[#065f46]" />
                     <p className="mt-2 text-sm text-gray-500">Loading inventory...</p>
                   </td>
                 </tr>
@@ -607,7 +607,7 @@ export default function InventoryPage() {
                             setSelectedDrug(drug);
                             setManageModalOpen(true);
                           }}
-                          className="text-[#5b21b6] hover:text-[#4c1d95] font-medium"
+                          className="text-[#065f46] hover:text-[#064e3b] font-medium"
                         >
                           Manage
                         </button>
@@ -625,7 +625,7 @@ export default function InventoryPage() {
       {manageModalOpen && selectedDrug && (
         <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
           <div className="bg-white dark:bg-neutral-800 rounded-xl shadow-2xl max-w-2xl w-full max-h-[90vh] overflow-y-auto">
-            <div className="sticky top-0 bg-[#5b21b6] px-6 py-4 flex justify-between items-center rounded-t-xl">
+            <div className="sticky top-0 bg-[#065f46] px-6 py-4 flex justify-between items-center rounded-t-xl">
               <h3 className="text-lg font-semibold text-white">Manage Drug - {selectedDrug.commodity_name}</h3>
               <button
                 onClick={() => {
@@ -824,7 +824,7 @@ export default function InventoryPage() {
                     id="newDrugToggle"
                     checked={receiveStockForm.isNewDrug}
                     onChange={(e) => setReceiveStockForm({ ...receiveStockForm, isNewDrug: e.target.checked, itemId: null })}
-                    className="w-4 h-4 text-[#5b21b6] bg-gray-100 border-gray-300 rounded focus:ring-[#5b21b6] dark:focus:ring-[#5b21b6] dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"
+                    className="w-4 h-4 text-[#065f46] bg-gray-100 border-gray-300 rounded focus:ring-[#065f46] dark:focus:ring-[#065f46] dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"
                   />
                   <label htmlFor="newDrugToggle" className="text-sm font-medium text-gray-700 dark:text-gray-300">
                     Add New Drug
@@ -839,7 +839,7 @@ export default function InventoryPage() {
                     <select
                       value={receiveStockForm.itemId || ''}
                       onChange={(e) => setReceiveStockForm({ ...receiveStockForm, itemId: parseInt(e.target.value) || null })}
-                      className="w-full px-3 py-2 border border-gray-300 dark:border-gray-700 rounded-lg bg-white dark:bg-neutral-800 text-gray-900 dark:text-white focus:ring-2 focus:ring-[#5b21b6] focus:border-transparent"
+                      className="w-full px-3 py-2 border border-gray-300 dark:border-gray-700 rounded-lg bg-white dark:bg-neutral-800 text-gray-900 dark:text-white focus:ring-2 focus:ring-[#065f46] focus:border-transparent"
                       required={!receiveStockForm.isNewDrug}
                     >
                       <option value="">Choose a drug...</option>
@@ -865,7 +865,7 @@ export default function InventoryPage() {
                           type="text"
                           value={receiveStockForm.commodityId}
                           onChange={(e) => setReceiveStockForm({ ...receiveStockForm, commodityId: e.target.value })}
-                          className="w-full px-3 py-2 border border-gray-300 dark:border-gray-700 rounded-lg bg-white dark:bg-neutral-800 text-gray-900 dark:text-white focus:ring-2 focus:ring-[#5b21b6] focus:border-transparent"
+                          className="w-full px-3 py-2 border border-gray-300 dark:border-gray-700 rounded-lg bg-white dark:bg-neutral-800 text-gray-900 dark:text-white focus:ring-2 focus:ring-[#065f46] focus:border-transparent"
                           placeholder="ARV-001"
                           required={receiveStockForm.isNewDrug}
                         />
@@ -878,7 +878,7 @@ export default function InventoryPage() {
                           type="text"
                           value={receiveStockForm.commodityName}
                           onChange={(e) => setReceiveStockForm({ ...receiveStockForm, commodityName: e.target.value })}
-                          className="w-full px-3 py-2 border border-gray-300 dark:border-gray-700 rounded-lg bg-white dark:bg-neutral-800 text-gray-900 dark:text-white focus:ring-2 focus:ring-[#5b21b6] focus:border-transparent"
+                          className="w-full px-3 py-2 border border-gray-300 dark:border-gray-700 rounded-lg bg-white dark:bg-neutral-800 text-gray-900 dark:text-white focus:ring-2 focus:ring-[#065f46] focus:border-transparent"
                           placeholder="Dolutegravir 50mg"
                           required={receiveStockForm.isNewDrug}
                         />
@@ -893,7 +893,7 @@ export default function InventoryPage() {
                           type="text"
                           value={receiveStockForm.packType}
                           onChange={(e) => setReceiveStockForm({ ...receiveStockForm, packType: e.target.value })}
-                          className="w-full px-3 py-2 border border-gray-300 dark:border-gray-700 rounded-lg bg-white dark:bg-neutral-800 text-gray-900 dark:text-white focus:ring-2 focus:ring-[#5b21b6] focus:border-transparent"
+                          className="w-full px-3 py-2 border border-gray-300 dark:border-gray-700 rounded-lg bg-white dark:bg-neutral-800 text-gray-900 dark:text-white focus:ring-2 focus:ring-[#065f46] focus:border-transparent"
                           placeholder="Bottle"
                           required={receiveStockForm.isNewDrug}
                         />
@@ -906,7 +906,7 @@ export default function InventoryPage() {
                           type="text"
                           value={receiveStockForm.packTypeId}
                           onChange={(e) => setReceiveStockForm({ ...receiveStockForm, packTypeId: e.target.value })}
-                          className="w-full px-3 py-2 border border-gray-300 dark:border-gray-700 rounded-lg bg-white dark:bg-neutral-800 text-gray-900 dark:text-white focus:ring-2 focus:ring-[#5b21b6] focus:border-transparent"
+                          className="w-full px-3 py-2 border border-gray-300 dark:border-gray-700 rounded-lg bg-white dark:bg-neutral-800 text-gray-900 dark:text-white focus:ring-2 focus:ring-[#065f46] focus:border-transparent"
                           placeholder="BTL-001"
                           required={receiveStockForm.isNewDrug}
                         />
@@ -920,7 +920,7 @@ export default function InventoryPage() {
                         type="text"
                         value={receiveStockForm.commodityType}
                         onChange={(e) => setReceiveStockForm({ ...receiveStockForm, commodityType: e.target.value })}
-                        className="w-full px-3 py-2 border border-gray-300 dark:border-gray-700 rounded-lg bg-white dark:bg-neutral-800 text-gray-900 dark:text-white focus:ring-2 focus:ring-[#5b21b6] focus:border-transparent"
+                        className="w-full px-3 py-2 border border-gray-300 dark:border-gray-700 rounded-lg bg-white dark:bg-neutral-800 text-gray-900 dark:text-white focus:ring-2 focus:ring-[#065f46] focus:border-transparent"
                         placeholder="ARV"
                         required={receiveStockForm.isNewDrug}
                       />
@@ -935,7 +935,7 @@ export default function InventoryPage() {
                     type="number"
                     value={receiveStockForm.quantity || ''}
                     onChange={(e) => setReceiveStockForm({ ...receiveStockForm, quantity: parseInt(e.target.value) || 0 })}
-                    className="w-full px-3 py-2 border border-gray-300 dark:border-gray-700 rounded-lg bg-white dark:bg-neutral-800 text-gray-900 dark:text-white focus:ring-2 focus:ring-[#5b21b6] focus:border-transparent"
+                    className="w-full px-3 py-2 border border-gray-300 dark:border-gray-700 rounded-lg bg-white dark:bg-neutral-800 text-gray-900 dark:text-white focus:ring-2 focus:ring-[#065f46] focus:border-transparent"
                     placeholder="0"
                     required
                     min="1"
@@ -950,7 +950,7 @@ export default function InventoryPage() {
                       type="text"
                       value={receiveStockForm.batchNumber}
                       onChange={(e) => setReceiveStockForm({ ...receiveStockForm, batchNumber: e.target.value })}
-                      className="w-full px-3 py-2 border border-gray-300 dark:border-gray-700 rounded-lg bg-white dark:bg-neutral-800 text-gray-900 dark:text-white focus:ring-2 focus:ring-[#5b21b6] focus:border-transparent"
+                      className="w-full px-3 py-2 border border-gray-300 dark:border-gray-700 rounded-lg bg-white dark:bg-neutral-800 text-gray-900 dark:text-white focus:ring-2 focus:ring-[#065f46] focus:border-transparent"
                       placeholder="Enter batch no"
                     />
                   </div>
@@ -962,7 +962,7 @@ export default function InventoryPage() {
                       type="date"
                       value={receiveStockForm.expiryDate}
                       onChange={(e) => setReceiveStockForm({ ...receiveStockForm, expiryDate: e.target.value })}
-                      className="w-full px-3 py-2 border border-gray-300 dark:border-gray-700 rounded-lg bg-white dark:bg-neutral-800 text-gray-900 dark:text-white focus:ring-2 focus:ring-[#5b21b6] focus:border-transparent"
+                      className="w-full px-3 py-2 border border-gray-300 dark:border-gray-700 rounded-lg bg-white dark:bg-neutral-800 text-gray-900 dark:text-white focus:ring-2 focus:ring-[#065f46] focus:border-transparent"
                     />
                   </div>
                 </div>
@@ -974,7 +974,7 @@ export default function InventoryPage() {
                     type="text"
                     value={receiveStockForm.referenceNo}
                     onChange={(e) => setReceiveStockForm({ ...receiveStockForm, referenceNo: e.target.value })}
-                    className="w-full px-3 py-2 border border-gray-300 dark:border-gray-700 rounded-lg bg-white dark:bg-neutral-800 text-gray-900 dark:text-white focus:ring-2 focus:ring-[#5b21b6] focus:border-transparent"
+                    className="w-full px-3 py-2 border border-gray-300 dark:border-gray-700 rounded-lg bg-white dark:bg-neutral-800 text-gray-900 dark:text-white focus:ring-2 focus:ring-[#065f46] focus:border-transparent"
                     placeholder="PO-2025-001"
                   />
                 </div>
@@ -986,7 +986,7 @@ export default function InventoryPage() {
                     rows={3}
                     value={receiveStockForm.notes}
                     onChange={(e) => setReceiveStockForm({ ...receiveStockForm, notes: e.target.value })}
-                    className="w-full px-3 py-2 border border-gray-300 dark:border-gray-700 rounded-lg bg-white dark:bg-neutral-800 text-gray-900 dark:text-white focus:ring-2 focus:ring-[#5b21b6] focus:border-transparent"
+                    className="w-full px-3 py-2 border border-gray-300 dark:border-gray-700 rounded-lg bg-white dark:bg-neutral-800 text-gray-900 dark:text-white focus:ring-2 focus:ring-[#065f46] focus:border-transparent"
                     placeholder="Additional notes (optional)"
                   />
                 </div>
@@ -994,7 +994,7 @@ export default function InventoryPage() {
                   <button
                     type="submit"
                     disabled={submittingReceive}
-                    className="flex-1 px-4 py-2 rounded-lg bg-[#5b21b6] text-white text-sm font-medium hover:bg-[#4c1d95] transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+                    className="flex-1 px-4 py-2 rounded-lg bg-[#065f46] text-white text-sm font-medium hover:bg-[#064e3b] transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
                   >
                     {submittingReceive && <Loader2 className="h-4 w-4 animate-spin" />}
                     {submittingReceive ? 'Receiving Stock...' : 'Receive Stock'}
@@ -1098,15 +1098,15 @@ export default function InventoryPage() {
                     Select Excel File
                   </label>
                   <div className="flex items-center gap-3">
-                    <label className="flex-1 flex items-center justify-center px-4 py-8 border-2 border-dashed border-gray-300 dark:border-gray-700 rounded-lg cursor-pointer hover:border-[#5b21b6] dark:hover:border-[#5b21b6] transition-colors bg-gray-50 dark:bg-neutral-800">
+                    <label className="flex-1 flex items-center justify-center px-4 py-8 border-2 border-dashed border-gray-300 dark:border-gray-700 rounded-lg cursor-pointer hover:border-[#065f46] dark:hover:border-[#065f46] transition-colors bg-gray-50 dark:bg-neutral-800">
                       <div className="text-center">
                         <Upload className="mx-auto h-12 w-12 text-gray-400" />
                         <p className="mt-2 text-sm text-gray-600 dark:text-gray-400">
                           {uploadFile ? (
-                            <span className="font-medium text-[#5b21b6]">{uploadFile.name}</span>
+                            <span className="font-medium text-[#065f46]">{uploadFile.name}</span>
                           ) : (
                             <>
-                              <span className="font-medium text-[#5b21b6]">Click to upload</span> or drag and drop
+                              <span className="font-medium text-[#065f46]">Click to upload</span> or drag and drop
                             </>
                           )}
                         </p>
@@ -1156,7 +1156,7 @@ export default function InventoryPage() {
                   <button
                     type="submit"
                     disabled={!uploadFile || uploading}
-                    className="flex-1 inline-flex items-center justify-center gap-2 px-4 py-2 rounded-lg bg-[#5b21b6] text-white text-sm font-medium hover:bg-[#4c1d95] transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                    className="flex-1 inline-flex items-center justify-center gap-2 px-4 py-2 rounded-lg bg-[#065f46] text-white text-sm font-medium hover:bg-[#064e3b] transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
                   >
                     {uploading ? (
                       <>

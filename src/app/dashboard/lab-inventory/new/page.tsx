@@ -44,10 +44,10 @@ export default function NewLabInventoryItemPage() {
   return (
     <div className="max-w-3xl mx-auto space-y-6">
       <div>
-        <Link href="/dashboard/lab-inventory" className="text-sm text-[#5b21b6] underline">
+        <Link href="/dashboard/lab-inventory" className="text-sm text-[#065f46] underline">
           Back to Lab Inventory
         </Link>
-        <h1 className="text-2xl font-bold text-[#5b21b6] mt-2">Create Inventory Item</h1>
+        <h1 className="text-2xl font-bold text-[#065f46] mt-2">Create Inventory Item</h1>
       </div>
 
       {error && <div className="rounded-lg border border-red-200 bg-red-50 p-3 text-sm text-red-700">{error}</div>}
@@ -95,7 +95,7 @@ export default function NewLabInventoryItemPage() {
         </div>
 
         <div className="flex gap-2">
-          <button disabled={loading} className="px-4 py-2 rounded-lg bg-[#5b21b6] text-white text-sm disabled:opacity-60">
+          <button disabled={loading} className="px-4 py-2 rounded-lg bg-[#065f46] text-white text-sm disabled:opacity-60">
             {loading ? 'Saving...' : 'Save Item'}
           </button>
           <Link href="/dashboard/lab-inventory" className="px-4 py-2 rounded-lg border text-sm">

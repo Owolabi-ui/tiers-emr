@@ -128,7 +128,7 @@ export default function NotificationsPage() {
             <ArrowLeft className="h-5 w-5" />
           </button>
           <div>
-            <h1 className="text-2xl font-bold text-[#5b21b6]">Notifications</h1>
+            <h1 className="text-2xl font-bold text-[#065f46]">Notifications</h1>
             <p className="text-sm text-gray-500 mt-1">
               {unreadCount > 0 ? `${unreadCount} unread notifications` : 'All caught up!'}
             </p>
@@ -153,7 +153,7 @@ export default function NotificationsPage() {
           onClick={() => setFilter('all')}
           className={`px-4 py-2 text-sm font-medium border-b-2 transition-colors ${
             filter === 'all'
-              ? 'border-[#5b21b6] text-[#5b21b6]'
+              ? 'border-[#065f46] text-[#065f46]'
               : 'border-transparent text-gray-500 hover:text-gray-700 dark:hover:text-gray-300'
           }`}
         >
@@ -163,13 +163,13 @@ export default function NotificationsPage() {
           onClick={() => setFilter('unread')}
           className={`px-4 py-2 text-sm font-medium border-b-2 transition-colors ${
             filter === 'unread'
-              ? 'border-[#5b21b6] text-[#5b21b6]'
+              ? 'border-[#065f46] text-[#065f46]'
               : 'border-transparent text-gray-500 hover:text-gray-700 dark:hover:text-gray-300'
           }`}
         >
           Unread
           {unreadCount > 0 && (
-            <span className="ml-2 px-2 py-0.5 rounded-full bg-[#5b21b6] text-white text-xs">
+            <span className="ml-2 px-2 py-0.5 rounded-full bg-[#065f46] text-white text-xs">
               {unreadCount}
             </span>
           )}
@@ -180,7 +180,7 @@ export default function NotificationsPage() {
       <div className="rounded-xl border border-black/10 dark:border-white/15 bg-white dark:bg-neutral-900 overflow-hidden">
         {loading ? (
           <div className="flex items-center justify-center py-12">
-            <Loader2 className="h-8 w-8 animate-spin text-[#5b21b6]" />
+            <Loader2 className="h-8 w-8 animate-spin text-[#065f46]" />
           </div>
         ) : notifications.length === 0 ? (
           <div className="py-12 text-center">
@@ -195,7 +195,7 @@ export default function NotificationsPage() {
               <div
                 key={notification.id}
                 className={`px-6 py-4 hover:bg-gray-50 dark:hover:bg-gray-800/50 cursor-pointer transition-colors ${
-                  !notification.is_read ? 'bg-purple-50/50 dark:bg-purple-900/10' : ''
+                  !notification.is_read ? 'bg-green-50/50 dark:bg-green-900/10' : ''
                 }`}
                 onClick={() => handleNotificationClick(notification)}
               >

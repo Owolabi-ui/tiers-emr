@@ -186,13 +186,13 @@ export default function NewArtPage() {
           <div
             className={`flex items-center justify-center h-10 w-10 rounded-full border-2 ${
               currentStep >= 1
-                ? 'border-[#5b21b6] bg-[#5b21b6] text-white'
+                ? 'border-[#065f46] bg-[#065f46] text-white'
                 : 'border-gray-300 text-gray-300'
             }`}
           >
             {currentStep > 1 ? <CheckCircle2 className="h-6 w-6" /> : '1'}
           </div>
-          <span className={`text-sm font-medium ${currentStep >= 1 ? 'text-[#5b21b6]' : 'text-gray-400'}`}>
+          <span className={`text-sm font-medium ${currentStep >= 1 ? 'text-[#065f46]' : 'text-gray-400'}`}>
             Select Patient
           </span>
         </div>
@@ -205,13 +205,13 @@ export default function NewArtPage() {
           <div
             className={`flex items-center justify-center h-10 w-10 rounded-full border-2 ${
               currentStep >= 2
-                ? 'border-[#5b21b6] bg-[#5b21b6] text-white'
+                ? 'border-[#065f46] bg-[#065f46] text-white'
                 : 'border-gray-300 text-gray-300'
             }`}
           >
             2
           </div>
-          <span className={`text-sm font-medium ${currentStep >= 2 ? 'text-[#5b21b6]' : 'text-gray-400'}`}>
+          <span className={`text-sm font-medium ${currentStep >= 2 ? 'text-[#065f46]' : 'text-gray-400'}`}>
             ART Information
           </span>
         </div>
@@ -264,14 +264,14 @@ export default function NewArtPage() {
           placeholder="Search by patient name or hospital number..."
           value={searchTerm}
           onChange={(e) => setSearchTerm(e.target.value)}
-          className="w-full h-10 pl-10 pr-4 rounded-lg border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-neutral-800 text-sm text-gray-900 dark:text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-[#5b21b6]/50"
+          className="w-full h-10 pl-10 pr-4 rounded-lg border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-neutral-800 text-sm text-gray-900 dark:text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-[#065f46]/50"
         />
       </div>
 
       {/* Patients List */}
       {loading ? (
         <div className="flex items-center justify-center py-12">
-          <Loader2 className="h-8 w-8 animate-spin text-[#5b21b6]" />
+          <Loader2 className="h-8 w-8 animate-spin text-[#065f46]" />
         </div>
       ) : filteredPatients.length === 0 ? (
         <div className="text-center py-12 border border-gray-200 dark:border-gray-700 rounded-lg">
@@ -285,7 +285,7 @@ export default function NewArtPage() {
             <div
               key={patient.id}
               onClick={() => handleSelectPatient(patient)}
-              className="p-4 border border-gray-200 dark:border-gray-700 rounded-lg hover:border-[#5b21b6] hover:bg-purple-50 dark:hover:bg-purple-900/10 cursor-pointer transition-colors"
+              className="p-4 border border-gray-200 dark:border-gray-700 rounded-lg hover:border-[#065f46] hover:bg-green-50 dark:hover:bg-green-900/10 cursor-pointer transition-colors"
             >
               <div className="flex items-start justify-between">
                 <div className="flex items-start gap-3">
@@ -353,7 +353,7 @@ export default function NewArtPage() {
           type="button"
           onClick={() => setCurrentStep(1)}
           disabled={!!preselectedPatientId}
-          className="text-sm text-[#5b21b6] hover:underline disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-1"
+          className="text-sm text-[#065f46] hover:underline disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-1"
         >
           <ArrowLeft className="h-4 w-4" />
           Change Patient
@@ -362,14 +362,14 @@ export default function NewArtPage() {
 
       {/* Selected Patient Info */}
       {selectedPatient && (
-        <div className="bg-purple-50 dark:bg-purple-900/20 border border-purple-200 dark:border-purple-800 rounded-lg p-4">
+        <div className="bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800 rounded-lg p-4">
           <div className="flex items-start gap-3">
-            <User className="h-5 w-5 text-purple-600 dark:text-purple-400 mt-0.5" />
+            <User className="h-5 w-5 text-green-600 dark:text-green-400 mt-0.5" />
             <div>
-              <p className="font-medium text-purple-900 dark:text-purple-300">
+              <p className="font-medium text-green-900 dark:text-green-300">
                 {selectedPatient.first_name} {selectedPatient.middle_name} {selectedPatient.last_name}
               </p>
-              <p className="text-sm text-purple-700 dark:text-purple-400 mt-1">
+              <p className="text-sm text-green-700 dark:text-green-400 mt-1">
                 Hospital No: {selectedPatient.hospital_no} | DOB: {new Date(selectedPatient.date_of_birth).toLocaleDateString()}
               </p>
             </div>
@@ -382,7 +382,7 @@ export default function NewArtPage() {
         {showArtClientInfoSection && (
         <div className="border border-gray-200 dark:border-gray-700 rounded-lg p-6 space-y-4">
           <h3 className="font-medium text-gray-900 dark:text-white flex items-center gap-2">
-            <Heart className="h-5 w-5 text-[#5b21b6]" />
+            <Heart className="h-5 w-5 text-[#065f46]" />
             ART Client Information
           </h3>
 
@@ -422,7 +422,7 @@ export default function NewArtPage() {
                     ? `${getLabel('date_confirmed_hiv_positive')} is required`
                     : false,
                 })}
-                className="w-full h-10 px-3 rounded-lg border border-gray-200 dark:border-gray-700 bg-white dark:bg-neutral-800 text-sm text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-[#5b21b6]/50"
+                className="w-full h-10 px-3 rounded-lg border border-gray-200 dark:border-gray-700 bg-white dark:bg-neutral-800 text-sm text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-[#065f46]/50"
               />
               <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">
                 Date patient was first diagnosed HIV positive
@@ -445,7 +445,7 @@ export default function NewArtPage() {
                     ? `${getLabel('date_enrolled_into_hiv_care')} is required`
                     : false,
                 })}
-                className="w-full h-10 px-3 rounded-lg border border-gray-200 dark:border-gray-700 bg-white dark:bg-neutral-800 text-sm text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-[#5b21b6]/50"
+                className="w-full h-10 px-3 rounded-lg border border-gray-200 dark:border-gray-700 bg-white dark:bg-neutral-800 text-sm text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-[#065f46]/50"
               />
               <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">
                 Date patient was enrolled into HIV care services
@@ -463,7 +463,7 @@ export default function NewArtPage() {
               </label>
               <select
                 {...register('mode_of_hiv_test')}
-                className="w-full h-10 px-3 rounded-lg border border-gray-200 dark:border-gray-700 bg-white dark:bg-neutral-800 text-sm text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-[#5b21b6]/50"
+                className="w-full h-10 px-3 rounded-lg border border-gray-200 dark:border-gray-700 bg-white dark:bg-neutral-800 text-sm text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-[#065f46]/50"
               >
                 <option value="">Select test mode</option>
                 {getOptions('mode_of_hiv_test', ['HIV-AB', 'PCR']).map((option) => (
@@ -487,7 +487,7 @@ export default function NewArtPage() {
                 {...register('entry_point', {
                   required: isRequired('entry_point') ? `${getLabel('entry_point')} is required` : false,
                 })}
-                className="w-full h-10 px-3 rounded-lg border border-gray-200 dark:border-gray-700 bg-white dark:bg-neutral-800 text-sm text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-[#5b21b6]/50"
+                className="w-full h-10 px-3 rounded-lg border border-gray-200 dark:border-gray-700 bg-white dark:bg-neutral-800 text-sm text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-[#065f46]/50"
               >
                 {getOptions('entry_point', [
                   'VCT',
@@ -523,7 +523,7 @@ export default function NewArtPage() {
               <input
                 type="text"
                 {...register('where_test_was_done')}
-                className="w-full h-10 px-3 rounded-lg border border-gray-200 dark:border-gray-700 bg-white dark:bg-neutral-800 text-sm text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-[#5b21b6]/50"
+                className="w-full h-10 px-3 rounded-lg border border-gray-200 dark:border-gray-700 bg-white dark:bg-neutral-800 text-sm text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-[#065f46]/50"
                 placeholder="Enter facility name"
               />
               <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">
@@ -539,7 +539,7 @@ export default function NewArtPage() {
               </label>
               <select
                 {...register('prior_art')}
-                className="w-full h-10 px-3 rounded-lg border border-gray-200 dark:border-gray-700 bg-white dark:bg-neutral-800 text-sm text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-[#5b21b6]/50"
+                className="w-full h-10 px-3 rounded-lg border border-gray-200 dark:border-gray-700 bg-white dark:bg-neutral-800 text-sm text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-[#065f46]/50"
               >
                 <option value="">None</option>
                 {getOptions('prior_art', [
@@ -566,7 +566,7 @@ export default function NewArtPage() {
         {showNextOfKinSection && (
         <div className="border border-gray-200 dark:border-gray-700 rounded-lg p-6 space-y-4">
           <h3 className="font-medium text-gray-900 dark:text-white flex items-center gap-2">
-            <User className="h-5 w-5 text-[#5b21b6]" />
+            <User className="h-5 w-5 text-[#065f46]" />
             Next of Kin Information
           </h3>
 
@@ -579,7 +579,7 @@ export default function NewArtPage() {
               <input
                 type="text"
                 {...register('name_of_next_of_kin')}
-                className="w-full h-10 px-3 rounded-lg border border-gray-200 dark:border-gray-700 bg-white dark:bg-neutral-800 text-sm text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-[#5b21b6]/50"
+                className="w-full h-10 px-3 rounded-lg border border-gray-200 dark:border-gray-700 bg-white dark:bg-neutral-800 text-sm text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-[#065f46]/50"
                 placeholder="Enter name"
               />
               </div>
@@ -593,7 +593,7 @@ export default function NewArtPage() {
               <input
                 type="text"
                 {...register('relationship_with_next_of_kin')}
-                className="w-full h-10 px-3 rounded-lg border border-gray-200 dark:border-gray-700 bg-white dark:bg-neutral-800 text-sm text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-[#5b21b6]/50"
+                className="w-full h-10 px-3 rounded-lg border border-gray-200 dark:border-gray-700 bg-white dark:bg-neutral-800 text-sm text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-[#065f46]/50"
                 placeholder="e.g., Spouse, Parent, Sibling"
               />
               </div>
@@ -607,7 +607,7 @@ export default function NewArtPage() {
               <input
                 type="tel"
                 {...register('phone_no_of_next_of_kin')}
-                className="w-full h-10 px-3 rounded-lg border border-gray-200 dark:border-gray-700 bg-white dark:bg-neutral-800 text-sm text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-[#5b21b6]/50"
+                className="w-full h-10 px-3 rounded-lg border border-gray-200 dark:border-gray-700 bg-white dark:bg-neutral-800 text-sm text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-[#065f46]/50"
                 placeholder="Enter phone number"
               />
               </div>
@@ -638,7 +638,7 @@ export default function NewArtPage() {
           <button
             type="submit"
             disabled={submitting}
-            className="inline-flex items-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-[#5b21b6] hover:bg-[#4c1d95] focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#5b21b6] disabled:opacity-50 disabled:cursor-not-allowed"
+            className="inline-flex items-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-[#065f46] hover:bg-[#064e3b] focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#065f46] disabled:opacity-50 disabled:cursor-not-allowed"
           >
             {submitting ? (
               <>
@@ -668,7 +668,7 @@ export default function NewArtPage() {
           <ArrowLeft className="h-5 w-5 text-gray-600 dark:text-gray-400" />
         </button>
         <div>
-          <h1 className="text-2xl font-bold text-[#5b21b6]">New ART Patient</h1>
+          <h1 className="text-2xl font-bold text-[#065f46]">New ART Patient</h1>
           <p className="text-sm text-gray-500 mt-1">Enroll patient in Antiretroviral Therapy</p>
         </div>
       </div>

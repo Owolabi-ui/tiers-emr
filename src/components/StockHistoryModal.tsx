@@ -78,7 +78,7 @@ export default function StockHistoryModal({
       case 'Adjustment':
         return <Package className="h-5 w-5 text-yellow-600" />;
       case 'Transfer':
-        return <Package className="h-5 w-5 text-purple-600" />;
+        return <Package className="h-5 w-5 text-green-600" />;
       default:
         return <Package className="h-5 w-5 text-gray-600" />;
     }
@@ -98,7 +98,7 @@ export default function StockHistoryModal({
     <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
       <div className="bg-white dark:bg-neutral-900 rounded-xl max-w-4xl w-full border border-black/10 dark:border-white/15 max-h-[90vh] flex flex-col">
         {/* Header */}
-        <div className="bg-[#5b21b6] px-5 py-3 flex items-center justify-between rounded-t-xl flex-shrink-0">
+        <div className="bg-[#065f46] px-5 py-3 flex items-center justify-between rounded-t-xl flex-shrink-0">
           <div>
             <h3 className="font-semibold text-white">Stock Movement History</h3>
             <p className="text-sm text-white/80">{itemName}</p>
@@ -115,7 +115,7 @@ export default function StockHistoryModal({
         <div className="p-5 overflow-y-auto flex-grow">
           {loading ? (
             <div className="flex items-center justify-center py-12">
-              <Loader2 className="h-8 w-8 animate-spin text-purple-600" />
+              <Loader2 className="h-8 w-8 animate-spin text-green-600" />
             </div>
           ) : error ? (
             <div className="bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg p-4">

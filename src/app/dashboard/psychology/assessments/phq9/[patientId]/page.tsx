@@ -204,7 +204,7 @@ export default function PHQ9AssessmentPage() {
 
         {/* Current Score Display */}
         {currentScore && (
-          <div className="bg-gradient-to-br from-indigo-50 to-purple-50 dark:from-indigo-950/30 dark:to-purple-950/30 rounded-lg border border-indigo-200 dark:border-indigo-800 p-6">
+          <div className="bg-gradient-to-br from-indigo-50 to-green-50 dark:from-indigo-950/30 dark:to-green-950/30 rounded-lg border border-indigo-200 dark:border-indigo-800 p-6">
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-sm font-medium text-gray-600 dark:text-gray-400">Current Score</p>

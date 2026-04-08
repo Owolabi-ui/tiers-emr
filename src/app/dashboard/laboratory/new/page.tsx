@@ -236,7 +236,7 @@ export default function NewLabOrderPage() {
           <ArrowLeft className="h-5 w-5 text-gray-500" />
         </Link>
         <div>
-          <h1 className="text-2xl font-bold text-[#5b21b6]">New Lab Test Order</h1>
+          <h1 className="text-2xl font-bold text-[#065f46]">New Lab Test Order</h1>
           <p className="text-sm text-gray-500 mt-1">Create a new laboratory test order</p>
         </div>
       </div>
@@ -257,7 +257,7 @@ export default function NewLabOrderPage() {
       <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
         {/* Patient Selection */}
         <div className="rounded-xl border border-black/10 dark:border-white/15 bg-white dark:bg-neutral-900">
-          <div className="bg-[#5b21b6] px-5 py-3 flex items-center gap-2 rounded-t-xl">
+          <div className="bg-[#065f46] px-5 py-3 flex items-center gap-2 rounded-t-xl">
             <User className="h-5 w-5 text-white" />
             <h2 className="font-semibold text-white">Patient Selection</h2>
           </div>
@@ -290,7 +290,7 @@ export default function NewLabOrderPage() {
                     value={patientSearch}
                     onChange={(e) => setPatientSearch(e.target.value)}
                     disabled={!!preselectedPatientId}
-                    className="w-full h-12 pl-10 pr-4 rounded-lg border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-neutral-800 text-sm text-gray-900 dark:text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-[#5b21b6]/50"
+                    className="w-full h-12 pl-10 pr-4 rounded-lg border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-neutral-800 text-sm text-gray-900 dark:text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-[#065f46]/50"
                   />
                   {searchLoading && (
                     <Loader2 className="absolute right-3 top-1/2 -translate-y-1/2 h-4 w-4 animate-spin text-gray-400" />
@@ -323,7 +323,7 @@ export default function NewLabOrderPage() {
                 )}
               </>
             ) : (
-              <div className="flex items-center justify-between p-4 bg-[#5b21b6]/10 dark:bg-[#5b21b6]/20 rounded-lg">
+              <div className="flex items-center justify-between p-4 bg-[#065f46]/10 dark:bg-[#065f46]/20 rounded-lg">
                 <input type="hidden" {...register('patient_id')} />
                 <div>
                   <p className="font-medium text-gray-900 dark:text-white">
@@ -348,7 +348,7 @@ export default function NewLabOrderPage() {
 
         {/* Lab Test Selection */}
         <div className="rounded-xl border border-black/10 dark:border-white/15 bg-white dark:bg-neutral-900">
-          <div className="bg-[#5b21b6] px-5 py-3 flex items-center gap-2 rounded-t-xl">
+          <div className="bg-[#065f46] px-5 py-3 flex items-center gap-2 rounded-t-xl">
             <FlaskConical className="h-5 w-5 text-white" />
             <h2 className="font-semibold text-white">Lab Test Selection</h2>
           </div>
@@ -373,7 +373,7 @@ export default function NewLabOrderPage() {
                         <button
                           type="button"
                           onClick={() => toggleCategorySelection(tests)}
-                          className="text-xs font-medium text-[#5b21b6] hover:underline"
+                          className="text-xs font-medium text-[#065f46] hover:underline"
                         >
                           {areAllTestsInCategorySelected(tests) ? 'Deselect all' : 'Select all'}
                         </button>
@@ -388,7 +388,7 @@ export default function NewLabOrderPage() {
                               type="checkbox"
                               checked={selectedTestIds.includes(test.id)}
                               onChange={() => toggleTestSelection(test.id)}
-                              className="mt-1 h-4 w-4 rounded border-gray-300 text-[#5b21b6] focus:ring-[#5b21b6]"
+                              className="mt-1 h-4 w-4 rounded border-gray-300 text-[#065f46] focus:ring-[#065f46]"
                             />
                             <div>
                               <p className="text-sm font-medium text-gray-900 dark:text-white">
@@ -461,7 +461,7 @@ export default function NewLabOrderPage() {
 
         {/* Order Details */}
         <div className="rounded-xl border border-black/10 dark:border-white/15 bg-white dark:bg-neutral-900">
-          <div className="bg-[#5b21b6] px-5 py-3 flex items-center gap-2 rounded-t-xl">
+          <div className="bg-[#065f46] px-5 py-3 flex items-center gap-2 rounded-t-xl">
             <FileText className="h-5 w-5 text-white" />
             <h2 className="font-semibold text-white">Order Details</h2>
           </div>
@@ -472,7 +472,7 @@ export default function NewLabOrderPage() {
               </label>
               <select
                 {...register('priority')}
-                className="w-full h-12 px-4 rounded-lg border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-neutral-800 text-sm text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-[#5b21b6]/50"
+                className="w-full h-12 px-4 rounded-lg border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-neutral-800 text-sm text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-[#065f46]/50"
               >
                 {labTestPriorityOptions.map((priority) => (
                   <option key={priority} value={priority}>
@@ -493,7 +493,7 @@ export default function NewLabOrderPage() {
                 {...register('clinical_notes')}
                 rows={4}
                 placeholder="Enter any relevant clinical information..."
-                className="w-full px-4 py-3 rounded-lg border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-neutral-800 text-sm text-gray-900 dark:text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-[#5b21b6]/50"
+                className="w-full px-4 py-3 rounded-lg border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-neutral-800 text-sm text-gray-900 dark:text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-[#065f46]/50"
               />
             </div>
           </div>
@@ -510,7 +510,7 @@ export default function NewLabOrderPage() {
           <button
             type="submit"
             disabled={loading}
-            className="px-6 py-3 rounded-lg bg-[#5b21b6] text-white font-medium hover:bg-[#4c1d95] transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
+            className="px-6 py-3 rounded-lg bg-[#065f46] text-white font-medium hover:bg-[#064e3b] transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
           >
             {loading && <Loader2 className="h-5 w-5 animate-spin" />}
             {loading ? 'Creating Orders...' : 'Create Lab Orders'}

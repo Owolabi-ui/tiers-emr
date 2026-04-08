@@ -272,7 +272,7 @@ export default function NewPrescriptionPage() {
         {/* Clinical Information */}
         <div className="bg-white dark:bg-neutral-800 rounded-lg border border-gray-200 dark:border-gray-700 p-6">
           <h2 className="text-lg font-semibold text-gray-900 dark:text-white mb-4 flex items-center gap-2">
-            <FileText className="h-5 w-5 text-[#5b21b6]" />
+            <FileText className="h-5 w-5 text-[#065f46]" />
             Clinical Information
           </h2>
 
@@ -285,7 +285,7 @@ export default function NewPrescriptionPage() {
                 {...register('diagnosis')}
                 type="text"
                 placeholder="e.g., HIV/AIDS - On ART"
-                className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-neutral-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-[#5b21b6] focus:border-transparent"
+                className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-neutral-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-[#065f46] focus:border-transparent"
               />
             </div>
 
@@ -297,7 +297,7 @@ export default function NewPrescriptionPage() {
                 {...register('clinical_notes')}
                 rows={3}
                 placeholder="Additional clinical information, notes, or special instructions..."
-                className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-neutral-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-[#5b21b6] focus:border-transparent resize-none"
+                className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-neutral-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-[#065f46] focus:border-transparent resize-none"
               />
             </div>
           </div>
@@ -307,7 +307,7 @@ export default function NewPrescriptionPage() {
         <div className="bg-white dark:bg-neutral-800 rounded-lg border border-gray-200 dark:border-gray-700 p-6">
           <div className="flex items-center justify-between mb-4">
             <h2 className="text-lg font-semibold text-gray-900 dark:text-white flex items-center gap-2">
-              <Pill className="h-5 w-5 text-[#5b21b6]" />
+              <Pill className="h-5 w-5 text-[#065f46]" />
               Medications
             </h2>
             <button
@@ -322,7 +322,7 @@ export default function NewPrescriptionPage() {
                   instructions: '',
                 })
               }
-              className="flex items-center gap-2 px-3 py-1.5 text-sm font-medium text-[#5b21b6] hover:bg-purple-50 dark:hover:bg-purple-900/20 rounded-md transition-colors"
+              className="flex items-center gap-2 px-3 py-1.5 text-sm font-medium text-[#065f46] hover:bg-green-50 dark:hover:bg-green-900/20 rounded-md transition-colors"
             >
               <Plus className="h-4 w-4" />
               Add Medication
@@ -331,7 +331,7 @@ export default function NewPrescriptionPage() {
 
           {drugsLoading ? (
             <div className="flex items-center justify-center py-8">
-              <Loader2 className="h-6 w-6 animate-spin text-[#5b21b6]" />
+              <Loader2 className="h-6 w-6 animate-spin text-[#065f46]" />
             </div>
           ) : (
             <div className="space-y-4">
@@ -370,7 +370,7 @@ export default function NewPrescriptionPage() {
                           }}
                           onFocus={() => setShowDrugDropdowns({ ...showDrugDropdowns, [index]: true })}
                           placeholder="Search for a drug..."
-                          className="w-full px-4 py-2 pr-10 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-neutral-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-[#5b21b6] focus:border-transparent"
+                          className="w-full px-4 py-2 pr-10 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-neutral-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-[#065f46] focus:border-transparent"
                         />
                         <Search className="absolute right-3 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-400" />
                       </div>
@@ -421,7 +421,7 @@ export default function NewPrescriptionPage() {
                         {...register(`items.${index}.dosage` as const, { required: true })}
                         type="text"
                         placeholder="e.g., 600mg"
-                        className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-neutral-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-[#5b21b6] focus:border-transparent"
+                        className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-neutral-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-[#065f46] focus:border-transparent"
                       />
                     </div>
 
@@ -432,7 +432,7 @@ export default function NewPrescriptionPage() {
                       <select
                         {...register(`items.${index}.frequency` as const, { required: true })}
                         onChange={(e) => handleDurationOrFrequencyChange(index, 'frequency', e.target.value)}
-                        className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-neutral-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-[#5b21b6] focus:border-transparent"
+                        className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-neutral-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-[#065f46] focus:border-transparent"
                       >
                         {frequencyOptions.map((option) => (
                           <option key={option.value} value={option.value}>
@@ -456,7 +456,7 @@ export default function NewPrescriptionPage() {
                           min: 1,
                         })}
                         onChange={(e) => handleDurationOrFrequencyChange(index, 'duration_days', e.target.value)}
-                        className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-neutral-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-[#5b21b6] focus:border-transparent"
+                        className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-neutral-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-[#065f46] focus:border-transparent"
                       />
                     </div>
 
@@ -474,7 +474,7 @@ export default function NewPrescriptionPage() {
                           min: 1,
                         })}
                         onChange={(e) => handleQuantityChange(index, e.target.value)}
-                        className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-neutral-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-[#5b21b6] focus:border-transparent"
+                        className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-neutral-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-[#065f46] focus:border-transparent"
                       />
                     </div>
 
@@ -486,7 +486,7 @@ export default function NewPrescriptionPage() {
                         {...register(`items.${index}.instructions` as const)}
                         type="text"
                         placeholder="e.g., Take with food"
-                        className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-neutral-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-[#5b21b6] focus:border-transparent"
+                        className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-neutral-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-[#065f46] focus:border-transparent"
                       />
                     </div>
                   </div>
@@ -501,7 +501,7 @@ export default function NewPrescriptionPage() {
           <button
             type="submit"
             disabled={loading || drugsLoading}
-            className="flex-1 px-6 py-3 bg-[#5b21b6] text-white rounded-lg hover:bg-[#4c1d95] disabled:opacity-50 disabled:cursor-not-allowed transition-colors font-medium"
+            className="flex-1 px-6 py-3 bg-[#065f46] text-white rounded-lg hover:bg-[#064e3b] disabled:opacity-50 disabled:cursor-not-allowed transition-colors font-medium"
           >
             {loading ? (
               <span className="flex items-center justify-center gap-2">

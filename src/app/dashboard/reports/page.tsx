@@ -79,7 +79,7 @@ interface SectionHeaderProps {
 function SectionHeader({ title, icon, description }: SectionHeaderProps) {
   return (
     <div className="flex items-center gap-3 mb-4 print-avoid-break">
-      <div className="p-2 rounded-lg bg-[#5b21b6]/10">
+      <div className="p-2 rounded-lg bg-[#065f46]/10">
         {icon}
       </div>
       <div>
@@ -219,7 +219,7 @@ export default function ReportsPage() {
     <PrintablePageWrapper
       printHeader={
         <PrintHeader
-          title="TIERS EMR - System Report"
+          title="DEMO-EMR - System Report"
           subtitle={`Generated: ${new Date().toLocaleDateString()} | Period: ${new Date(dateRange.start).toLocaleDateString()} - ${new Date(dateRange.end).toLocaleDateString()}`}
         />
       }
@@ -263,7 +263,7 @@ export default function ReportsPage() {
         {isLoading ? (
           <div className="flex items-center justify-center min-h-[400px]">
             <div className="text-center">
-              <Loader2 className="h-8 w-8 animate-spin text-[#5b21b6] mx-auto" />
+              <Loader2 className="h-8 w-8 animate-spin text-[#065f46] mx-auto" />
               <p className="mt-4 text-sm text-gray-500">Loading report data...</p>
             </div>
           </div>
@@ -273,15 +273,15 @@ export default function ReportsPage() {
             <div className="report-section print-section">
               <SectionHeader
                 title="Overall Summary"
-                icon={<FileText className="h-5 w-5 text-[#5b21b6]" />}
+                icon={<FileText className="h-5 w-5 text-[#065f46]" />}
                 description="System-wide statistics"
               />
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
                 <StatCard
                   title="Total Patients"
                   value={dashboardStats?.totalPatients?.toLocaleString() || '0'}
-                  icon={<Users className="h-6 w-6 text-purple-600" />}
-                  iconBg="bg-purple-100 dark:bg-purple-900/30"
+                  icon={<Users className="h-6 w-6 text-green-600" />}
+                  iconBg="bg-green-100 dark:bg-green-900/30"
                   change={`+${dashboardStats?.newPatientsThisMonth || 0} this month`}
                   changeType="positive"
                 />
@@ -311,15 +311,15 @@ export default function ReportsPage() {
               <div className="report-section print-section page-break-before">
                 <SectionHeader
                   title="HIV Testing Services (HTS)"
-                  icon={<Activity className="h-5 w-5 text-[#5b21b6]" />}
+                  icon={<Activity className="h-5 w-5 text-[#065f46]" />}
                   description="Testing statistics and outcomes"
                 />
                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
                   <StatCard
                     title="Total Tests"
                     value={(htsStats?.total_tests_reactive + htsStats?.total_tests_non_reactive) || 0}
-                    icon={<Activity className="h-6 w-6 text-purple-600" />}
-                    iconBg="bg-purple-100 dark:bg-purple-900/30"
+                    icon={<Activity className="h-6 w-6 text-green-600" />}
+                    iconBg="bg-green-100 dark:bg-green-900/30"
                   />
                   <StatCard
                     title="Positive (Reactive)"
@@ -348,15 +348,15 @@ export default function ReportsPage() {
               <div className="report-section print-section">
                 <SectionHeader
                   title="Pre-Exposure Prophylaxis (PrEP)"
-                  icon={<ShieldCheck className="h-5 w-5 text-[#5b21b6]" />}
+                  icon={<ShieldCheck className="h-5 w-5 text-[#065f46]" />}
                   description="PrEP enrollment and status"
                 />
                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
                   <StatCard
                     title="Total Enrolled"
                     value={prepStats.total}
-                    icon={<Users className="h-6 w-6 text-purple-600" />}
-                    iconBg="bg-purple-100 dark:bg-purple-900/30"
+                    icon={<Users className="h-6 w-6 text-green-600" />}
+                    iconBg="bg-green-100 dark:bg-green-900/30"
                   />
                   <StatCard
                     title="Active Clients"
@@ -387,15 +387,15 @@ export default function ReportsPage() {
               <div className="report-section print-section">
                 <SectionHeader
                   title="Post-Exposure Prophylaxis (PEP)"
-                  icon={<Shield className="h-5 w-5 text-[#5b21b6]" />}
+                  icon={<Shield className="h-5 w-5 text-[#065f46]" />}
                   description="PEP cases and exposure types"
                 />
                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
                   <StatCard
                     title="Total Cases"
                     value={pepStats.total}
-                    icon={<Users className="h-6 w-6 text-purple-600" />}
-                    iconBg="bg-purple-100 dark:bg-purple-900/30"
+                    icon={<Users className="h-6 w-6 text-green-600" />}
+                    iconBg="bg-green-100 dark:bg-green-900/30"
                   />
                   <StatCard
                     title="Active Cases"
@@ -424,15 +424,15 @@ export default function ReportsPage() {
               <div className="report-section print-section page-break-before">
                 <SectionHeader
                   title="Antiretroviral Therapy (ART)"
-                  icon={<Heart className="h-5 w-5 text-[#5b21b6]" />}
+                  icon={<Heart className="h-5 w-5 text-[#065f46]" />}
                   description="ART enrollment and treatment status"
                 />
                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
                   <StatCard
                     title="Total Enrolled"
                     value={artStats.total}
-                    icon={<Users className="h-6 w-6 text-purple-600" />}
-                    iconBg="bg-purple-100 dark:bg-purple-900/30"
+                    icon={<Users className="h-6 w-6 text-green-600" />}
+                    iconBg="bg-green-100 dark:bg-green-900/30"
                   />
                   <StatCard
                     title="Active on Treatment"
@@ -461,15 +461,15 @@ export default function ReportsPage() {
               <div className="report-section print-section page-break-before">
                 <SectionHeader
                   title="Laboratory"
-                  icon={<FlaskConical className="h-5 w-5 text-[#5b21b6]" />}
+                  icon={<FlaskConical className="h-5 w-5 text-[#065f46]" />}
                   description="Lab orders and turnaround times"
                 />
                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
                   <StatCard
                     title="Total Orders"
                     value={labStats?.total_orders || 0}
-                    icon={<FileText className="h-6 w-6 text-purple-600" />}
-                    iconBg="bg-purple-100 dark:bg-purple-900/30"
+                    icon={<FileText className="h-6 w-6 text-green-600" />}
+                    iconBg="bg-green-100 dark:bg-green-900/30"
                   />
                   <StatCard
                     title="Pending Results"
@@ -524,15 +524,15 @@ export default function ReportsPage() {
               <div className="report-section print-section page-break-before">
                 <SectionHeader
                   title="Pharmacy & Drug Stock"
-                  icon={<Pill className="h-5 w-5 text-[#5b21b6]" />}
+                  icon={<Pill className="h-5 w-5 text-[#065f46]" />}
                   description="Drug inventory and stock alerts"
                 />
                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
                   <StatCard
                     title="Total Drug Items"
                     value={pharmacyStats.totalDrugs}
-                    icon={<Pill className="h-6 w-6 text-purple-600" />}
-                    iconBg="bg-purple-100 dark:bg-purple-900/30"
+                    icon={<Pill className="h-6 w-6 text-green-600" />}
+                    iconBg="bg-green-100 dark:bg-green-900/30"
                   />
                   <StatCard
                     title="Low Stock"
@@ -564,15 +564,15 @@ export default function ReportsPage() {
               <div className="report-section print-section">
                 <SectionHeader
                   title="Inventory & Supplies"
-                  icon={<Package className="h-5 w-5 text-[#5b21b6]" />}
+                  icon={<Package className="h-5 w-5 text-[#065f46]" />}
                   description="General inventory status"
                 />
                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
                   <StatCard
                     title="Total Items"
                     value={inventoryStats.totalItems}
-                    icon={<Package className="h-6 w-6 text-purple-600" />}
-                    iconBg="bg-purple-100 dark:bg-purple-900/30"
+                    icon={<Package className="h-6 w-6 text-green-600" />}
+                    iconBg="bg-green-100 dark:bg-green-900/30"
                   />
                   <StatCard
                     title="Items Below Reorder Level"
@@ -590,15 +590,15 @@ export default function ReportsPage() {
               <div className="report-section print-section page-break-before">
                 <SectionHeader
                   title="Mental Health"
-                  icon={<Brain className="h-5 w-5 text-[#5b21b6]" />}
+                  icon={<Brain className="h-5 w-5 text-[#065f46]" />}
                   description="Mental health assessments and counseling"
                 />
                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
                   <StatCard
                     title="Total Sessions"
                     value={psychologyStats?.total_sessions?.toLocaleString() || '0'}
-                    icon={<FileText className="h-6 w-6 text-purple-600" />}
-                    iconBg="bg-purple-100 dark:bg-purple-900/30"
+                    icon={<FileText className="h-6 w-6 text-green-600" />}
+                    iconBg="bg-green-100 dark:bg-green-900/30"
                     change={`${psychologyStats?.sessions_this_month || 0} this month`}
                     changeType="positive"
                   />
@@ -656,7 +656,7 @@ export default function ReportsPage() {
 
             {/* Print Footer - Show only on print */}
             <div className="hidden print:block mt-8 pt-4 border-t text-center text-sm text-gray-500">
-              <p>TIERS EMR - Confidential Medical Report</p>
+              <p>DEMO-EMR - Confidential Medical Report</p>
               <p>Page generated automatically. For official use only.</p>
             </div>
           </div>

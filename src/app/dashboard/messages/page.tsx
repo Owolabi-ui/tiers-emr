@@ -203,7 +203,7 @@ export default function MessagesPage() {
         </div>
         <button
           onClick={() => setShowCompose(true)}
-          className="flex items-center gap-2 px-4 py-2 bg-[#5b21b6] text-white rounded-lg hover:bg-[#4c1d95] transition-colors"
+          className="flex items-center gap-2 px-4 py-2 bg-[#065f46] text-white rounded-lg hover:bg-[#064e3b] transition-colors"
         >
           <Plus className="h-4 w-4" />
           New Message
@@ -223,7 +223,7 @@ export default function MessagesPage() {
                 }}
                 className={`w-full flex items-center gap-3 px-4 py-2.5 rounded-lg transition-colors ${
                   activeTab === 'inbox'
-                    ? 'bg-[#5b21b6] text-white'
+                    ? 'bg-[#065f46] text-white'
                     : 'text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800'
                 }`}
               >
@@ -242,7 +242,7 @@ export default function MessagesPage() {
                 }}
                 className={`w-full flex items-center gap-3 px-4 py-2.5 rounded-lg transition-colors ${
                   activeTab === 'sent'
-                    ? 'bg-[#5b21b6] text-white'
+                    ? 'bg-[#065f46] text-white'
                     : 'text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800'
                 }`}
               >
@@ -268,7 +268,7 @@ export default function MessagesPage() {
                   } ${!message.is_read ? 'bg-blue-50 dark:bg-blue-900/10' : ''}`}
                 >
                   <div className="flex items-start gap-3">
-                    <div className="h-10 w-10 rounded-full bg-gradient-to-br from-purple-500 to-pink-500 flex items-center justify-center text-white font-semibold text-sm flex-shrink-0">
+                    <div className="h-10 w-10 rounded-full bg-gradient-to-br from-green-500 to-pink-500 flex items-center justify-center text-white font-semibold text-sm flex-shrink-0">
                       {getInitials(message.sender_name)}
                     </div>
                     <div className="flex-1 min-w-0">
@@ -306,7 +306,7 @@ export default function MessagesPage() {
               <div className="p-6 border-b border-gray-200 dark:border-gray-800">
                 <div className="flex items-start justify-between">
                   <div className="flex items-start gap-4">
-                    <div className="h-12 w-12 rounded-full bg-gradient-to-br from-purple-500 to-pink-500 flex items-center justify-center text-white font-semibold">
+                    <div className="h-12 w-12 rounded-full bg-gradient-to-br from-green-500 to-pink-500 flex items-center justify-center text-white font-semibold">
                       {getInitials(selectedMessage.sender_name)}
                     </div>
                     <div>
@@ -347,7 +347,7 @@ export default function MessagesPage() {
                 {threadMessages.map((msg) => (
                   <div key={msg.id} className="bg-gray-50 dark:bg-gray-800 rounded-lg p-4">
                     <div className="flex items-start gap-3 mb-3">
-                      <div className="h-8 w-8 rounded-full bg-gradient-to-br from-purple-500 to-pink-500 flex items-center justify-center text-white font-semibold text-xs">
+                      <div className="h-8 w-8 rounded-full bg-gradient-to-br from-green-500 to-pink-500 flex items-center justify-center text-white font-semibold text-xs">
                         {getInitials(msg.sender_name)}
                       </div>
                       <div className="flex-1">
@@ -372,7 +372,7 @@ export default function MessagesPage() {
               {activeTab === 'inbox' && (
                 <div className="p-6 border-t border-gray-200 dark:border-gray-800">
                   <div className="flex items-start gap-3">
-                    <div className="h-10 w-10 rounded-full bg-gradient-to-br from-purple-500 to-pink-500 flex items-center justify-center text-white font-semibold text-sm">
+                    <div className="h-10 w-10 rounded-full bg-gradient-to-br from-green-500 to-pink-500 flex items-center justify-center text-white font-semibold text-sm">
                       {getInitials(user?.full_name || '')}
                     </div>
                     <div className="flex-1">
@@ -380,14 +380,14 @@ export default function MessagesPage() {
                         value={replyBody}
                         onChange={(e) => setReplyBody(e.target.value)}
                         placeholder="Type your reply..."
-                        className="w-full px-4 py-3 border border-gray-200 dark:border-gray-700 rounded-lg bg-white dark:bg-neutral-800 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-[#5b21b6]/50 resize-none"
+                        className="w-full px-4 py-3 border border-gray-200 dark:border-gray-700 rounded-lg bg-white dark:bg-neutral-800 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-[#065f46]/50 resize-none"
                         rows={3}
                       />
                       <div className="flex items-center justify-end gap-2 mt-3">
                         <button
                           onClick={handleReply}
                           disabled={!replyBody.trim()}
-                          className="flex items-center gap-2 px-4 py-2 bg-[#5b21b6] text-white rounded-lg hover:bg-[#4c1d95] disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                          className="flex items-center gap-2 px-4 py-2 bg-[#065f46] text-white rounded-lg hover:bg-[#064e3b] disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
                         >
                           <Reply className="h-4 w-4" />
                           Reply
@@ -430,7 +430,7 @@ export default function MessagesPage() {
                 <select
                   value={composeData.recipient_id}
                   onChange={(e) => setComposeData({ ...composeData, recipient_id: e.target.value })}
-                  className="w-full px-4 py-2 border border-gray-200 dark:border-gray-700 rounded-lg bg-white dark:bg-neutral-800 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-[#5b21b6]/50"
+                  className="w-full px-4 py-2 border border-gray-200 dark:border-gray-700 rounded-lg bg-white dark:bg-neutral-800 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-[#065f46]/50"
                 >
                   <option value="">Select staff member...</option>
                   {staffUsers.map((user) => (
@@ -448,7 +448,7 @@ export default function MessagesPage() {
                 <select
                   value={composeData.priority}
                   onChange={(e) => setComposeData({ ...composeData, priority: e.target.value as any })}
-                  className="w-full px-4 py-2 border border-gray-200 dark:border-gray-700 rounded-lg bg-white dark:bg-neutral-800 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-[#5b21b6]/50"
+                  className="w-full px-4 py-2 border border-gray-200 dark:border-gray-700 rounded-lg bg-white dark:bg-neutral-800 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-[#065f46]/50"
                 >
                   <option value="Low">Low</option>
                   <option value="Normal">Normal</option>
@@ -466,7 +466,7 @@ export default function MessagesPage() {
                   value={composeData.subject}
                   onChange={(e) => setComposeData({ ...composeData, subject: e.target.value })}
                   placeholder="Message subject"
-                  className="w-full px-4 py-2 border border-gray-200 dark:border-gray-700 rounded-lg bg-white dark:bg-neutral-800 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-[#5b21b6]/50"
+                  className="w-full px-4 py-2 border border-gray-200 dark:border-gray-700 rounded-lg bg-white dark:bg-neutral-800 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-[#065f46]/50"
                 />
               </div>
 
@@ -479,7 +479,7 @@ export default function MessagesPage() {
                   onChange={(e) => setComposeData({ ...composeData, message_body: e.target.value })}
                   placeholder="Type your message..."
                   rows={8}
-                  className="w-full px-4 py-3 border border-gray-200 dark:border-gray-700 rounded-lg bg-white dark:bg-neutral-800 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-[#5b21b6]/50 resize-none"
+                  className="w-full px-4 py-3 border border-gray-200 dark:border-gray-700 rounded-lg bg-white dark:bg-neutral-800 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-[#065f46]/50 resize-none"
                 />
               </div>
 
@@ -492,7 +492,7 @@ export default function MessagesPage() {
                 </button>
                 <button
                   onClick={handleSendMessage}
-                  className="flex items-center gap-2 px-4 py-2 bg-[#5b21b6] text-white rounded-lg hover:bg-[#4c1d95] transition-colors"
+                  className="flex items-center gap-2 px-4 py-2 bg-[#065f46] text-white rounded-lg hover:bg-[#064e3b] transition-colors"
                 >
                   <Send className="h-4 w-4" />
                   Send Message

@@ -212,14 +212,14 @@ export default function AppointmentsPage() {
       {/* Page Header */}
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div>
-          <h1 className="text-2xl sm:text-3xl font-bold text-[#5b21b6]">Appointments</h1>
+          <h1 className="text-2xl sm:text-3xl font-bold text-[#065f46]">Appointments</h1>
           <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">
             Manage patient appointments and schedule visits
           </p>
         </div>
         <Link
           href="/dashboard/appointments/new"
-          className="inline-flex items-center gap-2 rounded-lg bg-[#5b21b6] px-4 py-2.5 text-sm font-medium text-white shadow-lg hover:bg-[#4c1d95] transition-all"
+          className="inline-flex items-center gap-2 rounded-lg bg-[#065f46] px-4 py-2.5 text-sm font-medium text-white shadow-lg hover:bg-[#064e3b] transition-all"
         >
           <Plus className="h-4 w-4" />
           New Appointment
@@ -228,10 +228,10 @@ export default function AppointmentsPage() {
 
       {/* Stats Cards */}
       <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
-        <div className="rounded-xl border border-black/10 dark:border-white/15 bg-purple-50/40 dark:bg-[#5b21b6]/10 p-4">
+        <div className="rounded-xl border border-black/10 dark:border-white/15 bg-green-50/40 dark:bg-[#065f46]/10 p-4">
           <div className="flex items-center gap-3">
-            <div className="p-2 rounded-lg bg-[#5b21b6]/10">
-              <CalendarDays className="h-5 w-5 text-[#5b21b6]" />
+            <div className="p-2 rounded-lg bg-[#065f46]/10">
+              <CalendarDays className="h-5 w-5 text-[#065f46]" />
             </div>
             <div>
               <p className="text-2xl font-bold text-gray-900 dark:text-white">{stats.total}</p>
@@ -239,7 +239,7 @@ export default function AppointmentsPage() {
             </div>
           </div>
         </div>
-        <div className="rounded-xl border border-black/10 dark:border-white/15 bg-purple-50/40 dark:bg-[#5b21b6]/10 p-4">
+        <div className="rounded-xl border border-black/10 dark:border-white/15 bg-green-50/40 dark:bg-[#065f46]/10 p-4">
           <div className="flex items-center gap-3">
             <div className="p-2 rounded-lg bg-blue-100 dark:bg-blue-900/30">
               <Clock className="h-5 w-5 text-blue-600" />
@@ -250,7 +250,7 @@ export default function AppointmentsPage() {
             </div>
           </div>
         </div>
-        <div className="rounded-xl border border-black/10 dark:border-white/15 bg-purple-50/40 dark:bg-[#5b21b6]/10 p-4">
+        <div className="rounded-xl border border-black/10 dark:border-white/15 bg-green-50/40 dark:bg-[#065f46]/10 p-4">
           <div className="flex items-center gap-3">
             <div className="p-2 rounded-lg bg-cyan-100 dark:bg-cyan-900/30">
               <UserCheck className="h-5 w-5 text-cyan-600" />
@@ -261,7 +261,7 @@ export default function AppointmentsPage() {
             </div>
           </div>
         </div>
-        <div className="rounded-xl border border-black/10 dark:border-white/15 bg-purple-50/40 dark:bg-[#5b21b6]/10 p-4">
+        <div className="rounded-xl border border-black/10 dark:border-white/15 bg-green-50/40 dark:bg-[#065f46]/10 p-4">
           <div className="flex items-center gap-3">
             <div className="p-2 rounded-lg bg-green-100 dark:bg-green-900/30">
               <CheckCircle className="h-5 w-5 text-green-600" />
@@ -283,7 +283,7 @@ export default function AppointmentsPage() {
               onClick={() => setViewMode('all')}
               className={`px-3 py-2 rounded-md text-sm font-medium transition-colors ${
                 viewMode === 'all'
-                  ? 'bg-[#5b21b6] text-white'
+                  ? 'bg-[#065f46] text-white'
                   : 'text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-neutral-700'
               }`}
             >
@@ -293,7 +293,7 @@ export default function AppointmentsPage() {
               onClick={() => setViewMode('date')}
               className={`px-3 py-2 rounded-md text-sm font-medium transition-colors ${
                 viewMode === 'date'
-                  ? 'bg-[#5b21b6] text-white'
+                  ? 'bg-[#065f46] text-white'
                   : 'text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-neutral-700'
               }`}
             >
@@ -317,7 +317,7 @@ export default function AppointmentsPage() {
                     type="date"
                     value={selectedDate}
                     onChange={(e) => setSelectedDate(e.target.value)}
-                    className="h-10 pl-10 pr-4 rounded-lg border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-neutral-800 text-sm text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-[#5b21b6]/50"
+                    className="h-10 pl-10 pr-4 rounded-lg border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-neutral-800 text-sm text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-[#065f46]/50"
                   />
                 </div>
                 <button
@@ -329,7 +329,7 @@ export default function AppointmentsPage() {
                 {!isAppointmentToday(selectedDate) && (
                   <button
                     onClick={goToToday}
-                    className="px-3 py-2 rounded-lg text-sm font-medium text-[#5b21b6] hover:bg-[#5b21b6]/10 transition-colors"
+                    className="px-3 py-2 rounded-lg text-sm font-medium text-[#065f46] hover:bg-[#065f46]/10 transition-colors"
                   >
                     Today
                   </button>
@@ -353,7 +353,7 @@ export default function AppointmentsPage() {
               onClick={() => setShowFilters(!showFilters)}
               className={`inline-flex items-center gap-2 px-4 py-2 rounded-lg border text-sm font-medium transition-colors ${
                 showFilters || statusFilter
-                  ? 'border-[#5b21b6] text-[#5b21b6] bg-[#5b21b6]/10'
+                  ? 'border-[#065f46] text-[#065f46] bg-[#065f46]/10'
                   : 'border-gray-200 dark:border-gray-700 text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800'
               }`}
             >
@@ -382,7 +382,7 @@ export default function AppointmentsPage() {
                 <select
                   value={statusFilter}
                   onChange={(e) => setStatusFilter(e.target.value as AppointmentStatus | '')}
-                  className="w-full h-10 rounded-lg border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-neutral-800 px-3 text-sm text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-[#5b21b6]/50"
+                  className="w-full h-10 rounded-lg border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-neutral-800 px-3 text-sm text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-[#065f46]/50"
                 >
                   <option value="">All Statuses</option>
                   {appointmentStatusOptions.map((status) => (
@@ -397,7 +397,7 @@ export default function AppointmentsPage() {
               <button
                 type="button"
                 onClick={() => setStatusFilter('')}
-                className="mt-3 text-sm text-[#5b21b6] hover:underline"
+                className="mt-3 text-sm text-[#065f46] hover:underline"
               >
                 Clear filters
               </button>
@@ -422,10 +422,10 @@ export default function AppointmentsPage() {
       )}
 
       {/* Appointments Table */}
-      <div className="overflow-x-auto rounded-xl border border-black/10 dark:border-white/15 bg-purple-100 dark:bg-[#5b21b6]/10 backdrop-blur-sm">
+      <div className="overflow-x-auto rounded-xl border border-black/10 dark:border-white/15 bg-green-100 dark:bg-[#065f46]/10 backdrop-blur-sm">
         <table className="w-full text-sm">
           <thead>
-            <tr className="bg-[#5b21b6] text-white">
+            <tr className="bg-[#065f46] text-white">
               {viewMode === 'all' && <th className="px-4 py-3 text-left font-medium">Date</th>}
               <th className="px-4 py-3 text-left font-medium">Time</th>
               <th className="px-4 py-3 text-left font-medium">Appt No.</th>
@@ -441,7 +441,7 @@ export default function AppointmentsPage() {
             {loading ? (
               <tr>
                 <td colSpan={viewMode === 'all' ? 9 : 8} className="px-4 py-12 text-center">
-                  <Loader2 className="h-8 w-8 animate-spin text-[#5b21b6] mx-auto" />
+                  <Loader2 className="h-8 w-8 animate-spin text-[#065f46] mx-auto" />
                   <p className="mt-2 text-sm text-gray-500">Loading appointments...</p>
                 </td>
               </tr>
@@ -454,7 +454,7 @@ export default function AppointmentsPage() {
                   </p>
                   <Link
                     href="/dashboard/appointments/new"
-                    className="mt-4 inline-flex items-center gap-2 text-sm text-[#5b21b6] hover:underline"
+                    className="mt-4 inline-flex items-center gap-2 text-sm text-[#065f46] hover:underline"
                   >
                     <Plus className="h-4 w-4" />
                     Schedule an appointment
@@ -465,7 +465,7 @@ export default function AppointmentsPage() {
               appointments.map((appointment) => (
                 <tr
                   key={appointment.id}
-                  className="border-t border-black/5 dark:border-white/10 hover:bg-purple-50/50 dark:hover:bg-[#5b21b6]/5 transition-colors"
+                  className="border-t border-black/5 dark:border-white/10 hover:bg-green-50/50 dark:hover:bg-[#065f46]/5 transition-colors"
                 >
                   {viewMode === 'all' && (
                     <td className="px-4 py-3">
@@ -495,7 +495,7 @@ export default function AppointmentsPage() {
                     ) : (
                       <Link
                         href={`/dashboard/patients/${appointment.patient_id}`}
-                        className="font-medium text-gray-900 dark:text-white hover:text-[#5b21b6] transition-colors"
+                        className="font-medium text-gray-900 dark:text-white hover:text-[#065f46] transition-colors"
                       >
                         {patientNames[appointment.patient_id] || 'Unknown'}
                       </Link>
@@ -530,7 +530,7 @@ export default function AppointmentsPage() {
                     <div className="flex items-center justify-center gap-1">
                       <button
                         onClick={() => router.push(`/dashboard/appointments/${appointment.id}`)}
-                        className="p-1.5 rounded-lg text-gray-500 hover:text-[#5b21b6] hover:bg-[#5b21b6]/10 transition-colors"
+                        className="p-1.5 rounded-lg text-gray-500 hover:text-[#065f46] hover:bg-[#065f46]/10 transition-colors"
                         title="View details"
                       >
                         <Eye className="h-4 w-4" />

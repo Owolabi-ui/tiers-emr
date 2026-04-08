@@ -196,7 +196,7 @@ export default function NewPrescriptionPage() {
     return (
       <div className="flex items-center justify-center min-h-screen">
         <div className="text-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-[#5b21b6] mx-auto"></div>
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-[#065f46] mx-auto"></div>
           <p className="mt-4 text-sm text-gray-500">Loading...</p>
         </div>
       </div>
@@ -234,14 +234,14 @@ export default function NewPrescriptionPage() {
         <div>
           <button
             onClick={handleCancel}
-            className="mb-4 text-[#5b21b6] hover:underline flex items-center text-sm"
+            className="mb-4 text-[#065f46] hover:underline flex items-center text-sm"
           >
             <svg className="w-5 h-5 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
             </svg>
             Back to Pharmacy
           </button>
-          <h1 className="text-2xl font-bold text-[#5b21b6]">New Prescription</h1>
+          <h1 className="text-2xl font-bold text-[#065f46]">New Prescription</h1>
           <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">
             Create a new prescription for a patient
           </p>
@@ -262,7 +262,7 @@ export default function NewPrescriptionPage() {
 
       {/* Patient Selection */}
       <div className="bg-white dark:bg-gray-800 rounded-xl shadow overflow-hidden mb-6">
-        <div className="bg-[#5b21b6] px-5 py-3 flex items-center gap-2">
+        <div className="bg-[#065f46] px-5 py-3 flex items-center gap-2">
           <svg className="h-5 w-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
           </svg>
@@ -319,7 +319,7 @@ export default function NewPrescriptionPage() {
 
       {/* Clinical Information */}
       <div className="bg-white dark:bg-gray-800 rounded-xl shadow overflow-hidden mb-6">
-        <div className="bg-[#5b21b6] px-5 py-3 flex items-center gap-2">
+        <div className="bg-[#065f46] px-5 py-3 flex items-center gap-2">
           <svg className="h-5 w-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
           </svg>
@@ -355,7 +355,7 @@ export default function NewPrescriptionPage() {
 
       {/* Prescription Items */}
       <div className="bg-white dark:bg-gray-800 rounded-xl shadow overflow-hidden mb-6">
-        <div className="bg-[#5b21b6] px-5 py-3 flex items-center justify-between">
+        <div className="bg-[#065f46] px-5 py-3 flex items-center justify-between">
           <div className="flex items-center gap-2">
             <svg className="h-5 w-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19.428 15.428a2 2 0 00-1.022-.547l-2.387-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z" />
@@ -364,7 +364,7 @@ export default function NewPrescriptionPage() {
           </div>
           <button
             onClick={addItem}
-            className="inline-flex items-center gap-2 px-3 py-1.5 rounded-lg bg-white text-[#5b21b6] text-sm font-medium hover:bg-gray-100 transition-colors"
+            className="inline-flex items-center gap-2 px-3 py-1.5 rounded-lg bg-white text-[#065f46] text-sm font-medium hover:bg-gray-100 transition-colors"
           >
             <svg className="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
@@ -518,7 +518,7 @@ export default function NewPrescriptionPage() {
         <button
           onClick={handleSubmit}
           disabled={submitting || items.length === 0}
-          className="px-6 py-3 rounded-lg bg-[#5b21b6] text-white font-medium hover:bg-[#4c1d95] transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
+          className="px-6 py-3 rounded-lg bg-[#065f46] text-white font-medium hover:bg-[#064e3b] transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
         >
           {submitting ? (
             <>
