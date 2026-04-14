@@ -29,6 +29,7 @@ export type SampleType =
   | 'Other';
 
 export type LabTestStatus =
+  | 'Pending'
   | 'Ordered'
   | 'Sample Collected'
   | 'In Progress'
@@ -477,6 +478,7 @@ export const sampleTypeOptions: SampleType[] = [
 ];
 
 export const labTestStatusOptions: LabTestStatus[] = [
+  'Pending',
   'Ordered',
   'Sample Collected',
   'In Progress',
@@ -502,6 +504,8 @@ export const resultInterpretationOptions: ResultInterpretation[] = [
 
 export const getStatusColor = (status: LabTestStatus): string => {
   switch (status) {
+    case 'Pending':
+      return 'bg-amber-100 text-amber-700 dark:bg-amber-900/30 dark:text-amber-400';
     case 'Ordered':
       return 'bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-400';
     case 'Sample Collected':

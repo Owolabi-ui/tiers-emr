@@ -28,6 +28,7 @@ import {
 } from 'lucide-react';
 
 export default function LaboratoryPage() {
+  const PER_PAGE = 20;
   const [orders, setOrders] = useState<LabTestOrderWithDetails[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -35,10 +36,12 @@ export default function LaboratoryPage() {
   const [searchTerm, setSearchTerm] = useState('');
   const [statusFilter, setStatusFilter] = useState<LabTestStatus | 'all'>('all');
   const [priorityFilter, setPriorityFilter] = useState<LabTestPriority | 'all'>('all');
+  const [page, setPage] = useState(1);
+  const [total, setTotal] = useState(0);
 
   useEffect(() => {
     fetchData();
-  }, [statusFilter, priorityFilter]);
+  }, [statusFilter, priorityFilter, page]);
 
   const fetchData = async () => {
     try {
@@ -48,7 +51,9 @@ export default function LaboratoryPage() {
       const params: {
         status?: LabTestStatus;
         priority?: LabTestPriority;
-      } = {};
+        page?: number;
+        per_page?: number;
+      } = { page, per_page: PER_PAGE };
       if (statusFilter !== 'all') params.status = statusFilter;
       if (priorityFilter !== 'all') params.priority = priorityFilter;
 
@@ -58,6 +63,7 @@ export default function LaboratoryPage() {
       ]);
 
       setOrders(ordersResponse.data || []);
+      setTotal(ordersResponse.total || 0);
       setStatistics(stats);
     } catch (err: unknown) {
       setError(getErrorMessage(err));
@@ -223,10 +229,14 @@ export default function LaboratoryPage() {
             <Filter className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-400" />
             <select
               value={statusFilter}
-              onChange={(e) => setStatusFilter(e.target.value as LabTestStatus | 'all')}
+              onChange={(e) => {
+                setStatusFilter(e.target.value as LabTestStatus | 'all');
+                setPage(1);
+              }}
               className="w-full h-10 pl-10 pr-4 rounded-lg border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-neutral-800 text-sm text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-[#5b21b6]/50"
             >
               <option value="all">All Statuses</option>
+              <option value="Pending">Pending</option>
               <option value="Ordered">Ordered</option>
               <option value="Sample Collected">Sample Collected</option>
               <option value="In Progress">In Progress</option>
@@ -244,7 +254,10 @@ export default function LaboratoryPage() {
             <Filter className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-400" />
             <select
               value={priorityFilter}
-              onChange={(e) => setPriorityFilter(e.target.value as LabTestPriority | 'all')}
+              onChange={(e) => {
+                setPriorityFilter(e.target.value as LabTestPriority | 'all');
+                setPage(1);
+              }}
               className="w-full h-10 pl-10 pr-4 rounded-lg border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-neutral-800 text-sm text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-[#5b21b6]/50"
             >
               <option value="all">All Priorities</option>
@@ -353,6 +366,33 @@ export default function LaboratoryPage() {
                 ))}
               </tbody>
             </table>
+          </div>
+        )}
+
+        {total > PER_PAGE && (
+          <div className="px-5 py-3 border-t border-gray-200 dark:border-gray-700 flex items-center justify-between">
+            <p className="text-sm text-gray-500 dark:text-gray-400">
+              Showing {(page - 1) * PER_PAGE + 1}–{Math.min(page * PER_PAGE, total)} of {total} orders
+            </p>
+            <div className="flex items-center gap-2">
+              <button
+                onClick={() => setPage((p) => p - 1)}
+                disabled={page === 1}
+                className="px-3 py-1 text-sm rounded-lg border border-gray-200 dark:border-gray-700 disabled:opacity-40 hover:bg-gray-50 dark:hover:bg-neutral-800"
+              >
+                Previous
+              </button>
+              <span className="text-sm text-gray-600 dark:text-gray-300">
+                Page {page} of {Math.ceil(total / PER_PAGE)}
+              </span>
+              <button
+                onClick={() => setPage((p) => p + 1)}
+                disabled={page * PER_PAGE >= total}
+                className="px-3 py-1 text-sm rounded-lg border border-gray-200 dark:border-gray-700 disabled:opacity-40 hover:bg-gray-50 dark:hover:bg-neutral-800"
+              >
+                Next
+              </button>
+            </div>
           </div>
         )}
       </div>

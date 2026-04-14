@@ -2,9 +2,10 @@
 
 import { useState, useEffect, use } from "react";
 import { useRouter } from "next/navigation";
-import { ChevronLeft, FileText, User, CheckCircle, XCircle, Edit } from "lucide-react";
+import { ChevronLeft, FileText, User, CheckCircle, XCircle, Edit, Loader2, Trash2 } from "lucide-react";
 import { htsApi, CompleteHtsWorkflow } from "@/lib/hts";
 import { getOrdersByService, LabTestOrderWithDetails, LabResultData } from "@/lib/laboratory";
+import { getErrorMessage } from "@/lib/api";
 import PrintablePageWrapper from "@/components/common/PrintablePageWrapper";
 import PrintButton from "@/components/common/PrintButton";
 import PrintHeader from "@/components/common/PrintHeader";
@@ -22,6 +23,7 @@ export default function HtsDetailPage({ params }: { params: Promise<{ id: string
   const [error, setError] = useState<string | null>(null);
   const [labOrders, setLabOrders] = useState<LabTestOrderWithDetails[]>([]);
   const [navigating, setNavigating] = useState<"prep" | "pep" | null>(null);
+  const [deleting, setDeleting] = useState(false);
 
   useEffect(() => {
     const fetchHtsData = async () => {
@@ -208,6 +210,22 @@ export default function HtsDetailPage({ params }: { params: Promise<{ id: string
     router.push(`/dashboard/pep/new?patient_id=${htsData.initial.patient_id}&from_hts=${id}`);
   };
 
+  const handleDelete = async () => {
+    const confirmed = window.confirm(
+      "Delete this HTS record? This will also delete linked HTS lab orders and cannot be undone.",
+    );
+    if (!confirmed) return;
+
+    try {
+      setDeleting(true);
+      await htsApi.delete(id);
+      router.push("/dashboard/hts");
+    } catch (err) {
+      setError(getErrorMessage(err));
+      setDeleting(false);
+    }
+  };
+
   return (
     <PrintablePageWrapper
       printHeader={
@@ -272,6 +290,14 @@ export default function HtsDetailPage({ params }: { params: Promise<{ id: string
                   Continue Session
                 </button>
               )}
+              <button
+                onClick={handleDelete}
+                disabled={deleting || navigating !== null}
+                className="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-red-600 text-white text-sm font-medium hover:bg-red-700 disabled:opacity-60 disabled:cursor-not-allowed transition-colors"
+              >
+                {deleting ? <Loader2 className="h-4 w-4 animate-spin" /> : <Trash2 className="h-4 w-4" />}
+                {deleting ? "Deleting..." : "Delete Record"}
+              </button>
               <div className={`inline-flex items-center px-3 py-1 rounded-full text-sm font-medium ${
                 htsData.initial.status === "completed"
                   ? "bg-green-100 text-green-800"
@@ -286,6 +312,11 @@ export default function HtsDetailPage({ params }: { params: Promise<{ id: string
               </div>
             </div>
           </div>
+          {error && (
+            <div className="mt-4 rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700">
+              {error}
+            </div>
+          )}
         </div>
 
         {/* Initial Information */}

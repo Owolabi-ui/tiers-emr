@@ -256,6 +256,11 @@ export const htsApi = {
     return response.data;
   },
 
+  // Delete HTS Record
+  delete: async (htsId: string): Promise<void> => {
+    await api.delete(`/api/v1/hts/${htsId}`);
+  },
+
   // Create HTS Pre-Test (Step 2)
   createPreTest: async (htsId: string, data: CreateHtsPreTestRequest): Promise<any> => {
     const response = await api.post(`/api/v1/hts/${htsId}/pre-test`, data);
