@@ -26,6 +26,7 @@ import {
   Plus,
   XCircle,
   X,
+  Upload,
 } from 'lucide-react';
 
 export default function ArtDetailPage({ params }: { params: Promise<{ id: string }> }) {
@@ -52,6 +53,10 @@ export default function ArtDetailPage({ params }: { params: Promise<{ id: string
   const [visitSuccess, setVisitSuccess] = useState<string | null>(null);
   const [drugOptions, setDrugOptions] = useState<DrugCatalog[]>([]);
   const [drugLoading, setDrugLoading] = useState(false);
+  const [transferFile, setTransferFile] = useState<File | null>(null);
+  const [transferFileError, setTransferFileError] = useState<string | null>(null);
+  const [transferUploading, setTransferUploading] = useState(false);
+  const [transferUploadSuccess, setTransferUploadSuccess] = useState(false);
   const [visitForm, setVisitForm] = useState<CreateArtFollowupRequest>({
     patient_id: '',
     visit_date: new Date().toISOString().split('T')[0],
@@ -228,7 +233,7 @@ export default function ArtDetailPage({ params }: { params: Promise<{ id: string
       try {
         setCatalogLoading(true);
         const res = await laboratoryApi.getCatalog(true);
-        setCatalog(res.tests);
+        setCatalog(res.data);
       } catch (err) {
         setLabOrderError(getErrorMessage(err));
       } finally {
@@ -331,6 +336,43 @@ export default function ArtDetailPage({ params }: { params: Promise<{ id: string
       setVisitError(getErrorMessage(err));
     } finally {
       setVisitSaving(false);
+    }
+  };
+
+  const handleTransferFileUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    const allowedTypes = [
+      'application/pdf', 'image/jpeg', 'image/png', 'image/gif',
+      'application/vnd.ms-excel',
+      'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+      'application/msword',
+      'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+    ];
+
+    if (file.size > 10 * 1024 * 1024) {
+      setTransferFileError('File must be 10MB or less');
+      return;
+    }
+    if (!allowedTypes.includes(file.type)) {
+      setTransferFileError('Only PDF, JPEG, PNG, GIF, Excel, and Word files are allowed');
+      return;
+    }
+
+    try {
+      setTransferFile(file);
+      setTransferFileError(null);
+      setTransferUploading(true);
+      const formData = new FormData();
+      formData.append('file', file);
+      await artApi.uploadTransferDocument(id, formData);
+      setTransferUploadSuccess(true);
+    } catch (err) {
+      setTransferFileError(getErrorMessage(err));
+      setTransferFile(null);
+    } finally {
+      setTransferUploading(false);
     }
   };
 
@@ -487,6 +529,39 @@ export default function ArtDetailPage({ params }: { params: Promise<{ id: string
                   <p className="text-base font-medium text-gray-900 dark:text-white mt-1">
                     {artInfo.prior_art}
                   </p>
+
+                  {artInfo.prior_art === 'Transfer in with records' && (
+                    <div className="mt-3">
+                      {transferUploadSuccess ? (
+                        <div className="flex items-center gap-2 text-sm text-green-700 dark:text-green-400">
+                          <CheckCircle2 className="h-4 w-4" />
+                          Transfer record uploaded successfully
+                          {transferFile && (
+                            <span className="text-gray-500">— {transferFile.name}</span>
+                          )}
+                        </div>
+                      ) : transferFile && transferUploading ? (
+                        <div className="flex items-center gap-2 text-sm text-gray-500">
+                          <Loader2 className="h-4 w-4 animate-spin" />
+                          Uploading {transferFile.name}...
+                        </div>
+                      ) : (
+                        <label className="inline-flex items-center gap-2 px-3 py-1.5 text-xs font-medium text-[#5b21b6] border border-[#5b21b6] rounded-md cursor-pointer hover:bg-purple-50 dark:hover:bg-purple-900/20 transition-colors">
+                          <Upload className="h-3.5 w-3.5" />
+                          Upload Transfer Record
+                          <input
+                            type="file"
+                            className="hidden"
+                            accept=".pdf,.jpg,.jpeg,.png,.gif,.xlsx,.xls,.doc,.docx"
+                            onChange={handleTransferFileUpload}
+                          />
+                        </label>
+                      )}
+                      {transferFileError && (
+                        <p className="text-xs text-red-600 mt-1">{transferFileError}</p>
+                      )}
+                    </div>
+                  )}
                 </div>
               )}
             </div>

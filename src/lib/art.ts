@@ -159,6 +159,16 @@ export interface CreateArtFollowupResponse {
   lab_order_ids: string[];
 }
 
+export interface ArtTransferDocument {
+  id: string;
+  art_information_id: string;
+  filename: string;
+  content_type: string;
+  file_size: number;
+  uploaded_by: string | null;
+  created_at: string;
+}
+
 // ============================================
 // API FUNCTIONS
 // ============================================
@@ -226,6 +236,13 @@ export const artApi = {
 
   async getFollowups(patientId: string): Promise<ArtFollowup[]> {
     const response = await api.get<ArtFollowup[]>(`/api/v1/art/followup/patient/${patientId}`);
+    return response.data;
+  },
+
+  async uploadTransferDocument(artId: string, formData: FormData): Promise<ArtTransferDocument> {
+    const response = await api.post<ArtTransferDocument>(`/api/v1/art/${artId}/document`, formData, {
+      headers: { 'Content-Type': 'multipart/form-data' },
+    });
     return response.data;
   },
 };

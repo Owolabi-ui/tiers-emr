@@ -22,6 +22,9 @@ import {
   Calendar,
   Heart,
   Phone,
+  FileText,
+  Upload,
+  X,
 } from 'lucide-react';
 
 type FormData = Omit<CreateArtInformationRequest, 'patient_id'>;
@@ -39,6 +42,8 @@ export default function NewArtPage() {
   const [prefillLoading, setPrefillLoading] = useState(false);
   const [searchTerm, setSearchTerm] = useState('');
   const [generatedArtNo, setGeneratedArtNo] = useState<string>('');
+  const [transferFile, setTransferFile] = useState<File | null>(null);
+  const [fileError, setFileError] = useState<string | null>(null);
   const { isVisible, isRequired, getLabel, getOptions } = useFormConfig('art', FORM_SCHEMAS.art);
   const showArtClientInfoSection =
     isVisible('art_no') ||
@@ -57,12 +62,14 @@ export default function NewArtPage() {
     register,
     handleSubmit,
     setValue,
+    watch,
     formState: { errors },
   } = useForm<FormData>({
     defaultValues: {
       entry_point: 'VCT',
     },
   });
+  const watchedPriorArt = watch('prior_art');
 
   // Generate ART number when component mounts
   useEffect(() => {
@@ -115,6 +122,13 @@ export default function NewArtPage() {
     prefillPatient();
   }, [preselectedPatientId, selectedPatient]);
 
+  useEffect(() => {
+    if (watchedPriorArt !== 'Transfer in with records') {
+      setTransferFile(null);
+      setFileError(null);
+    }
+  }, [watchedPriorArt]);
+
   const filteredPatients = patients.filter((patient) => {
     if (!searchTerm) return true;
     const search = searchTerm.toLowerCase();
@@ -128,6 +142,35 @@ export default function NewArtPage() {
   const handleSelectPatient = (patient: Patient) => {
     setSelectedPatient(patient);
     setCurrentStep(2);
+  };
+
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    const allowedTypes = [
+      'application/pdf',
+      'image/jpeg',
+      'image/png',
+      'image/gif',
+      'application/vnd.ms-excel',
+      'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+      'application/msword',
+      'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+    ];
+
+    if (file.size > 10 * 1024 * 1024) {
+      setFileError('File must be 10MB or less');
+      return;
+    }
+
+    if (!allowedTypes.includes(file.type)) {
+      setFileError('Only PDF, JPEG, PNG, GIF, Excel, and Word files are allowed');
+      return;
+    }
+
+    setFileError(null);
+    setTransferFile(file);
   };
 
   const onSubmit = async (data: FormData) => {
@@ -160,6 +203,12 @@ export default function NewArtPage() {
 
       // Step 1: Create ART enrollment record
       const artRecord = await artApi.create(requestData);
+
+      if (transferFile) {
+        const uploadData = new FormData();
+        uploadData.append('file', transferFile);
+        await artApi.uploadTransferDocument(artRecord.id, uploadData);
+      }
       
       router.push(`/dashboard/art/${artRecord.id}`);
     } catch (err: any) {
@@ -167,7 +216,7 @@ export default function NewArtPage() {
       const errorMessage = err?.response?.data || err?.message || 'Unknown error';
       
       if (errorMessage.includes('duplicate key') || errorMessage.includes('unique_art_patient')) {
-        setError(`This patient is already enrolled in ART. Each patient can only have one active ART record.`);
+        setError(`This patient is already enrolled in ART. If you were uploading a transfer document, go to the patient's ART page to find the record and retry the upload there.`);
       } else if (errorMessage.includes('unknown variant')) {
         setError('Invalid selection in one of the form fields. Please check your entries and try again.');
       } else {
@@ -556,6 +605,45 @@ export default function NewArtPage() {
               <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">
                 Previous antiretroviral treatment history
               </p>
+              </div>
+            )}
+
+            {watchedPriorArt === 'Transfer in with records' && (
+              <div className="md:col-span-2">
+                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                  Transfer Record Document
+                </label>
+                {transferFile ? (
+                  <div className="flex items-center gap-3 p-3 rounded-lg border border-green-200 bg-green-50 dark:bg-green-900/20 dark:border-green-800">
+                    <FileText className="h-5 w-5 text-green-600 flex-shrink-0" />
+                    <span className="text-sm text-green-800 dark:text-green-300 flex-1 truncate">
+                      {transferFile.name}
+                    </span>
+                    <span className="text-xs text-green-600 whitespace-nowrap">
+                      {(transferFile.size / 1024 / 1024).toFixed(2)} MB
+                    </span>
+                    <button
+                      type="button"
+                      onClick={() => setTransferFile(null)}
+                      className="text-gray-400 hover:text-red-500"
+                    >
+                      <X className="h-4 w-4" />
+                    </button>
+                  </div>
+                ) : (
+                  <label className="flex flex-col items-center justify-center w-full h-32 border-2 border-dashed border-gray-300 dark:border-gray-600 rounded-lg cursor-pointer hover:border-[#5b21b6] hover:bg-purple-50 dark:hover:bg-purple-900/10 transition-colors">
+                    <Upload className="h-8 w-8 text-gray-400 mb-2" />
+                    <span className="text-sm text-gray-500">Click to upload transfer records</span>
+                    <span className="text-xs text-gray-400 mt-1">PDF, JPEG, PNG, GIF, Excel, Word - max 10MB</span>
+                    <input
+                      type="file"
+                      className="hidden"
+                      accept=".pdf,.jpg,.jpeg,.png,.gif,.xlsx,.xls,.doc,.docx"
+                      onChange={handleFileChange}
+                    />
+                  </label>
+                )}
+                {fileError && <p className="text-sm text-red-600 mt-1">{fileError}</p>}
               </div>
             )}
           </div>
