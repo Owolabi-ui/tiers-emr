@@ -13,6 +13,7 @@ import {
 } from '@/lib/transfers';
 import { patientsApi } from '@/lib/patients';
 import { clinicsApi } from '@/lib/clinics';
+import { Loader2 } from 'lucide-react';
 
 export default function TransfersPage() {
   const router = useRouter();
@@ -248,7 +249,14 @@ export default function TransfersPage() {
       </div>
 
       {/* Transfers List */}
-      {transfers.length === 0 ? (
+      {loading ? (
+        <div className="bg-white dark:bg-neutral-800 rounded-lg shadow-sm p-8 text-center">
+          <div className="flex items-center justify-center">
+            <Loader2 className="h-8 w-8 animate-spin text-[#5b21b6]" />
+            <p className="ml-3 text-sm text-gray-500">Loading...</p>
+          </div>
+        </div>
+      ) : transfers.length === 0 ? (
         <div className="bg-white dark:bg-neutral-800 rounded-lg shadow-sm p-8 text-center">
           <p className="text-gray-600 dark:text-gray-400">
             No {viewMode} transfers found

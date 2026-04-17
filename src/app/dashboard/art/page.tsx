@@ -226,7 +226,20 @@ export default function ArtPage() {
               </tr>
             </thead>
             <tbody className="bg-white dark:bg-neutral-800 divide-y divide-gray-200 dark:divide-gray-700">
-              {filteredRecords.length === 0 ? (
+              {loading ? (
+                <tr>
+                  <td colSpan={6} className="px-4 py-12 text-center">
+                    <div className="flex items-center justify-center">
+                      <Loader2 className="h-8 w-8 animate-spin text-[#5b21b6]" />
+                      <p className="ml-3 text-sm text-gray-500">Loading...</p>
+                    </div>
+                  </td>
+                </tr>
+              ) : error ? (
+                <tr>
+                  <td colSpan={6} className="p-6 text-center text-sm text-red-600">{error}</td>
+                </tr>
+              ) : filteredRecords.length === 0 ? (
                 <tr>
                   <td colSpan={6} className="px-4 py-8 text-center text-sm text-gray-500 dark:text-gray-400">
                     {searchTerm ? 'No ART patients found matching your search.' : 'No ART patients yet. Click "New ART Patient" to get started.'}
