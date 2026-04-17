@@ -111,30 +111,7 @@ export default function ArtPage() {
   }).length;
   const transferredCount = artRecords.filter(r => r.entry_point === 'Transferred in').length;
 
-  if (loading) {
-    return (
-      <div className="flex items-center justify-center min-h-[400px]">
-        <div className="text-center">
-          <Loader2 className="h-8 w-8 animate-spin text-[#5b21b6] mx-auto" />
-          <p className="mt-4 text-sm text-gray-500">Loading ART data...</p>
-        </div>
-      </div>
-    );
-  }
 
-  if (error) {
-    return (
-      <div className="rounded-lg bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 p-6">
-        <div className="flex items-start gap-3">
-          <AlertCircle className="h-6 w-6 text-red-600 dark:text-red-400 mt-0.5" />
-          <div>
-            <p className="text-lg font-medium text-red-800 dark:text-red-300">Error loading ART data</p>
-            <p className="text-sm text-red-700 dark:text-red-400 mt-1">{error}</p>
-          </div>
-        </div>
-      </div>
-    );
-  }
 
   return (
     <div className="space-y-6">
@@ -372,6 +349,40 @@ export default function ArtPage() {
                             <div className="flex-1 h-2 bg-gray-200 dark:bg-gray-700 rounded-full overflow-hidden">
                               <div
                                 className="h-full bg-orange-600 dark:bg-orange-500 rounded-full transition-all"
+                                style={{ width: `${(episode.sessions_completed / 3) * 100}%` }}
+                              />
+                            </div>
+                            <span className="text-xs font-medium text-gray-700 dark:text-gray-300 whitespace-nowrap">
+                              {episode.sessions_completed}/3
+                            </span>
+                          </div>
+                          <span className="text-xs text-gray-500 dark:text-gray-400">
+                            {episode.sessions_completed === 0 ? 'Not started' : 
+                             episode.sessions_completed === 3 ? 'All sessions completed' :
+                             `${episode.sessions_completed} session${episode.sessions_completed > 1 ? 's' : ''} completed`}
+                          </span>
+                        </div>
+                      </td>
+                      <td className="px-4 py-3 text-sm">
+                        <Link
+                          href={`/dashboard/eac/${episode.id}`}
+                          className="text-orange-600 hover:text-orange-700 dark:text-orange-400 dark:hover:text-orange-300 font-medium"
+                        >
+                          View Details
+                        </Link>
+                      </td>
+                    </tr>
+                  );
+                })}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      )}
+    </div>
+  );
+}
+0 rounded-full transition-all"
                                 style={{ width: `${(episode.sessions_completed / 3) * 100}%` }}
                               />
                             </div>

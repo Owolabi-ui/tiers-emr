@@ -109,30 +109,7 @@ export default function PrepPage() {
     );
   };
 
-  if (loading) {
-    return (
-      <div className="flex items-center justify-center min-h-[400px]">
-        <div className="text-center">
-          <Loader2 className="h-8 w-8 animate-spin text-[#5b21b6] mx-auto" />
-          <p className="mt-4 text-sm text-gray-500">Loading PrEP data...</p>
-        </div>
-      </div>
-    );
-  }
 
-  if (error) {
-    return (
-      <div className="rounded-lg bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 p-6">
-        <div className="flex items-start gap-3">
-          <AlertCircle className="h-6 w-6 text-red-600 dark:text-red-400 mt-0.5" />
-          <div>
-            <p className="text-lg font-medium text-red-800 dark:text-red-300">Error loading PrEP data</p>
-            <p className="text-sm text-red-700 dark:text-red-400 mt-1">{error}</p>
-          </div>
-        </div>
-      </div>
-    );
-  }
 
   return (
     <div className="space-y-6">
@@ -280,6 +257,44 @@ export default function PrepPage() {
                     </td>
                     <td className="px-4 py-3 text-sm text-gray-500 dark:text-gray-400">
                       <div className="flex items-center gap-1">
+                        <Calendar className="h-4 w-4 text-gray-400" />
+                        {record.date_prep_initiated ? new Date(record.date_prep_initiated).toLocaleDateString() : '-'}
+                      </div>
+                    </td>
+                    <td className="px-4 py-3 text-sm">
+                      {record.next_refill_date ? (
+                        <div className="flex items-center gap-2">
+                          <span className="text-gray-500 dark:text-gray-400">
+                            {new Date(record.next_refill_date).toLocaleDateString()}
+                          </span>
+                          {getRefillStatus(record.next_refill_date)}
+                        </div>
+                      ) : (
+                        <span className="text-gray-400">-</span>
+                      )}
+                    </td>
+                    <td className="px-4 py-3 text-sm">
+                      {getStatusBadge(record.status)}
+                    </td>
+                    <td className="px-4 py-3 text-sm">
+                      <Link
+                        href={`/dashboard/prep/${record.hts_initial_id}`}
+                        className="text-[#5b21b6] hover:text-[#4c1d95] font-medium"
+                      >
+                        View Details
+                      </Link>
+                    </td>
+                  </tr>
+                ))
+              )}
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  );
+}
+
                         <Calendar className="h-4 w-4 text-gray-400" />
                         {record.date_prep_initiated ? new Date(record.date_prep_initiated).toLocaleDateString() : '-'}
                       </div>

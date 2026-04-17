@@ -93,40 +93,7 @@ export default function PharmacyPage() {
 
   const totalPages = Math.ceil(totalItems / perPage);
 
-  if (loading) {
-    return (
-      <div className="flex items-center justify-center min-h-[400px]">
-        <div className="text-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-[#5b21b6] mx-auto"></div>
-          <p className="mt-4 text-sm text-gray-500">Loading pharmacy data...</p>
-        </div>
-      </div>
-    );
-  }
 
-  if (error) {
-    return (
-      <div className="p-6 max-w-7xl mx-auto">
-        <div className="rounded-lg bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 p-6">
-          <div className="flex items-start gap-3">
-            <svg className="h-6 w-6 text-red-600 dark:text-red-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
-            </svg>
-            <div>
-              <p className="text-lg font-medium text-red-800 dark:text-red-300">Error loading pharmacy data</p>
-              <p className="text-sm text-red-700 dark:text-red-400 mt-1">{error}</p>
-              <button
-                onClick={() => activeTab === 'alerts' ? loadStockAlerts() : loadPrescriptions()}
-                className="mt-3 text-sm text-red-600 dark:text-red-400 underline hover:no-underline"
-              >
-                Try again
-              </button>
-            </div>
-          </div>
-        </div>
-      </div>
-    );
-  }
 
   return (
     <div className="p-6 max-w-7xl mx-auto">
@@ -397,6 +364,59 @@ export default function PharmacyPage() {
                       </div>
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+                      <div className="flex justify-end space-x-2" onClick={(e) => e.stopPropagation()}>
+                        <button
+                          onClick={() => handleViewPrescription(prescription.id)}
+                          className="text-sm text-[#5b21b6] hover:underline"
+                        >
+                          View
+                        </button>
+                        {prescription.status === 'Pending' && (
+                          <button
+                            onClick={() => handleDispense(prescription.id)}
+                            className="text-green-600 hover:text-green-900 dark:text-green-400 dark:hover:text-green-300"
+                          >
+                            Dispense
+                          </button>
+                        )}
+                      </div>
+                    </td>
+                  </tr>
+                ))
+              )}
+            </tbody>
+          </table>
+        </div>
+      )}
+
+      {/* Pagination */}
+      {totalPages > 1 && (
+        <div className="mt-6 flex justify-between items-center">
+          <p className="text-sm text-gray-700 dark:text-gray-300">
+            Showing {(currentPage - 1) * perPage + 1} to {Math.min(currentPage * perPage, totalItems)} of {totalItems} results
+          </p>
+          <div className="flex space-x-2">
+            <button
+              onClick={() => setCurrentPage(currentPage - 1)}
+              disabled={currentPage === 1}
+              className="px-3 py-1 border border-gray-300 rounded-md disabled:opacity-50 disabled:cursor-not-allowed hover:bg-gray-50 dark:border-gray-600 dark:hover:bg-gray-700"
+            >
+              Previous
+            </button>
+            <button
+              onClick={() => setCurrentPage(currentPage + 1)}
+              disabled={currentPage === totalPages}
+              className="px-3 py-1 border border-gray-300 rounded-md disabled:opacity-50 disabled:cursor-not-allowed hover:bg-gray-50 dark:border-gray-600 dark:hover:bg-gray-700"
+            >
+              Next
+            </button>
+          </div>
+        </div>
+      )}
+    </div>
+  );
+}
+xt-sm font-medium">
                       <div className="flex justify-end space-x-2" onClick={(e) => e.stopPropagation()}>
                         <button
                           onClick={() => handleViewPrescription(prescription.id)}

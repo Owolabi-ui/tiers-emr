@@ -154,31 +154,6 @@ export default function PepPage() {
     );
   };
 
-  if (loading) {
-    return (
-      <div className="flex items-center justify-center min-h-[400px]">
-        <div className="text-center">
-          <Loader2 className="h-8 w-8 animate-spin text-[#5b21b6] mx-auto" />
-          <p className="mt-4 text-sm text-gray-500">Loading PEP data...</p>
-        </div>
-      </div>
-    );
-  }
-
-  if (error) {
-    return (
-      <div className="rounded-lg bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 p-6">
-        <div className="flex items-start gap-3">
-          <AlertCircle className="h-6 w-6 text-red-600 dark:text-red-400 mt-0.5" />
-          <div>
-            <p className="text-lg font-medium text-red-800 dark:text-red-300">Error loading PEP data</p>
-            <p className="text-sm text-red-700 dark:text-red-400 mt-1">{error}</p>
-          </div>
-        </div>
-      </div>
-    );
-  }
-
   return (
     <div className="space-y-6">
       {/* Header */}
@@ -317,7 +292,22 @@ export default function PepPage() {
               </tr>
             </thead>
             <tbody className="bg-white dark:bg-neutral-800 divide-y divide-gray-200 dark:divide-gray-700">
-              {filteredRecords.length === 0 ? (
+              {loading ? (
+                <tr>
+                  <td colSpan={9} className="px-4 py-12 text-center">
+                    <div className="flex items-center justify-center">
+                      <Loader2 className="h-8 w-8 animate-spin text-[#5b21b6]" />
+                      <p className="ml-3 text-sm text-gray-500">Loading...</p>
+                    </div>
+                  </td>
+                </tr>
+              ) : error ? (
+                <tr>
+                  <td colSpan={9} className="p-6 text-center text-sm text-red-600">
+                    {error}
+                  </td>
+                </tr>
+              ) : filteredRecords.length === 0 ? (
                 <tr>
                   <td colSpan={9} className="px-4 py-8 text-center text-sm text-gray-500 dark:text-gray-400">
                     {searchTerm ? 'No PEP cases found matching your search.' : 'No PEP cases yet. Click "New PEP Case" to get started.'}

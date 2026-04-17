@@ -85,31 +85,6 @@ export default function LaboratoryPage() {
   const completedOrders =
     statistics?.by_status?.find(([status]) => status === 'Completed')?.[1] ?? 0;
 
-  if (loading) {
-    return (
-      <div className="flex items-center justify-center min-h-[400px]">
-        <div className="text-center">
-          <Loader2 className="h-8 w-8 animate-spin text-[#5b21b6] mx-auto" />
-          <p className="mt-4 text-sm text-gray-500">Loading laboratory data...</p>
-        </div>
-      </div>
-    );
-  }
-
-  if (error) {
-    return (
-      <div className="rounded-lg bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 p-6">
-        <div className="flex items-start gap-3">
-          <AlertCircle className="h-6 w-6 text-red-600 dark:text-red-400 mt-0.5" />
-          <div>
-            <p className="text-lg font-medium text-red-800 dark:text-red-300">Error loading laboratory data</p>
-            <p className="text-sm text-red-700 dark:text-red-400 mt-1">{error}</p>
-          </div>
-        </div>
-      </div>
-    );
-  }
-
   return (
     <div className="space-y-6">
       {/* Header */}
@@ -276,7 +251,18 @@ export default function LaboratoryPage() {
           <h2 className="font-semibold text-white">Lab Test Orders</h2>
         </div>
 
-        {filteredOrders.length === 0 ? (
+        {loading ? (
+          <div className="p-12 text-center">
+            <div className="flex items-center justify-center">
+              <Loader2 className="h-8 w-8 animate-spin text-[#5b21b6]" />
+              <p className="ml-3 text-sm text-gray-500">Loading...</p>
+            </div>
+          </div>
+        ) : error ? (
+          <div className="p-6 text-center text-sm text-red-600">
+            {error}
+          </div>
+        ) : filteredOrders.length === 0 ? (
           <div className="p-12 text-center">
             <FlaskConical className="h-12 w-12 text-gray-400 mx-auto mb-4" />
             <p className="text-gray-500 dark:text-gray-400 mb-4">
